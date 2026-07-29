@@ -1,0 +1,17 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "dashboard": "Dashboard",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout"
+  },
+  "home": {
+    "heroTitle": "Smart Solutions for Modern Farming",
+    "heroSubtitle": "Get real-time insights, expert recommendations, and smart tools to improve your farming.",
+    "getStarted": "Get Started",
+    "exploreFeatures": "Explore Features"
+  }
+}
