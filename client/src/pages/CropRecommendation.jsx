@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import api from '../utils/api';
 import { FaLeaf } from 'react-icons/fa';
@@ -10,6 +11,30 @@ function CropRecommendation() {
   const [crops, setCrops] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [latestSoilReport, setLatestSoilReport] = useState(null);
+  const [checkingSoil, setCheckingSoil] = useState(true);
+
+  useEffect(() => {
+    fetchLatestSoilReport();
+  }, []);
+
+  const fetchLatestSoilReport = async () => {
+    try {
+      const res = await api.get('/soil', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      const reports = res.data.reports;
+      if (reports && reports.length > 0) {
+        const latest = reports[0];
+        setLatestSoilReport(latest);
+        setFormData((prev) => ({ ...prev, soilType: latest.soilTexture }));
+      }
+    } catch (err) {
+      console.error('Failed to fetch soil report', err);
+    } finally {
+      setCheckingSoil(false);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,6 +55,7 @@ function CropRecommendation() {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setCrops(res.data.record.recommendedCrops);
+      localStorage.setItem('recommendedCrops', JSON.stringify(res.data.record.recommendedCrops));
     } catch (err) {
       setError(err.response?.data?.message || 'Something went wrong.');
     } finally {
@@ -50,6 +76,15 @@ function CropRecommendation() {
           </div>
         )}
 
+        {!checkingSoil && !latestSoilReport && (
+          <div className="bg-yellow-100 text-yellow-800 text-sm p-4 rounded-lg mb-4 max-w-3xl">
+            {t('crop.noSoilReport')}{' '}
+            <Link to="/dashboard/soil-health" className="underline font-medium">
+              {t('crop.goToSoilHealth')}
+            </Link>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow p-6 max-w-3xl mb-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
@@ -61,26 +96,33 @@ function CropRecommendation() {
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
                 <option value="">--</option>
-                <option value="kharif">Kharif (Monsoon)</option>
-                <option value="rabi">Rabi (Winter)</option>
-                <option value="zaid">Zaid (Summer)</option>
+                <option value="kharif">{t('crop.seasons.kharif')}</option>
+                <option value="rabi">{t('crop.seasons.rabi')}</option>
+                <option value="zaid">{t('crop.seasons.zaid')}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('crop.soilType')}</label>
-              <select
-                name="soilType"
-                value={formData.soilType}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="">--</option>
-                <option value="sandy">Sandy</option>
-                <option value="clayey">Clayey</option>
-                <option value="loamy">Loamy</option>
-                <option value="black">Black Soil</option>
-              </select>
+              {latestSoilReport ? (
+                <div className="w-full border border-green-300 bg-green-50 rounded-lg px-3 py-2 text-green-800 font-medium">
+                  {t(`crop.soilTypes.${formData.soilType}`)}
+                  <span className="text-xs block text-green-600">{t('crop.autoDetected')}</span>
+                </div>
+              ) : (
+                <select
+                  name="soilType"
+                  value={formData.soilType}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                >
+                  <option value="">--</option>
+                  <option value="sandy">{t('crop.soilTypes.sandy')}</option>
+                  <option value="clayey">{t('crop.soilTypes.clayey')}</option>
+                  <option value="loamy">{t('crop.soilTypes.loamy')}</option>
+                  <option value="black">{t('crop.soilTypes.black')}</option>
+                </select>
+              )}
             </div>
 
             <div>
@@ -92,9 +134,9 @@ function CropRecommendation() {
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
                 <option value="">--</option>
-                <option value="low">Low</option>
-                <option value="moderate">Moderate</option>
-                <option value="high">High</option>
+                <option value="low">{t('crop.waterLevels.low')}</option>
+                <option value="moderate">{t('crop.waterLevels.moderate')}</option>
+                <option value="high">{t('crop.waterLevels.high')}</option>
               </select>
             </div>
           </div>
@@ -113,13 +155,18 @@ function CropRecommendation() {
             <h2 className="text-lg font-bold text-gray-800 mb-4">{t('crop.recommended')}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               {crops.map((c, i) => (
-                <div key={i} className="bg-white rounded-xl shadow p-5">
+                <Link
+                  key={i}
+                  to={`/dashboard/crop-recommendation/details/${i}`}
+                  className="bg-white rounded-xl shadow p-5 hover:shadow-lg transition block"
+                >
                   <FaLeaf className="text-green-600 mb-2" size={22} />
-                  <h3 className="font-semibold text-gray-800">{c.name}</h3>
-                  <p className="text-sm text-gray-500 mt-2">Yield: {c.expectedYield}</p>
-                  <p className="text-sm text-gray-500">Duration: {c.duration}</p>
-                  <p className="text-sm text-gray-500">Water: {c.waterNeed}</p>
-                </div>
+                  <h3 className="font-semibold text-gray-800">{t(`crop.cropNames.${c.name}`, c.name)}</h3>
+                  <p className="text-sm text-gray-500 mt-2">{t('crop.expectedYield')}: {c.expectedYield}</p>
+                  <p className="text-sm text-gray-500">{t('crop.duration')}: {c.duration}</p>
+                  <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {c.waterNeed}</p>
+                  <p className="text-xs text-green-600 mt-2 font-medium">{t('crop.viewDetails')} →</p>
+                </Link>
               ))}
             </div>
           </div>

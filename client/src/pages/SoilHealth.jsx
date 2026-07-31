@@ -3,63 +3,16 @@ import { useTranslation } from 'react-i18next';
 import Sidebar from '../components/Sidebar';
 import api from '../utils/api';
 
-const questions = [
-  {
-    key: 'soilColor',
-    label: 'What color is your soil?',
-    options: [
-      { value: 'dark_black', label: 'Dark Black' },
-      { value: 'brown', label: 'Brown' },
-      { value: 'reddish', label: 'Reddish' },
-      { value: 'grayish_white', label: 'Grayish-White' },
-    ],
-  },
-  {
-    key: 'soilTexture',
-    label: 'How does your soil feel?',
-    options: [
-      { value: 'sandy', label: 'Sandy (loose, gritty)' },
-      { value: 'clayey', label: 'Clayey (sticky, hard when dry)' },
-      { value: 'loamy', label: 'Loamy (soft, crumbly)' },
-    ],
-  },
-  {
-    key: 'moisture',
-    label: 'How moist is your soil right now?',
-    options: [
-      { value: 'dry_cracked', label: 'Dry & Cracked' },
-      { value: 'slightly_moist', label: 'Slightly Moist' },
-      { value: 'waterlogged', label: 'Waterlogged' },
-    ],
-  },
-  {
-    key: 'drainage',
-    label: 'After rain/watering, how fast does water disappear?',
-    options: [
-      { value: 'fast', label: 'Quickly' },
-      { value: 'moderate', label: 'Takes a While' },
-      { value: 'slow', label: 'Stays for Hours' },
-    ],
-  },
-  {
-    key: 'pastCropGrowth',
-    label: 'How have your past crops grown in this soil?',
-    options: [
-      { value: 'good', label: 'Grew Well' },
-      { value: 'average', label: 'Average Growth' },
-      { value: 'poor', label: 'Poor Growth / Yellow Leaves' },
-    ],
-  },
-  {
-    key: 'organicMatter',
-    label: 'How much organic matter (dead leaves, weeds) is in your soil?',
-    options: [
-      { value: 'lots', label: 'A Lot' },
-      { value: 'some', label: 'Some' },
-      { value: 'very_little', label: 'Very Little / None' },
-    ],
-  },
-];
+const questionKeys = ['soilColor', 'soilTexture', 'moisture', 'drainage', 'pastCropGrowth', 'organicMatter'];
+
+const optionValues = {
+  soilColor: ['dark_black', 'brown', 'reddish', 'grayish_white'],
+  soilTexture: ['sandy', 'clayey', 'loamy'],
+  moisture: ['dry_cracked', 'slightly_moist', 'waterlogged'],
+  drainage: ['fast', 'moderate', 'slow'],
+  pastCropGrowth: ['good', 'average', 'poor'],
+  organicMatter: ['lots', 'some', 'very_little'],
+};
 
 function SoilHealth() {
   const { t } = useTranslation();
@@ -92,8 +45,8 @@ function SoilHealth() {
     e.preventDefault();
     setError('');
 
-    if (Object.keys(formData).length < questions.length) {
-      setError('Please answer all questions before submitting.');
+    if (Object.keys(formData).length < questionKeys.length) {
+      setError(t('soilHealth.fillAllError'));
       return;
     }
 
@@ -132,22 +85,22 @@ function SoilHealth() {
         )}
 
         <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow p-6 max-w-2xl space-y-6">
-          {questions.map((q) => (
-            <div key={q.key}>
-              <p className="font-medium text-gray-700 mb-2">{q.label}</p>
+          {questionKeys.map((key) => (
+            <div key={key}>
+              <p className="font-medium text-gray-700 mb-2">{t(`soilHealth.q.${key}.label`)}</p>
               <div className="flex flex-wrap gap-2">
-                {q.options.map((opt) => (
+                {optionValues[key].map((val) => (
                   <button
                     type="button"
-                    key={opt.value}
-                    onClick={() => handleSelect(q.key, opt.value)}
+                    key={val}
+                    onClick={() => handleSelect(key, val)}
                     className={`px-4 py-2 rounded-lg text-sm border transition ${
-                      formData[q.key] === opt.value
+                      formData[key] === val
                         ? 'bg-green-600 text-white border-green-600'
                         : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100'
                     }`}
                   >
-                    {opt.label}
+                    {t(`soilHealth.q.${key}.${val}`)}
                   </button>
                 ))}
               </div>

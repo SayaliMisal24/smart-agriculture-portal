@@ -47,7 +47,47 @@
     "analyzing": "Analyzing...",
     "yourReport": "Your Soil Health Report",
     "suggestions": "Suggestions",
-    "pastReports": "Past Reports"
+    "pastReports": "Past Reports",
+    "fillAllError": "Please answer all questions before submitting.",
+    "q": {
+      "soilColor": {
+        "label": "What color is your soil?",
+        "dark_black": "Dark Black",
+        "brown": "Brown",
+        "reddish": "Reddish",
+        "grayish_white": "Grayish-White"
+      },
+      "soilTexture": {
+        "label": "How does your soil feel?",
+        "sandy": "Sandy (loose, gritty)",
+        "clayey": "Clayey (sticky, hard when dry)",
+        "loamy": "Loamy (soft, crumbly)"
+      },
+      "moisture": {
+        "label": "How moist is your soil right now?",
+        "dry_cracked": "Dry & Cracked",
+        "slightly_moist": "Slightly Moist",
+        "waterlogged": "Waterlogged"
+      },
+      "drainage": {
+        "label": "After rain/watering, how fast does water disappear?",
+        "fast": "Quickly",
+        "moderate": "Takes a While",
+        "slow": "Stays for Hours"
+      },
+      "pastCropGrowth": {
+        "label": "How have your past crops grown in this soil?",
+        "good": "Grew Well",
+        "average": "Average Growth",
+        "poor": "Poor Growth / Yellow Leaves"
+      },
+      "organicMatter": {
+        "label": "How much organic matter (dead leaves, weeds) is in your soil?",
+        "lots": "A Lot",
+        "some": "Some",
+        "very_little": "Very Little / None"
+      }
+    }
   },
   "crop": {
     "title": "Crop Recommendation",
@@ -57,6 +97,43 @@
     "water": "Water Availability",
     "getRecommendation": "Get Recommendation",
     "loading": "Finding best crops...",
-    "recommended": "Recommended Crops"
+    "recommended": "Recommended Crops",
+    "autoDetected": "(auto-detected from your Soil Health report)",
+    "noSoilReport": "You haven't completed a Soil Health report yet. We recommend doing that first so we can auto-detect your soil type.",
+    "goToSoilHealth": "Go to Soil Health Analyzer",
+    "viewDetails": "View Details",
+    "backToAll": "Back to all recommendations",
+    "expectedYield": "Expected Yield",
+    "duration": "Growing Duration",
+    "waterNeed": "Water Requirement",
+    "previous": "Previous",
+    "next": "Next",
+    "seasons": {
+      "kharif": "Kharif (Monsoon)",
+      "rabi": "Rabi (Winter)",
+      "zaid": "Zaid (Summer)"
+    },
+    "soilTypes": {
+      "sandy": "Sandy",
+      "clayey": "Clayey",
+      "loamy": "Loamy",
+      "black": "Black Soil"
+    },
+    "waterLevels": {
+      "low": "Low",
+      "moderate": "Moderate",
+      "high": "High"
+    },
+    "cropNames": {
+      "Rice": "Rice",
+      "Maize": "Maize",
+      "Cotton": "Cotton",
+      "Soybean": "Soybean",
+      "Wheat": "Wheat",
+      "Gram (Chana)": "Gram (Chana)",
+      "Mustard": "Mustard",
+      "Watermelon": "Watermelon",
+      "Cucumber": "Cucumber"
+    }
   }
 }

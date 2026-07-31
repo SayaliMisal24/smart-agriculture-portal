@@ -11,6 +11,7 @@ import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import SoilHealth from './pages/SoilHealth';
 import CropRecommendation from './pages/CropRecommendation';
+import CropDetail from './pages/CropDetail';
 function Layout() {
   const location = useLocation();
   const hideLayout = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile');
@@ -43,6 +44,14 @@ function Layout() {
   element={
     <ProtectedRoute>
       <CropRecommendation />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/dashboard/crop-recommendation/details/:index"
+  element={
+    <ProtectedRoute>
+      <CropDetail />
     </ProtectedRoute>
   }
 />
