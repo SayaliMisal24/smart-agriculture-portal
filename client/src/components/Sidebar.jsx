@@ -1,16 +1,20 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   FaTachometerAlt, FaSeedling, FaLeaf, FaTint, FaCloudSun,
   FaBug, FaChartLine, FaStore, FaCalendarAlt, FaSignOutAlt
 } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 function Sidebar() {
   const location = useLocation();
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
 
+  const toggleLanguage = () => {
+    i18n.changeLanguage(i18n.language === 'en' ? 'mr' : 'en');
+  };
   const menuItems = [
     { name: 'Dashboard', icon: <FaTachometerAlt />, path: '/dashboard' },
     { name: 'Soil Health', icon: <FaSeedling />, path: '/dashboard/soil-health' },
@@ -53,6 +57,13 @@ function Sidebar() {
           );
         })}
       </nav>
+
+      <button
+        onClick={toggleLanguage}
+        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-green-200 hover:bg-green-800 mb-1"
+      >
+        🌐 {i18n.language === 'en' ? 'मराठी' : 'English'}
+      </button>
 
       <button
         onClick={handleLogout}

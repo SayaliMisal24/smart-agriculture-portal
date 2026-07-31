@@ -13,5 +13,40 @@
     "heroSubtitle": "आपल्या शेतीत सुधारणा करण्यासाठी रिअल-टाइम माहिती, तज्ञांच्या शिफारसी आणि स्मार्ट साधने मिळवा.",
     "getStarted": "सुरुवात करा",
     "exploreFeatures": "वैशिष्ट्ये पहा"
+  },
+  "auth": {
+    "fullName": "पूर्ण नाव",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "creatingAccount": "खाते तयार होत आहे...",
+    "loggingIn": "लॉगिन होत आहे...",
+    "alreadyHaveAccount": "आधीच खाते आहे का?",
+    "dontHaveAccount": "खाते नाही का?"
+  },
+  "dashboard": {
+    "welcome": "पुन्हा स्वागत आहे",
+    "soilHealth": "मातीचे आरोग्य",
+    "todaysWeather": "आजचे हवामान",
+    "marketPrice": "बाजारभाव (सरासरी)",
+    "predictedYield": "अपेक्षित उत्पादन",
+    "weatherForecast": "हवामान अंदाज",
+    "viewDetails": "तपशील पहा",
+    "recentRecommendations": "अलीकडील शिफारसी",
+    "marketInsights": "बाजार माहिती"
+  },
+  "profile": {
+    "myProfile": "माझी प्रोफाइल",
+    "name": "नाव",
+    "email": "ईमेल",
+    "role": "भूमिका"
+  },
+  "soilHealth": {
+    "title": "मातीचे आरोग्य विश्लेषक",
+    "subtitle": "आपल्या शेतातील मातीबद्दल काही सोपे प्रश्न उत्तर द्या.",
+    "getReport": "मातीचा अहवाल मिळवा",
+    "analyzing": "विश्लेषण करत आहे...",
+    "yourReport": "तुमचा मातीचा अहवाल",
+    "suggestions": "सूचना",
+    "pastReports": "मागील अहवाल"
   }
 }

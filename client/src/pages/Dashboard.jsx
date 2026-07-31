@@ -1,15 +1,17 @@
 import Sidebar from '../components/Sidebar';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 import { FaSun, FaCloud, FaCloudRain } from 'react-icons/fa';
 
 function Dashboard() {
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const stats = [
-    { label: 'Soil Health', value: 'Good', color: 'bg-green-100 text-green-800' },
-    { label: "Today's Weather", value: '28°C', color: 'bg-blue-100 text-blue-800' },
-    { label: 'Market Price (Avg)', value: '₹2,350/quintal', color: 'bg-purple-100 text-purple-800' },
-    { label: 'Predicted Yield', value: '32 Quintal/acre', color: 'bg-orange-100 text-orange-800' },
+    { label: t('dashboard.soilHealth'), value: 'Good', color: 'bg-green-100 text-green-800' },
+    { label: t('dashboard.todaysWeather'), value: '28°C', color: 'bg-blue-100 text-blue-800' },
+    { label: t('dashboard.marketPrice'), value: '₹2,350/quintal', color: 'bg-purple-100 text-purple-800' },
+    { label: t('dashboard.predictedYield'), value: '32 Quintal/acre', color: 'bg-orange-100 text-orange-800' },
   ];
 
   const forecast = [
@@ -27,7 +29,7 @@ function Dashboard() {
       <main className="flex-1 bg-gray-50 min-h-screen p-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-          <p className="text-gray-500">Welcome back, {user?.name || 'Farmer'} 👋</p>
+          <p className="text-gray-500">{t('dashboard.welcome')}, {user?.name || 'Farmer'} 👋</p>
         </div>
 
         {/* Stat Cards */}
@@ -43,8 +45,8 @@ function Dashboard() {
         {/* Weather Forecast */}
         <div className="bg-white rounded-xl shadow p-5 mb-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="font-semibold text-gray-800">Weather Forecast</h2>
-            <span className="text-sm text-green-600 cursor-pointer">View Details</span>
+            <h2 className="font-semibold text-gray-800">{t('dashboard.weatherForecast')}</h2>
+            <span className="text-sm text-green-600 cursor-pointer">{t('dashboard.viewDetails')}</span>
           </div>
           <div className="grid grid-cols-5 gap-4 text-center">
             {forecast.map((f, i) => (
@@ -60,7 +62,7 @@ function Dashboard() {
         {/* Bottom Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white rounded-xl shadow p-5">
-            <h2 className="font-semibold text-gray-800 mb-3">Recent Recommendations</h2>
+            <h2 className="font-semibold text-gray-800 mb-3">{t('dashboard.recentRecommendations')}</h2>
             <ul className="text-sm text-gray-600 space-y-2">
               <li>• Apply organic fertilizer</li>
               <li>• Good time for irrigation</li>
@@ -68,7 +70,7 @@ function Dashboard() {
             </ul>
           </div>
           <div className="bg-white rounded-xl shadow p-5">
-            <h2 className="font-semibold text-gray-800 mb-3">Market Insights</h2>
+            <h2 className="font-semibold text-gray-800 mb-3">{t('dashboard.marketInsights')}</h2>
             <ul className="text-sm text-gray-600 space-y-2">
               <li className="flex justify-between"><span>Tomato</span> <span>₹2,100/quintal <span className="text-green-600">▲2.5%</span></span></li>
               <li className="flex justify-between"><span>Wheat</span> <span>₹2,350/quintal <span className="text-green-600">▲2.1%</span></span></li>

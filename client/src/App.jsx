@@ -9,7 +9,7 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
-
+import SoilHealth from './pages/SoilHealth';
 function Layout() {
   const location = useLocation();
   const hideLayout = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile');
@@ -31,6 +31,14 @@ function Layout() {
           }
         />
         <Route
+  path="/dashboard/soil-health"
+  element={
+    <ProtectedRoute>
+      <SoilHealth />
+    </ProtectedRoute>
+  }
+/>
+        <Route
           path="/profile"
           element={
             <ProtectedRoute>
@@ -42,6 +50,7 @@ function Layout() {
       </Routes>
       {!hideLayout && <Footer />}
     </>
+    
   );
 }
 

@@ -53,7 +53,7 @@ function Signup() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.fullName')}</label>
             <input
               type="text"
               name="name"
@@ -65,7 +65,7 @@ function Signup() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.email')}</label>
             <input
               type="email"
               name="email"
@@ -77,7 +77,7 @@ function Signup() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.password')}</label>
             <input
               type="password"
               name="password"
@@ -94,12 +94,12 @@ function Signup() {
             disabled={loading}
             className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold disabled:opacity-50"
           >
-            {loading ? 'Creating account...' : t('nav.signup')}
+            {loading ? t('auth.creatingAccount') : t('nav.signup')}
           </button>
         </form>
 
         <p className="text-sm text-gray-600 mt-4 text-center">
-          Already have an account?{' '}
+          {t('auth.alreadyHaveAccount')}{' '}
           <Link to="/login" className="text-green-700 font-medium hover:underline">
             {t('nav.login')}
           </Link>

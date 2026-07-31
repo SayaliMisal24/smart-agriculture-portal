@@ -48,7 +48,7 @@ function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.email')}</label>
             <input
               type="email"
               name="email"
@@ -60,7 +60,7 @@ function Login() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.password')}</label>
             <input
               type="password"
               name="password"
@@ -76,12 +76,12 @@ function Login() {
             disabled={loading}
             className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold disabled:opacity-50"
           >
-            {loading ? 'Logging in...' : t('nav.login')}
+            {loading ? t('auth.loggingIn') : t('nav.login')}
           </button>
         </form>
 
         <p className="text-sm text-gray-600 mt-4 text-center">
-          Don't have an account?{' '}
+          {t('auth.dontHaveAccount')}{' '}
           <Link to="/signup" className="text-green-700 font-medium hover:underline">
             {t('nav.signup')}
           </Link>

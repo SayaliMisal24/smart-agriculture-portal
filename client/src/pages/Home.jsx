@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { FaSeedling, FaCloudSun, FaChartLine, FaLeaf } from 'react-icons/fa';
@@ -62,20 +63,32 @@ function Home() {
         </div>
       </section>
 
-      {/* FEATURE CARDS */}
+ {/* FEATURE CARDS */}
       <section className="max-w-6xl mx-auto px-6 -mt-12 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            visible: { transition: { staggerChildren: 0.15 } },
+          }}
+        >
           {features.map((f, i) => (
-            <div
+            <motion.div
               key={i}
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              transition={{ duration: 0.5 }}
               className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition"
             >
               <div className="mb-3">{f.icon}</div>
               <h3 className="font-semibold text-gray-800">{f.title}</h3>
               <p className="text-sm text-gray-500 mt-1">{f.desc}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       <div className="h-20"></div>

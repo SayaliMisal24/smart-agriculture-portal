@@ -13,5 +13,40 @@
     "heroSubtitle": "Get real-time insights, expert recommendations, and smart tools to improve your farming.",
     "getStarted": "Get Started",
     "exploreFeatures": "Explore Features"
+  },
+  "auth": {
+    "fullName": "Full Name",
+    "email": "Email",
+    "password": "Password",
+    "creatingAccount": "Creating account...",
+    "loggingIn": "Logging in...",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?"
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "soilHealth": "Soil Health",
+    "todaysWeather": "Today's Weather",
+    "marketPrice": "Market Price (Avg)",
+    "predictedYield": "Predicted Yield",
+    "weatherForecast": "Weather Forecast",
+    "viewDetails": "View Details",
+    "recentRecommendations": "Recent Recommendations",
+    "marketInsights": "Market Insights"
+  },
+  "profile": {
+    "myProfile": "My Profile",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role"
+  },
+  "soilHealth": {
+    "title": "Soil Health Analyzer",
+    "subtitle": "Answer a few simple questions about your farm's soil.",
+    "getReport": "Get Soil Health Report",
+    "analyzing": "Analyzing...",
+    "yourReport": "Your Soil Health Report",
+    "suggestions": "Suggestions",
+    "pastReports": "Past Reports"
   }
 }
