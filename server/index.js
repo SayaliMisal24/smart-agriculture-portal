@@ -6,6 +6,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const soilRoutes = require('./routes/soilRoutes');
+const cropRoutes = require('./routes/cropRoutes');
 // Create the Express app
 const app = express();
 
@@ -21,6 +22,7 @@ mongoose.connect(process.env.MONGO_URI)
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/soil', soilRoutes);
+app.use('/api/crop', cropRoutes);
 // A simple test route
 app.get('/', (req, res) => {
   res.json({ message: 'Smart Agriculture Portal API is running!' });

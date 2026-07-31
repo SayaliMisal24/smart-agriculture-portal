@@ -48,5 +48,15 @@
     "yourReport": "Your Soil Health Report",
     "suggestions": "Suggestions",
     "pastReports": "Past Reports"
+  },
+  "crop": {
+    "title": "Crop Recommendation",
+    "subtitle": "Get the best crop suggestions based on your season, soil, and water availability.",
+    "season": "Season",
+    "soilType": "Soil Type",
+    "water": "Water Availability",
+    "getRecommendation": "Get Recommendation",
+    "loading": "Finding best crops...",
+    "recommended": "Recommended Crops"
   }
 }
