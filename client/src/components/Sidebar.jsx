@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   FaTachometerAlt, FaSeedling, FaLeaf, FaTint, FaCloudSun,
-  FaBug, FaChartLine, FaStore, FaCalendarAlt, FaSignOutAlt
+  FaBug, FaChartLine, FaStore, FaCalendarAlt, FaSignOutAlt, FaTractor
 } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +16,7 @@ function Sidebar() {
     i18n.changeLanguage(i18n.language === 'en' ? 'mr' : 'en');
   };
   const menuItems = [
+    { name: 'My Farms', icon: <FaTractor />, path: '/dashboard/farms' },
     { name: 'Dashboard', icon: <FaTachometerAlt />, path: '/dashboard' },
     { name: 'Soil Health', icon: <FaSeedling />, path: '/dashboard/soil-health' },
     { name: 'Crop Recommendation', icon: <FaLeaf />, path: '/dashboard/crop-recommendation' },

@@ -6,12 +6,14 @@ import About from './pages/About';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
+import MyFarms from './pages/MyFarms';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import SoilHealth from './pages/SoilHealth';
 import CropRecommendation from './pages/CropRecommendation';
 import CropDetail from './pages/CropDetail';
+import Weather from './pages/Weather';
 function Layout() {
   const location = useLocation();
   const hideLayout = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile');
@@ -48,6 +50,14 @@ function Layout() {
   }
 />
 <Route
+  path="/dashboard/weather"
+  element={
+    <ProtectedRoute>
+      <Weather />
+    </ProtectedRoute>
+  }
+/>
+<Route
   path="/dashboard/crop-recommendation/details/:index"
   element={
     <ProtectedRoute>
@@ -63,6 +73,14 @@ function Layout() {
             </ProtectedRoute>
           }
         />
+        <Route
+  path="/dashboard/farms"
+  element={
+    <ProtectedRoute>
+      <MyFarms />
+    </ProtectedRoute>
+  }
+/>
         <Route path="*" element={<NotFound />} />
       </Routes>
       {!hideLayout && <Footer />}
