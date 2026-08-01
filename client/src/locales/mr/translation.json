@@ -38,7 +38,21 @@
     "myProfile": "माझी प्रोफाइल",
     "name": "नाव",
     "email": "ईमेल",
-    "role": "भूमिका"
+    "role": "भूमिका",
+    "accountInfo": "खाते माहिती",
+    "save": "जतन करा",
+    "cancel": "रद्द करा",
+    "savePhoto": "फोटो जतन करा",
+    "nameUpdated": "नाव यशस्वीरित्या अद्ययावत झाले",
+    "photoUpdated": "फोटो यशस्वीरित्या अद्ययावत झाला",
+    "updateFailed": "अद्ययावत करणे अयशस्वी झाले. कृपया पुन्हा प्रयत्न करा.",
+    "changePassword": "पासवर्ड बदला",
+    "currentPassword": "सध्याचा पासवर्ड",
+    "newPassword": "नवीन पासवर्ड",
+    "updatePassword": "पासवर्ड अद्ययावत करा",
+    "updating": "अद्ययावत करत आहे...",
+    "passwordChanged": "पासवर्ड यशस्वीरित्या बदलला",
+    "passwordFailed": "पासवर्ड बदलण्यात अयशस्वी"
   },
   "soilHealth": {
     "title": "मातीचे आरोग्य विश्लेषक",

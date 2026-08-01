@@ -38,7 +38,21 @@
     "myProfile": "My Profile",
     "name": "Name",
     "email": "Email",
-    "role": "Role"
+    "role": "Role",
+    "accountInfo": "Account Information",
+    "save": "Save",
+    "cancel": "Cancel",
+    "savePhoto": "Save Photo",
+    "nameUpdated": "Name updated successfully",
+    "photoUpdated": "Photo updated successfully",
+    "updateFailed": "Update failed. Please try again.",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "updatePassword": "Update Password",
+    "updating": "Updating...",
+    "passwordChanged": "Password changed successfully",
+    "passwordFailed": "Failed to change password"
   },
   "soilHealth": {
     "title": "Soil Health Analyzer",

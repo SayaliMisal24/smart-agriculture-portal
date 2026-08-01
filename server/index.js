@@ -1,6 +1,7 @@
 // Load environment variables from .env file
 require('dotenv').config();
-
+const path = require('path');
+const userRoutes = require('./routes/userRoutes');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -16,7 +17,8 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api/user', userRoutes);
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected successfully'))
