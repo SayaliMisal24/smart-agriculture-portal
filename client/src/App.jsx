@@ -9,11 +9,13 @@ import Dashboard from './pages/Dashboard';
 import MyFarms from './pages/MyFarms';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
+import FarmDetail from './pages/FarmDetail';
 import ProtectedRoute from './components/ProtectedRoute';
 import SoilHealth from './pages/SoilHealth';
 import CropRecommendation from './pages/CropRecommendation';
 import CropDetail from './pages/CropDetail';
 import Weather from './pages/Weather';
+import SmartIrrigation from './pages/SmartIrrigation';
 function Layout() {
   const location = useLocation();
   const hideLayout = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile');
@@ -34,15 +36,16 @@ function Layout() {
             </ProtectedRoute>
           }
         />
-        <Route
-  path="/dashboard/soil-health"
+       <Route
+  path="/dashboard/farms/:farmId/soil-health"
   element={
     <ProtectedRoute>
       <SoilHealth />
     </ProtectedRoute>
   }
-/><Route
-  path="/dashboard/crop-recommendation"
+/>
+<Route
+  path="/dashboard/farms/:farmId/crop-recommendation"
   element={
     <ProtectedRoute>
       <CropRecommendation />
@@ -50,7 +53,7 @@ function Layout() {
   }
 />
 <Route
-  path="/dashboard/weather"
+  path="/dashboard/farms/:farmId/weather"
   element={
     <ProtectedRoute>
       <Weather />
@@ -58,10 +61,26 @@ function Layout() {
   }
 />
 <Route
-  path="/dashboard/crop-recommendation/details/:index"
+  path="/dashboard/farms/:farmId/crop-recommendation/details/:index"
   element={
     <ProtectedRoute>
       <CropDetail />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/dashboard/farms/:farmId/irrigation"
+  element={
+    <ProtectedRoute>
+      <SmartIrrigation />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/dashboard/farms/:farmId"
+  element={
+    <ProtectedRoute>
+      <FarmDetail />
     </ProtectedRoute>
   }
 />

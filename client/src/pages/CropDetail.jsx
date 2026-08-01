@@ -5,7 +5,7 @@ import { FaLeaf, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 function CropDetail() {
   const { t } = useTranslation();
-  const { index } = useParams();
+  const { index, farmId } = useParams();
   const navigate = useNavigate();
   const idx = parseInt(index, 10);
 
@@ -19,7 +19,7 @@ function CropDetail() {
         <main className="flex-1 bg-gray-50 min-h-screen p-6">
           <p className="text-gray-600">
             No crop data found. Please{' '}
-            <Link to="/dashboard/crop-recommendation" className="text-green-700 underline">
+            <Link to={`/dashboard/farms/${farmId}/crop-recommendation`}>
               generate a recommendation
             </Link>{' '}
             first.
@@ -31,7 +31,7 @@ function CropDetail() {
 
   const goTo = (newIdx) => {
     if (newIdx >= 0 && newIdx < crops.length) {
-      navigate(`/dashboard/crop-recommendation/details/${newIdx}`);
+      navigate(`/dashboard/farms/${farmId}/crop-recommendation/details/${newIdx}`);
     }
   };
 
@@ -39,7 +39,7 @@ function CropDetail() {
     <div className="flex">
       <Sidebar />
       <main className="flex-1 bg-gray-50 min-h-screen p-6">
-        <Link to="/dashboard/crop-recommendation" className="text-sm text-green-700 hover:underline">
+        <Link to={`/dashboard/farms/${farmId}/crop-recommendation`}>
           ← {t('crop.backToAll')}
         </Link>
 

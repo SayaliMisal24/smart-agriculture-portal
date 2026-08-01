@@ -4,15 +4,17 @@ const { calculateIrrigation } = require('../utils/irrigationAnalysis');
 
 const getIrrigationAdvice = async (req, res) => {
   try {
-    const { city } = req.query;
+    const { city, farmId } = req.query;
 
     if (!city) {
       return res.status(400).json({ message: 'City is required' });
     }
+    if (!farmId) {
+      return res.status(400).json({ message: 'farmId is required' });
+    }
 
-    // Get latest soil report for this user
-    const latestSoil = await SoilReport.findOne({ user: req.user.id }).sort({ createdAt: -1 });
-
+    // Get latest soil report for this farm
+    const latestSoil = await SoilReport.findOne({ user: req.user.id, farm: farmId }).sort({ createdAt: -1 });
     if (!latestSoil) {
       return res.status(400).json({ message: 'Please complete a Soil Health report first.' });
     }

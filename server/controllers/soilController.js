@@ -3,8 +3,11 @@ const { analyzeSoil } = require('../utils/soilAnalysis');
 
 const createSoilReport = async (req, res) => {
   try {
-    const { soilColor, soilTexture, moisture, drainage, pastCropGrowth, organicMatter } = req.body;
+    const { farmId, soilColor, soilTexture, moisture, drainage, pastCropGrowth, organicMatter } = req.body;
 
+    if (!farmId) {
+      return res.status(400).json({ message: 'farmId is required' });
+    }
     if (!soilColor || !soilTexture || !moisture || !drainage || !pastCropGrowth || !organicMatter) {
       return res.status(400).json({ message: 'Please answer all questions' });
     }
@@ -15,6 +18,7 @@ const createSoilReport = async (req, res) => {
 
     const report = new SoilReport({
       user: req.user.id,
+      farm: farmId,
       soilColor, soilTexture, moisture, drainage, pastCropGrowth, organicMatter,
       healthScore: score,
       healthStatus: status,
@@ -22,7 +26,6 @@ const createSoilReport = async (req, res) => {
     });
 
     await report.save();
-
     res.status(201).json({ message: 'Soil report created', report });
   } catch (error) {
     console.error(error);
@@ -32,7 +35,11 @@ const createSoilReport = async (req, res) => {
 
 const getMySoilReports = async (req, res) => {
   try {
-    const reports = await SoilReport.find({ user: req.user.id }).sort({ createdAt: -1 });
+    const { farmId } = req.query;
+    const filter = { user: req.user.id };
+    if (farmId) filter.farm = farmId;
+
+    const reports = await SoilReport.find(filter).sort({ createdAt: -1 });
     res.status(200).json({ reports });
   } catch (error) {
     console.error(error);

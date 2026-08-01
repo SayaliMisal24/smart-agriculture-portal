@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Sidebar from '../components/Sidebar';
 import api from '../utils/api';
@@ -6,29 +7,32 @@ import { FaSun, FaCloudRain, FaCloud, FaWind, FaTint } from 'react-icons/fa';
 
 function Weather() {
   const { t } = useTranslation();
-  const [city, setCity] = useState('');
+  const { farmId } = useParams();
+  const [farm, setFarm] = useState(null);
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    setError('');
+  useEffect(() => {
+    loadFarmAndWeather();
+  }, [farmId]);
 
-    if (!city.trim()) {
-      setError('Please enter a city name.');
-      return;
-    }
-
+  const loadFarmAndWeather = async () => {
     setLoading(true);
+    setError('');
     try {
-      const res = await api.get(`/weather?city=${encodeURIComponent(city)}`, {
+      const farmRes = await api.get(`/farms/${farmId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
-      setWeather(res.data.weather);
+      const farmData = farmRes.data.farm;
+      setFarm(farmData);
+
+      const weatherRes = await api.get(`/weather?city=${encodeURIComponent(farmData.location)}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      setWeather(weatherRes.data.weather);
     } catch (err) {
-      setError(err.response?.data?.message || 'Could not fetch weather data.');
-      setWeather(null);
+      setError(err.response?.data?.message || t('weather.error'));
     } finally {
       setLoading(false);
     }
@@ -44,25 +48,16 @@ function Weather() {
     <div className="flex">
       <Sidebar />
       <main className="flex-1 bg-gray-50 min-h-screen p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Weather Based Farming</h1>
-        <p className="text-gray-500 mb-6">Check live weather for your farm's location.</p>
+        <Link to={`/dashboard/farms/${farmId}`} className="text-sm text-green-700 hover:underline">
+          ← {t('farmDetail.backToFarms')}
+        </Link>
 
-        <form onSubmit={handleSearch} className="flex gap-3 mb-6 max-w-md">
-          <input
-            type="text"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            placeholder="Enter city name (e.g. Nagpur)"
-            className="flex-1 border border-gray-300 rounded-lg px-3 py-2"
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-semibold disabled:opacity-50"
-          >
-            {loading ? 'Loading...' : 'Search'}
-          </button>
-        </form>
+        <h1 className="text-2xl font-bold text-gray-800 mt-3 mb-2">{t('weather.title')}</h1>
+        <p className="text-gray-500 mb-6">
+          {farm ? `${t('weather.subtitle')} — ${farm.name} (${farm.location})` : t('weather.subtitle')}
+        </p>
+
+        {loading && <p className="text-gray-500">{t('weather.loading')}</p>}
 
         {error && (
           <div className="bg-red-100 text-red-700 text-sm p-3 rounded mb-4 max-w-md">
@@ -85,11 +80,11 @@ function Weather() {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex items-center gap-2 text-gray-600">
                 <FaTint className="text-blue-400" />
-                <span>Humidity: {weather.humidity}%</span>
+                <span>{t('weather.humidity')}: {weather.humidity}%</span>
               </div>
               <div className="flex items-center gap-2 text-gray-600">
                 <FaWind className="text-gray-400" />
-                <span>Wind: {weather.windSpeed} m/s</span>
+                <span>{t('weather.wind')}: {weather.windSpeed} m/s</span>
               </div>
             </div>
           </div>

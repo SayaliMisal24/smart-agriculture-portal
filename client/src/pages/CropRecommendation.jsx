@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import api from '../utils/api';
 import { FaLeaf } from 'react-icons/fa';
 
 function CropRecommendation() {
   const { t } = useTranslation();
+  const { farmId } = useParams();
   const [formData, setFormData] = useState({ season: '', soilType: '', waterAvailability: '' });
   const [crops, setCrops] = useState([]);
   const [error, setError] = useState('');
@@ -20,7 +21,7 @@ function CropRecommendation() {
 
   const fetchLatestSoilReport = async () => {
     try {
-      const res = await api.get('/soil', {
+      const res = await api.get(`/soil?farmId=${farmId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       const reports = res.data.reports;
@@ -51,7 +52,7 @@ function CropRecommendation() {
 
     setLoading(true);
     try {
-      const res = await api.post('/crop', formData, {
+      const res = await api.post('/crop', { ...formData, farmId }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setCrops(res.data.record.recommendedCrops);
@@ -157,7 +158,7 @@ function CropRecommendation() {
               {crops.map((c, i) => (
                 <Link
                   key={i}
-                  to={`/dashboard/crop-recommendation/details/${i}`}
+                  to={`/dashboard/farms/${farmId}/crop-recommendation/details/${i}`}
                   className="bg-white rounded-xl shadow p-5 hover:shadow-lg transition block"
                 >
                   <FaLeaf className="text-green-600 mb-2" size={22} />

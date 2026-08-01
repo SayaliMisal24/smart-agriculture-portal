@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Sidebar from '../components/Sidebar';
 import api from '../utils/api';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 
 const questionKeys = ['soilColor', 'soilTexture', 'moisture', 'drainage', 'pastCropGrowth', 'organicMatter'];
 
@@ -16,6 +17,7 @@ const optionValues = {
 
 function SoilHealth() {
   const { t } = useTranslation();
+  const { farmId } = useParams();
   const [formData, setFormData] = useState({});
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
@@ -28,7 +30,7 @@ function SoilHealth() {
 
   const fetchHistory = async () => {
     try {
-      const res = await api.get('/soil', {
+      const res = await api.get(`/soil?farmId=${farmId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setHistory(res.data.reports);
@@ -52,7 +54,7 @@ function SoilHealth() {
 
     setLoading(true);
     try {
-      const res = await api.post('/soil', formData, {
+      const res = await api.post('/soil', { ...formData, farmId }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setResult(res.data.report);

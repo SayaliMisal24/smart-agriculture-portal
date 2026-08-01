@@ -153,5 +153,37 @@
     "openFarm": "Open Farm",
     "fillRequired": "Farm name and location are required.",
     "confirmDelete": "Are you sure you want to delete this farm? This cannot be undone."
+  },
+  "farmDetail": {
+    "backToFarms": "Back to My Farms",
+    "notFound": "Farm not found.",
+    "soilHealth": "Soil Health Analyzer",
+    "cropRecommendation": "Crop Recommendation",
+    "weather": "Weather Based Farming",
+    "irrigation": "Smart Irrigation",
+    "calendar": "Crop Calendar",
+    "diseaseDetection": "Crop Disease Detection",
+    "fertilizer": "Fertilizer Recommendation",
+    "pesticide": "Pesticide Recommendation",
+    "yieldPrediction": "Yield Prediction",
+    "marketFinder": "Market Finder"
+  },
+  "weather": {
+    "title": "Weather Based Farming",
+    "subtitle": "Live weather for your farm's location",
+    "loading": "Loading weather...",
+    "error": "Could not fetch weather data.",
+    "humidity": "Humidity",
+    "wind": "Wind"
+  },
+  "irrigation": {
+    "title": "Smart Irrigation",
+    "subtitle": "Irrigation advice based on your soil and live weather",
+    "loading": "Calculating irrigation advice...",
+    "error": "Could not calculate irrigation advice.",
+    "waterAmount": "Water Amount",
+    "nextIrrigation": "Next Irrigation In",
+    "days": "days",
+    "currentConditions": "Current Conditions"
   }
 }

@@ -34,7 +34,7 @@ function Home() {
       {/* HERO SECTION */}
       <section
         className="relative bg-cover bg-center min-h-[500px] flex items-center"
-        style={{ backgroundImage: `url(https://wallpaperaccess.com/full/13781652.jpg)` }}
+        style={{ backgroundImage: `url(https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1600&q=80)` }}
       >
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-black/30"></div>
