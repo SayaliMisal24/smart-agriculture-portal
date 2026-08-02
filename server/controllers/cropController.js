@@ -1,5 +1,9 @@
 const CropRecommendation = require('../models/CropRecommendation');
+const Farm = require('../models/Farm');
 const { recommendCrops } = require('../utils/cropAnalysis');
+const { canAccessStep, completeStep } = require('../utils/stepProgress');
+
+const CROP_STEP = 2;
 
 const getCropRecommendation = async (req, res) => {
   try {
@@ -12,6 +16,19 @@ const getCropRecommendation = async (req, res) => {
       return res.status(400).json({ message: 'Please select all options' });
     }
 
+    const farm = await Farm.findOne({ _id: farmId, user: req.user.id });
+    if (!farm) {
+      return res.status(404).json({ message: 'Farm not found' });
+    }
+
+    const access = canAccessStep(farm, CROP_STEP);
+    if (!access.allowed) {
+      return res.status(403).json({ message: 'Please complete the Soil Health step first.' });
+    }
+    if (access.locked) {
+      return res.status(403).json({ message: 'Crop Recommendation has already been completed for this farm.' });
+    }
+
     const recommendedCrops = recommendCrops({ season, soilType, waterAvailability });
 
     const record = new CropRecommendation({
@@ -22,14 +39,16 @@ const getCropRecommendation = async (req, res) => {
     });
 
     await record.save();
-    res.status(201).json({ message: 'Crop recommendation generated', record });
+
+    const updatedFarm = await completeStep(farmId, CROP_STEP);
+
+    res.status(201).json({ message: 'Crop recommendation generated', record, farm: updatedFarm });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error generating recommendation' });
   }
 };
 
-// Save which crop the farmer selected for this recommendation
 const selectCrop = async (req, res) => {
   try {
     const { cropName } = req.body;

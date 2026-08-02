@@ -1,31 +1,52 @@
+import { useState, useEffect } from 'react';
+import api from '../utils/api';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { FaSeedling, FaCloudSun, FaChartLine, FaLeaf } from 'react-icons/fa';
+import { FaCloudSun, FaChartLine, FaLightbulb, FaQuoteLeft } from 'react-icons/fa';
 
 function Home() {
   const { t } = useTranslation();
+  const [liveWeather, setLiveWeather] = useState(null);
 
-  const features = [
-    {
-      icon: <FaSeedling className="text-green-600" size={28} />,
-      title: 'Soil Health Analyzer',
-      desc: 'Analyze soil nutrients and get suggestions.',
-    },
-    {
-      icon: <FaLeaf className="text-green-600" size={28} />,
-      title: 'Crop Recommendation',
-      desc: 'Get best crop suggestions for higher yield.',
-    },
+  useEffect(() => {
+    fetchDefaultWeather();
+  }, []);
+
+  const fetchDefaultWeather = async () => {
+    try {
+      // Using a default city for the public homepage snapshot (no login required)
+      const res = await api.get('/weather/public?city=Nagpur');
+      setLiveWeather(res.data.weather);
+    } catch (err) {
+      console.error('Could not load homepage weather snapshot', err);
+    }
+  };
+  const tipKeys = ['tip1', 'tip2', 'tip3', 'tip4', 'tip5', 'tip6', 'tip7'];
+  const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+  const todaysTipKey = tipKeys[dayOfYear % tipKeys.length];
+ const features = [
     {
       icon: <FaCloudSun className="text-green-600" size={28} />,
-      title: 'Weather Based Farming',
-      desc: 'Plan your farming based on accurate weather.',
+      title: t('home.card1Title'),
+      desc: liveWeather
+        ? `${liveWeather.city}: ${liveWeather.temperature}°C, ${liveWeather.description}`
+        : t('home.card1Desc'),
+    },
+    {
+      icon: <FaLightbulb className="text-green-600" size={28} />,
+      title: t('home.card2Title'),
+      desc: t(`home.tips.${todaysTipKey}`),
     },
     {
       icon: <FaChartLine className="text-green-600" size={28} />,
-      title: 'Market Insights',
-      desc: 'Check market prices and sell smart.',
+      title: t('home.card3Title'),
+      desc: t('home.card3Desc'),
+    },
+    {
+      icon: <FaQuoteLeft className="text-green-600" size={28} />,
+      title: t('home.card4Title'),
+      desc: t('home.card4Desc'),
     },
   ];
 

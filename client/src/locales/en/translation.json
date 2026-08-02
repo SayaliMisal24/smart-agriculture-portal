@@ -12,7 +12,24 @@
     "heroTitle": "Smart Solutions for Modern Farming",
     "heroSubtitle": "Get real-time insights, expert recommendations, and smart tools to improve your farming.",
     "getStarted": "Get Started",
-    "exploreFeatures": "Explore Features"
+    "exploreFeatures": "Explore Features",
+    "card1Title": "Today's Weather",
+    "card1Desc": "27°C, partly cloudy — good conditions for field work today.",
+    "card2Title": "Daily Farming Tip",
+    "card2Desc": "After recent rain, check your crops for early signs of pest activity.",
+    "card3Title": "Market Trends",
+    "card3Desc": "Wheat and tomato prices are trending up this week across major markets.",
+    "card4Title": "Farmer Success Story",
+    "card4Desc": "\"This portal helped me plan irrigation better and save water.\" — A. Patil, Nashik",
+    "tips": {
+      "tip1": "After recent rain, check your crops for early signs of pest activity.",
+      "tip2": "Early morning or evening is the best time to irrigate to reduce water loss.",
+      "tip3": "Rotate crops each season to keep your soil healthy and reduce disease risk.",
+      "tip4": "Remove weeds early — they compete with your crops for nutrients and water.",
+      "tip5": "Test your soil every season to track changes in health over time.",
+      "tip6": "Mulching helps retain soil moisture during hot, dry weather.",
+      "tip7": "Store harvested grain in a dry, well-ventilated place to avoid spoilage."
+    }
   },
   "auth": {
     "fullName": "Full Name",
@@ -62,6 +79,7 @@
     "suggestions": "Suggestions",
     "pastReports": "Past Reports",
     "fillAllError": "Please answer all questions before submitting.",
+    "detailsSubmitted": "Your Submitted Details",
     "q": {
       "soilColor": {
         "label": "What color is your soil?",
@@ -209,5 +227,21 @@
     "subtitle": "Where would you like to go?",
     "welcome2": "Home",
     "goToDashboard": "Go to Dashboard"
+  },
+  "wizard": {
+    "step1": "Soil Health Analyzer",
+    "step2": "Crop Recommendation",
+    "step3": "Weather Based Farming",
+    "step4": "Smart Irrigation",
+    "step5": "Crop Calendar",
+    "step6": "Crop Disease Detection",
+    "step7": "Fertilizer Recommendation",
+    "step8": "Pesticide Recommendation",
+    "step9": "Yield Prediction",
+    "step10": "Market Finder",
+    "step11": "Market Price Prediction",
+    "viewOnly": "Completed - View Only",
+    "loadingStatus": "Checking progress...",
+    "continueToNext": "Continue to Next Step"
   }
 }
