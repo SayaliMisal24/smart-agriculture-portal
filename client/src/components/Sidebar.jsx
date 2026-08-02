@@ -1,31 +1,21 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import {
-  FaTachometerAlt, FaSeedling, FaLeaf, FaTint, FaCloudSun,
-  FaBug, FaChartLine, FaStore, FaCalendarAlt, FaSignOutAlt, FaTractor
-} from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
-
+import { FaTachometerAlt, FaTractor, FaSignOutAlt, FaLeaf, FaHome } from 'react-icons/fa';
 function Sidebar() {
   const location = useLocation();
-  const { logout } = useAuth();
   const navigate = useNavigate();
-  const { i18n } = useTranslation();
+  const { logout } = useAuth();
+  const { t, i18n } = useTranslation();
 
+ const menuItems = [
+    { name: t('postLogin.welcome2'), icon: <FaHome />, path: '/home' },
+    { name: t('sidebar.dashboard'), icon: <FaTachometerAlt />, path: '/dashboard' },
+    { name: t('sidebar.myFarms'), icon: <FaTractor />, path: '/dashboard/farms' },
+  ];
   const toggleLanguage = () => {
     i18n.changeLanguage(i18n.language === 'en' ? 'mr' : 'en');
   };
-  const menuItems = [
-    { name: 'My Farms', icon: <FaTractor />, path: '/dashboard/farms' },
-    { name: 'Dashboard', icon: <FaTachometerAlt />, path: '/dashboard' },
-    { name: 'Soil Health', icon: <FaSeedling />, path: '/dashboard/soil-health' },
-    { name: 'Crop Recommendation', icon: <FaLeaf />, path: '/dashboard/crop-recommendation' },
-    { name: 'Smart Irrigation', icon: <FaTint />, path: '/dashboard/irrigation' },
-    { name: 'Weather Forecast', icon: <FaCloudSun />, path: '/dashboard/weather' },
-    { name: 'Disease Detection', icon: <FaBug />, path: '/dashboard/disease-detection' },
-    { name: 'Market Finder', icon: <FaStore />, path: '/dashboard/market' },
-    { name: 'Crop Calendar', icon: <FaCalendarAlt />, path: '/dashboard/calendar' },
-  ];
 
   const handleLogout = () => {
     logout();
@@ -47,9 +37,7 @@ function Sidebar() {
               key={item.path}
               to={item.path}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition ${
-                isActive
-                  ? 'bg-green-700 text-white'
-                  : 'hover:bg-green-800 text-green-200'
+                isActive ? 'bg-green-700 text-white' : 'hover:bg-green-800 text-green-200'
               }`}
             >
               {item.icon}
@@ -68,10 +56,10 @@ function Sidebar() {
 
       <button
         onClick={handleLogout}
-        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-green-200 hover:bg-green-800 mt-4"
+        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-green-200 hover:bg-green-800"
       >
         <FaSignOutAlt />
-        Logout
+        {t('sidebar.logout')}
       </button>
     </aside>
   );

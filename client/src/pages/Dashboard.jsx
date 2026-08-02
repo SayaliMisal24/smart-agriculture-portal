@@ -1,83 +1,108 @@
-import Sidebar from '../components/Sidebar';
-import { useAuth } from '../context/AuthContext';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FaSun, FaCloud, FaCloudRain } from 'react-icons/fa';
+import Sidebar from '../components/Sidebar';
+import api from '../utils/api';
+import { useAuth } from '../context/AuthContext';
+import { FaTractor, FaPlus, FaMapMarkerAlt } from 'react-icons/fa';
 
 function Dashboard() {
-  const { user } = useAuth();
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const [farms, setFarms] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const stats = [
-    { label: t('dashboard.soilHealth'), value: 'Good', color: 'bg-green-100 text-green-800' },
-    { label: t('dashboard.todaysWeather'), value: '28°C', color: 'bg-blue-100 text-blue-800' },
-    { label: t('dashboard.marketPrice'), value: '₹2,350/quintal', color: 'bg-purple-100 text-purple-800' },
-    { label: t('dashboard.predictedYield'), value: '32 Quintal/acre', color: 'bg-orange-100 text-orange-800' },
-  ];
+  useEffect(() => {
+    fetchFarms();
+  }, []);
 
-  const forecast = [
-    { day: 'Today', temp: '28°C', icon: <FaSun className="text-yellow-500" /> },
-    { day: 'Tomorrow', temp: '27°C', icon: <FaCloud className="text-gray-400" /> },
-    { day: 'Wed', temp: '26°C', icon: <FaCloudRain className="text-blue-400" /> },
-    { day: 'Thu', temp: '25°C', icon: <FaCloud className="text-gray-400" /> },
-    { day: 'Fri', temp: '29°C', icon: <FaSun className="text-yellow-500" /> },
-  ];
+  const fetchFarms = async () => {
+    try {
+      const res = await api.get('/farms', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      setFarms(res.data.farms);
+    } catch (err) {
+      console.error('Failed to fetch farms', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex">
       <Sidebar />
-
       <main className="flex-1 bg-gray-50 min-h-screen p-6">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-          <p className="text-gray-500">{t('dashboard.welcome')}, {user?.name || 'Farmer'} 👋</p>
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-gray-800">{t('dashboard.welcome')}, {user?.name || 'Farmer'} 👋</h1>
+          <p className="text-gray-500 mt-1">{t('dashboard.tagline')}</p>
         </div>
 
-        {/* Stat Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {stats.map((s, i) => (
-            <div key={i} className={`rounded-xl p-4 ${s.color}`}>
-              <p className="text-sm font-medium">{s.label}</p>
-              <p className="text-xl font-bold mt-1">{s.value}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Weather Forecast */}
-        <div className="bg-white rounded-xl shadow p-5 mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="font-semibold text-gray-800">{t('dashboard.weatherForecast')}</h2>
-            <span className="text-sm text-green-600 cursor-pointer">{t('dashboard.viewDetails')}</span>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div className="bg-white rounded-xl shadow p-5">
+            <p className="text-sm text-gray-500">{t('dashboard.totalFarms')}</p>
+            <p className="text-3xl font-bold text-green-700 mt-1">{farms.length}</p>
           </div>
-          <div className="grid grid-cols-5 gap-4 text-center">
-            {forecast.map((f, i) => (
-              <div key={i}>
-                <p className="text-sm text-gray-500 mb-1">{f.day}</p>
-                <div className="text-2xl flex justify-center mb-1">{f.icon}</div>
-                <p className="text-sm font-medium">{f.temp}</p>
-              </div>
+          <div className="bg-white rounded-xl shadow p-5">
+            <p className="text-sm text-gray-500">{t('dashboard.accountType')}</p>
+            <p className="text-xl font-bold text-gray-800 mt-1 capitalize">{user?.role}</p>
+          </div>
+          <div className="bg-white rounded-xl shadow p-5">
+            <p className="text-sm text-gray-500">{t('dashboard.memberSince')}</p>
+            <p className="text-xl font-bold text-gray-800 mt-1">
+              {user?.createdAt ? new Date(user.createdAt).getFullYear() : '—'}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-gray-800">{t('dashboard.yourFarms')}</h2>
+          <Link
+            to="/dashboard/farms"
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold"
+          >
+            <FaPlus size={12} /> {t('farms.addFarm')}
+          </Link>
+        </div>
+
+        {loading ? (
+          <p className="text-gray-500">{t('dashboard.loading')}</p>
+        ) : farms.length === 0 ? (
+          <div className="bg-white rounded-xl shadow p-8 text-center max-w-md">
+            <FaTractor className="text-green-600 mx-auto mb-3" size={40} />
+            <p className="text-gray-600 mb-4">{t('farms.noFarms')}</p>
+            <Link
+              to="/dashboard/farms"
+              className="inline-block bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-semibold"
+            >
+              {t('farms.addFarm')}
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {farms.slice(0, 6).map((farm) => (
+              <Link
+                key={farm._id}
+                to={`/dashboard/farms/${farm._id}`}
+                className="bg-white rounded-xl shadow p-5 hover:shadow-lg transition"
+              >
+                <FaTractor className="text-green-600 mb-2" size={22} />
+                <h3 className="font-semibold text-gray-800">{farm.name}</h3>
+                <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                  <FaMapMarkerAlt size={12} /> {farm.location}
+                </p>
+              </Link>
             ))}
           </div>
-        </div>
+        )}
 
-        {/* Bottom Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-xl shadow p-5">
-            <h2 className="font-semibold text-gray-800 mb-3">{t('dashboard.recentRecommendations')}</h2>
-            <ul className="text-sm text-gray-600 space-y-2">
-              <li>• Apply organic fertilizer</li>
-              <li>• Good time for irrigation</li>
-              <li>• Use recommended pesticide for better yield</li>
-            </ul>
+        {farms.length > 6 && (
+          <div className="text-center mt-6">
+            <Link to="/dashboard/farms" className="text-green-700 font-medium hover:underline">
+              {t('dashboard.viewAllFarms')} →
+            </Link>
           </div>
-          <div className="bg-white rounded-xl shadow p-5">
-            <h2 className="font-semibold text-gray-800 mb-3">{t('dashboard.marketInsights')}</h2>
-            <ul className="text-sm text-gray-600 space-y-2">
-              <li className="flex justify-between"><span>Tomato</span> <span>₹2,100/quintal <span className="text-green-600">▲2.5%</span></span></li>
-              <li className="flex justify-between"><span>Wheat</span> <span>₹2,350/quintal <span className="text-green-600">▲2.1%</span></span></li>
-              <li className="flex justify-between"><span>Onion</span> <span>₹1,800/quintal <span className="text-red-600">▼1.2%</span></span></li>
-            </ul>
-          </div>
-        </div>
+        )}
       </main>
     </div>
   );

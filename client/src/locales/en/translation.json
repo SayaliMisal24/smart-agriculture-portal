@@ -25,14 +25,13 @@
   },
   "dashboard": {
     "welcome": "Welcome back",
-    "soilHealth": "Soil Health",
-    "todaysWeather": "Today's Weather",
-    "marketPrice": "Market Price (Avg)",
-    "predictedYield": "Predicted Yield",
-    "weatherForecast": "Weather Forecast",
-    "viewDetails": "View Details",
-    "recentRecommendations": "Recent Recommendations",
-    "marketInsights": "Market Insights"
+    "tagline": "Here's an overview of your farming activity.",
+    "totalFarms": "Total Farms",
+    "accountType": "Account Type",
+    "memberSince": "Member Since",
+    "yourFarms": "Your Farms",
+    "loading": "Loading your farms...",
+    "viewAllFarms": "View all farms"
   },
   "profile": {
     "myProfile": "My Profile",
@@ -199,5 +198,16 @@
     "nextIrrigation": "Next Irrigation In",
     "days": "days",
     "currentConditions": "Current Conditions"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "myFarms": "My Farms",
+    "logout": "Logout"
+  },
+  "postLogin": {
+    "welcome": "Welcome back",
+    "subtitle": "Where would you like to go?",
+    "welcome2": "Home",
+    "goToDashboard": "Go to Dashboard"
   }
 }

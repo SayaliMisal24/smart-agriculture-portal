@@ -25,14 +25,13 @@
   },
   "dashboard": {
     "welcome": "पुन्हा स्वागत आहे",
-    "soilHealth": "मातीचे आरोग्य",
-    "todaysWeather": "आजचे हवामान",
-    "marketPrice": "बाजारभाव (सरासरी)",
-    "predictedYield": "अपेक्षित उत्पादन",
-    "weatherForecast": "हवामान अंदाज",
-    "viewDetails": "तपशील पहा",
-    "recentRecommendations": "अलीकडील शिफारसी",
-    "marketInsights": "बाजार माहिती"
+    "tagline": "आपल्या शेती क्रियाकलापांचा आढावा येथे आहे.",
+    "totalFarms": "एकूण शेते",
+    "accountType": "खाते प्रकार",
+    "memberSince": "सदस्य असल्यापासून",
+    "yourFarms": "आपली शेते",
+    "loading": "आपली शेते लोड होत आहेत...",
+    "viewAllFarms": "सर्व शेते पहा"
   },
   "profile": {
     "myProfile": "माझी प्रोफाइल",
@@ -199,5 +198,16 @@
     "nextIrrigation": "पुढील सिंचन",
     "days": "दिवसांत",
     "currentConditions": "सध्याची परिस्थिती"
+  },
+  "sidebar": {
+    "dashboard": "डॅशबोर्ड",
+    "myFarms": "माझी शेते",
+    "logout": "लॉगआउट"
+  },
+  "postLogin": {
+    "welcome": "पुन्हा स्वागत आहे",
+    "subtitle": "आपल्याला कुठे जायचे आहे?",
+    "welcome2": "मुख्यपृष्ठ",
+    "goToDashboard": "डॅशबोर्डवर जा"
   }
 }

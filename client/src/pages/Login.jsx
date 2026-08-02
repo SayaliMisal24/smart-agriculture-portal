@@ -25,7 +25,7 @@ function Login() {
     try {
       const res = await api.post('/auth/login', formData);
       login(res.data.user, res.data.token);
-      navigate('/dashboard');
+      navigate('/');
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid email or password');
     } finally {
