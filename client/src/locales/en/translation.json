@@ -29,7 +29,8 @@
       "tip5": "Test your soil every season to track changes in health over time.",
       "tip6": "Mulching helps retain soil moisture during hot, dry weather.",
       "tip7": "Store harvested grain in a dry, well-ventilated place to avoid spoilage."
-    }
+    },
+    "goToFarms": "Go to My Farms"
   },
   "auth": {
     "fullName": "Full Name",

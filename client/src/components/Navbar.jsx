@@ -53,6 +53,7 @@ function Navbar() {
 
             {token ? (
               <>
+                <Link to="/dashboard/farms" className="hover:text-green-600">{t('sidebar.myFarms')}</Link>
                 <Link to="/dashboard" className="hover:text-green-600">{t('nav.dashboard')}</Link>
                 <div className="relative" ref={profileRef}>
                   <button onClick={() => setProfileMenuOpen(!profileMenuOpen)} className="flex items-center">
@@ -113,6 +114,7 @@ function Navbar() {
             </button>
             {token ? (
               <>
+                <Link to="/dashboard/farms" onClick={() => setMenuOpen(false)}>{t('sidebar.myFarms')}</Link>
                 <Link to="/dashboard" onClick={() => setMenuOpen(false)}>{t('nav.dashboard')}</Link>
                 <Link to="/profile" onClick={() => setMenuOpen(false)}>{t('profile.myProfile')}</Link>
                 <button onClick={handleLogout} className="text-left text-red-600">{t('sidebar.logout')}</button>

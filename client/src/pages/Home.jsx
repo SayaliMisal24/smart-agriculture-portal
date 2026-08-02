@@ -3,10 +3,12 @@ import api from '../utils/api';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { FaCloudSun, FaChartLine, FaLightbulb, FaQuoteLeft } from 'react-icons/fa';
 
 function Home() {
   const { t } = useTranslation();
+  const { token } = useAuth();
   const [liveWeather, setLiveWeather] = useState(null);
 
   useEffect(() => {
@@ -97,10 +99,10 @@ function Home() {
           </p>
           <div className="mt-6 flex gap-4">
             <Link
-              to="/signup"
+              to={token ? '/dashboard/farms' : '/signup'}
               className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold"
             >
-              {t('home.getStarted')}
+              {token ? t('home.goToFarms') : t('home.getStarted')}
             </Link>
             <Link
               to="/about"
