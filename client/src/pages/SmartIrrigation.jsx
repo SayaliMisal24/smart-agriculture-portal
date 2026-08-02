@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Sidebar from '../components/Sidebar';
+import Navbar from '../components/Navbar';
 import api from '../utils/api';
 import { FaTint, FaCalendarCheck } from 'react-icons/fa';
 
@@ -40,9 +40,9 @@ function SmartIrrigation() {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="flex-1 bg-gray-50 min-h-screen p-6">
+    <div>
+      <Navbar />
+      <main className="bg-gray-50 min-h-screen p-6">
         <Link to={`/dashboard/farms/${farmId}`} className="text-sm text-green-700 hover:underline">
           ← {t('farmDetail.backToFarms')}
         </Link>

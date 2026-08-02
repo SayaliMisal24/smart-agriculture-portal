@@ -13,13 +13,41 @@ function Home() {
     fetchDefaultWeather();
   }, []);
 
-  const fetchDefaultWeather = async () => {
+  const fetchDefaultWeather = () => {
+    if (!navigator.geolocation) {
+      // Browser doesn't support geolocation at all - fall back to a default city
+      fetchWeatherByCity('Nagpur');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        fetchWeatherByCoords(latitude, longitude);
+      },
+      (error) => {
+        // User denied permission or location failed - fall back to a default city
+        console.error('Geolocation failed or denied', error);
+        fetchWeatherByCity('Nagpur');
+      }
+    );
+  };
+
+  const fetchWeatherByCoords = async (lat, lon) => {
     try {
-      // Using a default city for the public homepage snapshot (no login required)
-      const res = await api.get('/weather/public?city=Nagpur');
+      const res = await api.get(`/weather/public?lat=${lat}&lon=${lon}`);
       setLiveWeather(res.data.weather);
     } catch (err) {
-      console.error('Could not load homepage weather snapshot', err);
+      console.error('Could not load weather for detected location', err);
+    }
+  };
+
+  const fetchWeatherByCity = async (city) => {
+    try {
+      const res = await api.get(`/weather/public?city=${city}`);
+      setLiveWeather(res.data.weather);
+    } catch (err) {
+      console.error('Could not load fallback weather', err);
     }
   };
   const tipKeys = ['tip1', 'tip2', 'tip3', 'tip4', 'tip5', 'tip6', 'tip7'];
@@ -49,7 +77,7 @@ function Home() {
       desc: t('home.card4Desc'),
     },
   ];
-
+  
   return (
     <div>
       {/* HERO SECTION */}

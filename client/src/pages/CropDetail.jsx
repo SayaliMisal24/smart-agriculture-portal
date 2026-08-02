@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Sidebar from '../components/Sidebar';
+import Navbar from '../components/Navbar';
 import { FaLeaf, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 function CropDetail() {
@@ -14,9 +14,9 @@ function CropDetail() {
 
   if (!crop) {
     return (
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 bg-gray-50 min-h-screen p-6">
+      <div>
+      <Navbar />
+      <main className="bg-gray-50 min-h-screen p-6">
           <p className="text-gray-600">
             No crop data found. Please{' '}
             <Link to={`/dashboard/farms/${farmId}/crop-recommendation`}>
@@ -36,9 +36,9 @@ function CropDetail() {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="flex-1 bg-gray-50 min-h-screen p-6">
+    <div>
+      <Navbar />
+      <main className="bg-gray-50 min-h-screen p-6">
         <Link to={`/dashboard/farms/${farmId}/crop-recommendation`}>
           ← {t('crop.backToAll')}
         </Link>

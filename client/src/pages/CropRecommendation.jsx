@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
-import Sidebar from '../components/Sidebar';
+import Navbar from '../components/Navbar';
 import api from '../utils/api';
 import { FaLeaf } from 'react-icons/fa';
 
@@ -65,9 +65,9 @@ function CropRecommendation() {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="flex-1 bg-gray-50 min-h-screen p-6">
+    <div>
+      <Navbar />
+      <main className="bg-gray-50 min-h-screen p-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-2">{t('crop.title')}</h1>
         <p className="text-gray-500 mb-6">{t('crop.subtitle')}</p>
 

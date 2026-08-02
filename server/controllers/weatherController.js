@@ -45,14 +45,21 @@ const getWeather = async (req, res) => {
 // Public version - no login required, used for the homepage snapshot card
 const getPublicWeather = async (req, res) => {
   try {
-    const { city } = req.query;
+    const { city, lat, lon } = req.query;
 
-    if (!city) {
-      return res.status(400).json({ message: 'City is required' });
+    if (!city && (!lat || !lon)) {
+      return res.status(400).json({ message: 'City or coordinates are required' });
     }
 
     const apiKey = process.env.OPENWEATHER_API_KEY?.trim();
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+
+    // Build the OpenWeatherMap URL differently depending on what we received
+    let url;
+    if (lat && lon) {
+      url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+    } else {
+      url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+    }
 
     const response = await axios.get(url);
     const data = response.data;

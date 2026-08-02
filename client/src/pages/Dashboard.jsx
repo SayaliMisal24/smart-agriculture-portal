@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Sidebar from '../components/Sidebar';
+import Navbar from '../components/Navbar';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { FaTractor, FaPlus, FaMapMarkerAlt } from 'react-icons/fa';
@@ -30,9 +30,10 @@ function Dashboard() {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="flex-1 bg-gray-50 min-h-screen p-6">
+    <div>
+      <Navbar />
+
+      <main className="bg-gray-50 min-h-screen p-6">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-800">{t('dashboard.welcome')}, {user?.name || 'Farmer'} 👋</h1>
           <p className="text-gray-500 mt-1">{t('dashboard.tagline')}</p>

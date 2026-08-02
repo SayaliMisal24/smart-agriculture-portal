@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import Sidebar from '../components/Sidebar';
+import Navbar from '../components/Navbar';
 import api from '../utils/api';
 import { FaTractor, FaMapMarkerAlt, FaPlus, FaTrash } from 'react-icons/fa';
 
@@ -69,9 +69,9 @@ function MyFarms() {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="flex-1 bg-gray-50 min-h-screen p-6">
+    <div>
+      <Navbar />
+      <main className="bg-gray-50 min-h-screen p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">{t('farms.title')}</h1>

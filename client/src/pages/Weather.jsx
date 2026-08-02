@@ -45,9 +45,9 @@ function Weather() {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="flex-1 bg-gray-50 min-h-screen p-6">
+   <div>
+      <Navbar />
+      <main className="bg-gray-50 min-h-screen p-6">
         <Link to={`/dashboard/farms/${farmId}`} className="text-sm text-green-700 hover:underline">
           ← {t('farmDetail.backToFarms')}
         </Link>

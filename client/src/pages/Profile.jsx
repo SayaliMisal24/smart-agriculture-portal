@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Sidebar from '../components/Sidebar';
+import Navbar from '../components/Navbar';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { FaUserCircle, FaCamera, FaLock, FaEnvelope, FaUserTag, FaEdit } from 'react-icons/fa';
@@ -92,9 +92,9 @@ function Profile() {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="flex-1 bg-gray-50 min-h-screen p-6">
+    <div>
+      <Navbar />
+      <main className="bg-gray-50 min-h-screen p-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">{t('profile.myProfile')}</h1>
 
         {msg.text && (
