@@ -1,43 +1,55 @@
-// Simple rule-based irrigation recommendation
-function calculateIrrigation({ soilMoisture, weatherCondition, temperature }) {
-  let recommendation = '';
-  let waterAmount = '';
+// Calculates irrigation advice using codes/keys instead of hardcoded English sentences,
+// so the frontend can translate them into any language
+function calculateIrrigation({ soilMoisture, weatherCondition, temperature, lastIrrigationDate, rainExpectedSoon }) {
+  let recommendationKey = '';
+  let waterAmountKey = '';
   let nextIrrigationDays = 0;
 
-  const isRaining = weatherCondition === 'Rain' || weatherCondition === 'Drizzle' || weatherCondition === 'Thunderstorm';
+  const isRainingNow = weatherCondition === 'Rain' || weatherCondition === 'Drizzle' || weatherCondition === 'Thunderstorm';
 
-  if (isRaining) {
-    recommendation = 'Skip irrigation today — rain is expected/occurring.';
-    waterAmount = 'None needed';
+  if (isRainingNow) {
+    recommendationKey = 'skipRainNow';
+    waterAmountKey = 'none';
     nextIrrigationDays = 3;
+  } else if (rainExpectedSoon && soilMoisture !== 'dry_cracked') {
+    recommendationKey = 'skipRainSoon';
+    waterAmountKey = 'noneRainExpected';
+    nextIrrigationDays = 5;
   } else if (soilMoisture === 'waterlogged') {
-    recommendation = 'Soil is already waterlogged. Do not irrigate.';
-    waterAmount = 'None needed';
+    recommendationKey = 'skipWaterlogged';
+    waterAmountKey = 'none';
     nextIrrigationDays = 4;
   } else if (soilMoisture === 'dry_cracked') {
-    if (temperature > 32) {
-      recommendation = 'Soil is dry and temperature is high. Irrigate today, preferably early morning or evening.';
-      waterAmount = 'Heavy (25-30mm)';
+    if (rainExpectedSoon) {
+      recommendationKey = 'irrigateDryRainSoon';
+      waterAmountKey = 'light1015';
+      nextIrrigationDays = 2;
+    } else if (temperature > 32) {
+      recommendationKey = 'irrigateDryHot';
+      waterAmountKey = 'heavy2530';
       nextIrrigationDays = 2;
     } else {
-      recommendation = 'Soil is dry. Irrigate today.';
-      waterAmount = 'Moderate (15-20mm)';
+      recommendationKey = 'irrigateDry';
+      waterAmountKey = 'moderate1520';
       nextIrrigationDays = 3;
     }
   } else {
-    // slightly_moist
     if (temperature > 32) {
-      recommendation = 'Soil moisture is okay, but high temperature increases evaporation. Light irrigation recommended.';
-      waterAmount = 'Light (10mm)';
+      recommendationKey = 'irrigateHot';
+      waterAmountKey = 'light10';
       nextIrrigationDays = 3;
     } else {
-      recommendation = 'Soil moisture is adequate. No irrigation needed today.';
-      waterAmount = 'None needed';
+      recommendationKey = 'adequate';
+      waterAmountKey = 'none';
       nextIrrigationDays = 4;
     }
   }
 
-  return { recommendation, waterAmount, nextIrrigationDays };
+  const baseDate = lastIrrigationDate ? new Date(lastIrrigationDate) : new Date();
+  const nextDate = new Date(baseDate);
+  nextDate.setDate(nextDate.getDate() + nextIrrigationDays);
+
+  return { recommendationKey, waterAmountKey, nextIrrigationDays, nextIrrigationDate: nextDate };
 }
 
 module.exports = { calculateIrrigation };

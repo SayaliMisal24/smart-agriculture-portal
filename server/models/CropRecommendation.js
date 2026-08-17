@@ -10,7 +10,7 @@ const cropRecommendationSchema = new mongoose.Schema(
     recommendedCrops: [
       { name: String, expectedYield: String, duration: String, waterNeed: String },
     ],
-    selectedCrop: { type: String, default: null },
+    selectedCrops: [{ type: String }], // now an array too
   },
   { timestamps: true }
 );

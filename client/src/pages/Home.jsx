@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FaCloudSun, FaChartLine, FaLightbulb, FaQuoteLeft } from 'react-icons/fa';
-
+import { getTipKeyFromWeather } from '../utils/tipHelper';
 function Home() {
   const { t } = useTranslation();
   const { token } = useAuth();
@@ -52,9 +52,7 @@ function Home() {
       console.error('Could not load fallback weather', err);
     }
   };
-  const tipKeys = ['tip1', 'tip2', 'tip3', 'tip4', 'tip5', 'tip6', 'tip7'];
-  const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-  const todaysTipKey = tipKeys[dayOfYear % tipKeys.length];
+  const todaysTipKey = getTipKeyFromWeather(liveWeather);
  const features = [
     {
       icon: <FaCloudSun className="text-green-600" size={28} />,
@@ -62,21 +60,25 @@ function Home() {
       desc: liveWeather
         ? `${liveWeather.city}: ${liveWeather.temperature}°C, ${liveWeather.description}`
         : t('home.card1Desc'),
+      link: '/weather-detail',
     },
     {
       icon: <FaLightbulb className="text-green-600" size={28} />,
       title: t('home.card2Title'),
       desc: t(`home.tips.${todaysTipKey}`),
+      link: '/tip-detail',
     },
     {
       icon: <FaChartLine className="text-green-600" size={28} />,
       title: t('home.card3Title'),
       desc: t('home.card3Desc'),
+      link: '/market-trends-detail',
     },
     {
       icon: <FaQuoteLeft className="text-green-600" size={28} />,
       title: t('home.card4Title'),
       desc: t('home.card4Desc'),
+      link: '/success-story-detail',
     },
   ];
   
@@ -105,7 +107,7 @@ function Home() {
               {token ? t('home.goToFarms') : t('home.getStarted')}
             </Link>
             <Link
-              to="/about"
+              to="/features"
               className="bg-white/90 hover:bg-white text-green-700 px-6 py-3 rounded-lg font-semibold"
             >
               {t('home.exploreFeatures')}
@@ -132,11 +134,16 @@ function Home() {
                 visible: { opacity: 1, y: 0 },
               }}
               transition={{ duration: 0.5 }}
-              className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition"
             >
-              <div className="mb-3">{f.icon}</div>
-              <h3 className="font-semibold text-gray-800">{f.title}</h3>
-              <p className="text-sm text-gray-500 mt-1">{f.desc}</p>
+              <Link
+                to={f.link}
+                className="block bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition cursor-pointer"
+              >
+                <div className="mb-3">{f.icon}</div>
+                <h3 className="font-semibold text-gray-800">{f.title}</h3>
+                <p className="text-sm text-gray-500 mt-1">{f.desc}</p>
+                <p className="text-xs text-green-600 mt-2 font-medium">{t('home.viewDetails')} →</p>
+              </Link>
             </motion.div>
           ))}
         </motion.div>

@@ -16,6 +16,12 @@ import CropRecommendation from './pages/CropRecommendation';
 import CropDetail from './pages/CropDetail';
 import Weather from './pages/Weather';
 import SmartIrrigation from './pages/SmartIrrigation';
+import Features from './pages/Features';
+import CropCalendar from './pages/CropCalendar';
+import WeatherDetail from './pages/WeatherDetail';
+import TipDetail from './pages/TipDetail';
+import MarketTrendsDetail from './pages/MarketTrendsDetail';
+import SuccessStoryDetail from './pages/SuccessStoryDetail';
 function Layout() {
   const location = useLocation();
   const hideLayout = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile');
@@ -28,6 +34,10 @@ function Layout() {
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/tip-detail" element={<TipDetail />} />
+        <Route path="/market-trends-detail" element={<MarketTrendsDetail />} />
+        <Route path="/success-story-detail" element={<SuccessStoryDetail />} />
+        <Route path="/weather-detail" element={<WeatherDetail />} />
         <Route
           path="/dashboard"
           element={
@@ -44,11 +54,20 @@ function Layout() {
     </ProtectedRoute>
   }
 />
+<Route path="/features" element={<Features />} />
 <Route
   path="/dashboard/farms/:farmId/crop-recommendation"
   element={
     <ProtectedRoute>
       <CropRecommendation />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/dashboard/farms/:farmId/calendar"
+  element={
+    <ProtectedRoute>
+      <CropCalendar />
     </ProtectedRoute>
   }
 />
@@ -104,7 +123,7 @@ function Layout() {
       </Routes>
       {!hideLayout && <Footer />}
     </>
-    
+  
   );
 }
 

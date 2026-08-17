@@ -6,11 +6,13 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
+const marketRoutes = require('./routes/marketRoutes');
 const farmRoutes = require('./routes/farmRoutes');
 const soilRoutes = require('./routes/soilRoutes');
 const cropRoutes = require('./routes/cropRoutes');
 const weatherRoutes = require('./routes/weatherRoutes');
 const irrigationRoutes = require('./routes/irrigationRoutes');
+const calendarRoutes = require('./routes/calendarRoutes');
 // Create the Express app
 const app = express();
 
@@ -19,6 +21,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/user', userRoutes);
+app.use('/api/market', marketRoutes);
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected successfully'))
@@ -31,6 +34,7 @@ app.use('/api/soil', soilRoutes);
 app.use('/api/crop', cropRoutes);
 app.use('/api/weather', weatherRoutes);
 app.use('/api/irrigation', irrigationRoutes);
+app.use('/api/calendar', calendarRoutes);
 // A simple test route
 app.get('/', (req, res) => {
   res.json({ message: 'Smart Agriculture Portal API is running!' });

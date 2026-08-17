@@ -8,6 +8,21 @@
     "signup": "Sign Up",
     "logout": "Logout"
   },
+  "features": {
+    "title": "How Smart Agriculture Portal Works",
+    "subtitle": "For each farm you add, you'll go through these steps in order to get personalized, data-driven guidance for your crop.",
+    "desc1": "Answer simple questions about your soil to get a health score and improvement suggestions.",
+    "desc2": "See a list of crops suited to your season, soil, and water availability, and choose the one you want to grow.",
+    "desc3": "Check live weather conditions for your farm's location.",
+    "desc4": "Get irrigation advice based on your soil moisture and current weather.",
+    "desc5": "See a month-by-month activity plan for your selected crop, from sowing to harvest.",
+    "desc6": "Upload a photo of your crop to detect diseases and get treatment suggestions.",
+    "desc7": "Get fertilizer type and quantity recommendations for your selected crop.",
+    "desc8": "Get pesticide recommendations and safety guidance if pests or disease are detected.",
+    "desc9": "Estimate your expected yield and potential income for this season.",
+    "desc10": "Find nearby markets and current prices for your crop.",
+    "desc11": "See predicted future price trends to help decide the best time to sell."
+  },
   "home": {
     "heroTitle": "Smart Solutions for Modern Farming",
     "heroSubtitle": "Get real-time insights, expert recommendations, and smart tools to improve your farming.",
@@ -22,15 +37,16 @@
     "card4Title": "Farmer Success Story",
     "card4Desc": "\"This portal helped me plan irrigation better and save water.\" — A. Patil, Nashik",
     "tips": {
-      "tip1": "After recent rain, check your crops for early signs of pest activity.",
-      "tip2": "Early morning or evening is the best time to irrigate to reduce water loss.",
-      "tip3": "Rotate crops each season to keep your soil healthy and reduce disease risk.",
-      "tip4": "Remove weeds early — they compete with your crops for nutrients and water.",
-      "tip5": "Test your soil every season to track changes in health over time.",
-      "tip6": "Mulching helps retain soil moisture during hot, dry weather.",
-      "tip7": "Store harvested grain in a dry, well-ventilated place to avoid spoilage."
+      "rainy": "Rain is active in your area — hold off on spraying pesticides, as it will wash off before working.",
+      "hot": "Temperatures are high today — irrigate early morning or evening to reduce water loss from evaporation.",
+      "cloudy": "Cloudy skies today are a good time to check crops for early signs of pest activity without sun stress.",
+      "clear": "Clear skies today are ideal for fieldwork like weeding, harvesting, or applying fertilizer.",
+      "cold": "Cooler temperatures today - a good time to check for frost risk on sensitive young crops.",
+      "windy": "Windy conditions today - avoid spraying pesticides or fertilizer, as wind can cause uneven coverage.",
+      "default": "Check your crops today for early signs of pest activity, especially after any recent rain."
     },
-    "goToFarms": "Go to My Farms"
+    "goToFarms": "Go to My Farms",
+    "viewDetails": "View Details"
   },
   "auth": {
     "fullName": "Full Name",
@@ -40,6 +56,29 @@
     "loggingIn": "Logging in...",
     "alreadyHaveAccount": "Already have an account?",
     "dontHaveAccount": "Don't have an account?"
+  },
+  "calendar": {
+    "title": "Crop Calendar",
+    "subtitle": "See a month-by-month activity plan for your crop, from sowing to harvest.",
+    "chooseCrop": "Which crop is this calendar for?",
+    "chooseSowingMonth": "When did (or will) you sow this crop?",
+    "generateButton": "Generate Calendar",
+    "generating": "Generating...",
+    "selectBoth": "Please choose a crop and a sowing month.",
+    "noCropsYet": "You haven't confirmed any crops yet. Please complete Crop Recommendation first.",
+    "sowingMonthLabel": "Sowing Month",
+    "months": {
+      "january": "January", "february": "February", "march": "March", "april": "April",
+      "may": "May", "june": "June", "july": "July", "august": "August",
+      "september": "September", "october": "October", "november": "November", "december": "December"
+    },
+    "activities": {
+      "sowing": "Sowing and land preparation",
+      "firstFertilizer": "First fertilizer application and irrigation check",
+      "harvesting": "Harvesting",
+      "pestMonitoring": "Pest and disease monitoring, second fertilizer if needed",
+      "regularCare": "Regular irrigation and weeding"
+    }
   },
   "dashboard": {
     "welcome": "Welcome back",
@@ -139,6 +178,7 @@
     "duration": "Growing Duration",
     "waterNeed": "Water Requirement",
     "previous": "Previous",
+    "yourSelections": "Your Selections",
     "next": "Next",
     "seasons": {
       "kharif": "Kharif (Monsoon)",
@@ -165,8 +205,17 @@
       "Gram (Chana)": "Gram (Chana)",
       "Mustard": "Mustard",
       "Watermelon": "Watermelon",
-      "Cucumber": "Cucumber"
-    }
+      "Cucumber": "Cucumber",
+      "Onion": "Onion",
+      "Tomato": "Tomato"
+    },
+    "selectMultipleHint": "Tap on one or more crops you'd like to grow, then confirm your selection.",
+    "confirmSelection": "Confirm Selection",
+    "confirming": "Confirming...",
+    "selectAtLeastOne": "Please select at least one crop before confirming.",
+    "lockWarning": "Your selection cannot be changed once confirmed.",
+    "confirmedCrops": "Your Confirmed Crops",
+    "selectionConfirmed": "Selection Confirmed"
   },
   "farms": {
     "title": "My Farms",
@@ -206,17 +255,59 @@
     "loading": "Loading weather...",
     "error": "Could not fetch weather data.",
     "humidity": "Humidity",
-    "wind": "Wind"
+    "wind": "Wind",
+    "nextStepTitle": "What's Next?",
+    "nextStepDesc": "This weather data, combined with your soil's moisture level, will be used to give you irrigation advice.",
+    "goToIrrigation": "Go to Smart Irrigation",
+    "searchPlaceholder": "Enter village or place name",
+    "checkWeather": "Check Weather",
+    "conditions": {
+      "Clear": "Clear",
+      "Clouds": "Cloudy",
+      "Rain": "Rain",
+      "Drizzle": "Drizzle",
+      "Thunderstorm": "Thunderstorm",
+      "Snow": "Snow",
+      "Mist": "Mist",
+      "Haze": "Haze"
+    }
   },
   "irrigation": {
     "title": "Smart Irrigation",
-    "subtitle": "Irrigation advice based on your soil and live weather",
-    "loading": "Calculating irrigation advice...",
-    "error": "Could not calculate irrigation advice.",
+    "loading": "Loading irrigation details...",
+    "error": "Something went wrong. Please try again.",
     "waterAmount": "Water Amount",
-    "nextIrrigation": "Next Irrigation In",
-    "days": "days",
-    "currentConditions": "Current Conditions"
+    "nextIrrigationDate": "Next Irrigation Date",
+    "currentConditions": "Current Conditions",
+    "lastIrrigated": "Last Irrigated",
+    "sowingDateTitle": "When did you sow this crop?",
+    "sowingDateDesc": "This helps us calculate your irrigation schedule accurately.",
+    "saveSowingDate": "Save Sowing Date",
+    "saving": "Saving...",
+    "logTitle": "Log an Irrigation",
+    "logButton": "Log This Date",
+    "logging": "Logging...",
+    "historyTitle": "Irrigation History",
+    "sowingDateLabel": "Sowing Date",
+    "checkAgainDate": "Check Again On",
+    "codes": {
+      "skipRainNow": "Skip irrigation today — rain is occurring right now.",
+      "skipRainSoon": "Rain is expected in the next 2-3 days. You can skip irrigation - the rainfall should replenish your soil moisture.",
+      "skipWaterlogged": "Soil is already waterlogged. Do not irrigate.",
+      "irrigateDryRainSoon": "Soil is dry, but rain is expected soon. Apply a light irrigation now to protect the crop until rain arrives.",
+      "irrigateDryHot": "Soil is dry and temperature is high, with no rain expected. Irrigate today, preferably early morning or evening.",
+      "irrigateDry": "Soil is dry with no rain expected. Irrigate today.",
+      "irrigateHot": "Soil moisture is okay, but high temperature increases evaporation. Light irrigation recommended.",
+      "adequate": "Soil moisture is adequate. No irrigation needed today."
+    },
+    "waterAmounts": {
+      "none": "None needed",
+      "noneRainExpected": "None needed (rain expected)",
+      "heavy2530": "Heavy (25-30mm)",
+      "moderate1520": "Moderate (15-20mm)",
+      "light1015": "Light (10-15mm)",
+      "light10": "Light (10mm)"
+    }
   },
   "sidebar": {
     "dashboard": "Dashboard",
@@ -244,5 +335,26 @@
     "viewOnly": "Completed - View Only",
     "loadingStatus": "Checking progress...",
     "continueToNext": "Continue to Next Step"
+  },
+  "weatherDetail": {
+    "title": "Live Weather & 5-Day Forecast",
+    "forecastTitle": "Upcoming Days",
+    "ctaText": "Want weather insights tied to your own farm's exact location?"
+  },
+  "marketDetail": {
+    "title": "Live Market Prices",
+    "subtitle": "Real mandi prices sourced from the Government of India's open data platform.",
+    "loading": "Loading live prices...",
+    "noData": "No price data found for this crop right now.",
+    "error": "Could not load market prices. Please try again.",
+    "disclaimer": "Data sourced from data.gov.in (Agmarknet). Prices are updated daily by government mandis and may vary.",
+    "ctaText": "Want to find the best market for your own crop?"
+  },
+  "tipDetail": {
+    "title": "Daily Farming Tips",
+    "todaysTip": "Today's Tip",
+    "moreTips": "More Tips",
+    "ctaText": "Want personalized advice based on your own farm's soil and crops?",
+    "liveTip": "Live Tip Based on Current Weather"
   }
 }

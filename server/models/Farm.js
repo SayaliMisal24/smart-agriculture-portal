@@ -6,8 +6,10 @@ const farmSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     location: { type: String, required: true, trim: true },
     sizeInAcres: { type: Number },
-    currentStep: { type: Number, default: 1 }, // which step is next to fill (1-11)
-    completedSteps: [{ type: Number }], // list of step numbers already completed/locked
+    currentStep: { type: Number, default: 1 },
+    completedSteps: [{ type: Number }],
+    selectedCrops: [{ type: String }],
+    sowingDate: { type: Date, default: null },
   },
   { timestamps: true }
 );
