@@ -1,6 +1,7 @@
 const axios = require('axios');
 
 // Public endpoint - fetches real, live mandi (market) prices from data.gov.in
+// Tries Maharashtra first, falls back to all-India if nothing found
 const getMarketPrices = async (req, res) => {
   try {
     const { commodity } = req.query;
@@ -12,10 +13,18 @@ const getMarketPrices = async (req, res) => {
     const apiKey = process.env.DATA_GOV_API_KEY?.trim();
     const resourceId = '9ef84268-d588-465a-a308-a864a43d0070';
 
-    const url = `https://api.data.gov.in/resource/${resourceId}?api-key=${apiKey}&format=json&limit=20&filters[commodity]=${encodeURIComponent(commodity)}&filters[state]=Maharashtra`;
+    const maharashtraUrl = `https://api.data.gov.in/resource/${resourceId}?api-key=${apiKey}&format=json&limit=20&filters[commodity]=${encodeURIComponent(commodity)}&filters[state]=Maharashtra`;
 
-    const response = await axios.get(url);
-    const records = response.data.records || [];
+    const maharashtraRes = await axios.get(maharashtraUrl);
+    let records = maharashtraRes.data.records || [];
+    let usedFallback = false;
+
+    if (records.length === 0) {
+      const allIndiaUrl = `https://api.data.gov.in/resource/${resourceId}?api-key=${apiKey}&format=json&limit=20&filters[commodity]=${encodeURIComponent(commodity)}`;
+      const allIndiaRes = await axios.get(allIndiaUrl);
+      records = allIndiaRes.data.records || [];
+      usedFallback = true;
+    }
 
     const prices = records.map((r) => ({
       market: r.market,
@@ -29,7 +38,7 @@ const getMarketPrices = async (req, res) => {
       date: r.arrival_date,
     }));
 
-    res.status(200).json({ prices });
+    res.status(200).json({ prices, usedFallback });
   } catch (error) {
     console.error(error.response?.data || error.message);
     res.status(500).json({ message: 'Could not fetch market price data.' });

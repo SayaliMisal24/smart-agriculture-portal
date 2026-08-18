@@ -6,8 +6,6 @@ import api from '../utils/api';
 import { getTipKeyFromWeather } from '../utils/tipHelper';
 import { FaLightbulb, FaMapMarkerAlt } from 'react-icons/fa';
 
-const allTipKeys = ['rainy', 'hot', 'cloudy', 'clear', 'cold', 'windy', 'default'];
-
 function TipDetail() {
   const { t } = useTranslation();
   const { token } = useAuth();
@@ -72,22 +70,10 @@ function TipDetail() {
             <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-8 mb-8">
               <FaLightbulb className="text-yellow-500 mb-4" size={36} />
               <p className="text-xs text-gray-500 mb-2">{t('tipDetail.liveTip')}</p>
-              <p className="text-lg font-medium text-gray-800">{t(`home.tips.${todaysTipKey}`)}</p>
+              <p className="text-base text-gray-800 leading-relaxed">{t(`home.tips.${todaysTipKey}Long`)}</p>
             </div>
           </>
         )}
-
-        <h2 className="text-lg font-bold text-gray-800 mb-4">{t('tipDetail.moreTips')}</h2>
-        <div className="space-y-3 mb-8">
-          {allTipKeys
-            .filter((k) => k !== todaysTipKey)
-            .map((key) => (
-              <div key={key} className="bg-white rounded-xl shadow p-4 flex items-start gap-3">
-                <FaLightbulb className="text-green-500 mt-1 shrink-0" size={16} />
-                <p className="text-sm text-gray-600">{t(`home.tips.${key}`)}</p>
-              </div>
-            ))}
-        </div>
 
         {!token && (
           <div className="bg-green-50 rounded-xl p-6 text-center">
