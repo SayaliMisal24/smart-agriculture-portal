@@ -348,7 +348,11 @@
     "noData": "No price data found for this crop right now.",
     "error": "Could not load market prices. Please try again.",
     "disclaimer": "Data sourced from data.gov.in (Agmarknet). Prices are updated daily by government mandis and may vary.",
-    "ctaText": "Want to find the best market for your own crop?"
+    "ctaText": "Want to find the best market for your own crop?",
+    "searchPlaceholder": "Search any crop (e.g. Maize, Groundnut)",
+    "searchButton": "Search",
+    "orChooseBelow": "Or choose a popular crop below:",
+    "showingResultsFor": "Showing results for"
   },
   "tipDetail": {
     "title": "Daily Farming Tips",

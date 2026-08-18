@@ -10,7 +10,7 @@ const commodities = ['Wheat', 'Rice', 'Onion', 'Tomato', 'Cotton', 'Soybean'];
 function MarketTrendsDetail() {
   const { t } = useTranslation();
   const { token } = useAuth();
-  const [selectedCommodity, setSelectedCommodity] = useState('Wheat');
+  const [searchInput, setSearchInput] = useState('');
   const [prices, setPrices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -31,7 +31,11 @@ function MarketTrendsDetail() {
       setLoading(false);
     }
   };
-
+    const handleSearch = (e) => {
+    e.preventDefault();
+    if (!searchInput.trim()) return;
+    setSelectedCommodity(searchInput.trim());
+  };
   return (
     <div>
       <div className="max-w-3xl mx-auto px-6 py-10">
@@ -42,7 +46,23 @@ function MarketTrendsDetail() {
           <h1 className="text-3xl font-bold text-gray-800">{t('marketDetail.title')}</h1>
         </div>
         <p className="text-gray-500 mb-6">{t('marketDetail.subtitle')}</p>
+                <form onSubmit={handleSearch} className="flex gap-2 mb-4 max-w-md">
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder={t('marketDetail.searchPlaceholder')}
+            className="flex-1 border border-gray-300 rounded-lg px-4 py-2"
+          />
+          <button
+            type="submit"
+            className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-semibold"
+          >
+            {t('marketDetail.searchButton')}
+          </button>
+        </form>
 
+        <p className="text-xs text-gray-400 mb-4">{t('marketDetail.orChooseBelow')}</p>
         <div className="flex flex-wrap gap-2 mb-6">
           {commodities.map((c) => (
             <button
@@ -65,7 +85,11 @@ function MarketTrendsDetail() {
         {!loading && !error && prices.length === 0 && (
           <p className="text-gray-500">{t('marketDetail.noData')}</p>
         )}
-
+                {!loading && !error && selectedCommodity && (
+          <p className="text-sm text-gray-500 mb-3">
+            {t('marketDetail.showingResultsFor')}: <span className="font-medium text-gray-700">{t(`crop.cropNames.${selectedCommodity}`, selectedCommodity)}</span>
+          </p>
+        )}
         {!loading && prices.length > 0 && (
           <div className="bg-white rounded-xl shadow divide-y">
             {prices.map((p, i) => (
