@@ -16,18 +16,19 @@ function MarketTrendsDetail() {
   const [usedFallback, setUsedFallback] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
+  const [contractNote, setContractNote] = useState(null);
   useEffect(() => {
     fetchPrices(selectedCommodity);
   }, [selectedCommodity]);
 
-  const fetchPrices = async (commodity) => {
+    const fetchPrices = async (commodity) => {
     setLoading(true);
     setError('');
     try {
       const res = await api.get(`/market/prices?commodity=${commodity}`);
       setPrices(res.data.prices);
       setUsedFallback(res.data.usedFallback);
+      setContractNote(res.data.contractNote);
     } catch (err) {
       setError(t('marketDetail.error'));
     } finally {
@@ -101,7 +102,13 @@ function MarketTrendsDetail() {
           </p>
         )}
 
-        {!loading && !error && prices.length === 0 && (
+                {!loading && !error && contractNote && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-gray-700">
+            {contractNote}
+          </div>
+        )}
+
+        {!loading && !error && !contractNote && prices.length === 0 && (
           <p className="text-gray-500">{t('marketDetail.noData')}</p>
         )}
 

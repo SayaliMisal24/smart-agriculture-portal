@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FaCloudSun, FaChartLine, FaLightbulb, FaQuoteLeft } from 'react-icons/fa';
-import { getTipKeyFromWeather } from '../utils/tipHelper';
 import { getTipKeyFromForecast } from '../utils/tipHelper';
 function Home() {
   const { t } = useTranslation();
@@ -57,7 +56,6 @@ function Home() {
       console.error('Could not load fallback weather', err);
     }
   };
-  const forecastTipKey = getTipKeyFromForecast(liveWeather);
   const features = [
         {
       icon: <FaLightbulb className="text-green-600" size={28} />,

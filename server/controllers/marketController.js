@@ -1,13 +1,26 @@
 const axios = require('axios');
 
-// Public endpoint - fetches real, live mandi (market) prices from data.gov.in
-// Tries Maharashtra first, falls back to all-India if nothing found
+// Crops that are typically sold via mill/factory contracts rather than daily mandis,
+// so they won't appear in the live mandi dataset — handled with an explanatory note instead
+const contractCrops = {
+  Sugarcane: {
+    reason: 'contract',
+    note: 'Sugarcane is usually sold directly to sugar mills under contract at a government-announced Fair and Remunerative Price (FRP), rather than through daily mandi auctions.',
+  },
+};
+
 const getMarketPrices = async (req, res) => {
   try {
     const { commodity } = req.query;
 
     if (!commodity) {
       return res.status(400).json({ message: 'Commodity (crop name) is required' });
+    }
+
+    // Check if this is a known contract-sold crop before hitting the mandi API at all
+    const contractInfo = contractCrops[commodity];
+    if (contractInfo) {
+      return res.status(200).json({ prices: [], usedFallback: false, contractNote: contractInfo.note });
     }
 
     const apiKey = process.env.DATA_GOV_API_KEY?.trim();
@@ -38,7 +51,7 @@ const getMarketPrices = async (req, res) => {
       date: r.arrival_date,
     }));
 
-    res.status(200).json({ prices, usedFallback });
+    res.status(200).json({ prices, usedFallback, contractNote: null });
   } catch (error) {
     console.error(error.response?.data || error.message);
     res.status(500).json({ message: 'Could not fetch market price data.' });
