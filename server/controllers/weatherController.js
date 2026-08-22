@@ -115,5 +115,29 @@ const getPublicForecast = async (req, res) => {
     res.status(500).json({ message: 'Could not fetch forecast data.' });
   }
 };
+// Returns the raw next-2-days forecast list (used for smart tip generation)
+const getRawForecast = async (req, res) => {
+  try {
+    const { city, lat, lon } = req.query;
 
-module.exports = { getWeather, getPublicWeather, getPublicForecast };
+    if (!city && (!lat || !lon)) {
+      return res.status(400).json({ message: 'City or coordinates are required' });
+    }
+
+    const apiKey = process.env.OPENWEATHER_API_KEY?.trim();
+    let url;
+    if (lat && lon) {
+      url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+    } else {
+      url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}`;
+    }
+
+    const response = await axios.get(url);
+    res.status(200).json({ list: response.data.list.slice(0, 16) });
+  } catch (error) {
+    console.error(error.response?.data || error.message);
+    res.status(500).json({ message: 'Could not fetch forecast data.' });
+  }
+};
+
+module.exports = { getWeather, getPublicWeather, getPublicForecast, getRawForecast };

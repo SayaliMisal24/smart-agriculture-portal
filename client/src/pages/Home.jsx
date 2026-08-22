@@ -6,11 +6,12 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FaCloudSun, FaChartLine, FaLightbulb, FaQuoteLeft } from 'react-icons/fa';
 import { getTipKeyFromWeather } from '../utils/tipHelper';
+import { getTipKeyFromForecast } from '../utils/tipHelper';
 function Home() {
   const { t } = useTranslation();
   const { token } = useAuth();
   const [liveWeather, setLiveWeather] = useState(null);
-
+  const [forecastTipKey, setForecastTipKey] = useState('default');
   useEffect(() => {
     fetchDefaultWeather();
   }, []);
@@ -35,12 +36,14 @@ function Home() {
     );
   };
 
-  const fetchWeatherByCoords = async (lat, lon) => {
+    const fetchWeatherByCoords = async (lat, lon) => {
     try {
       const res = await api.get(`/weather/public?lat=${lat}&lon=${lon}`);
       setLiveWeather(res.data.weather);
+      const forecastRes = await api.get(`/weather/public/raw-forecast?lat=${lat}&lon=${lon}`);
+      setForecastTipKey(getTipKeyFromForecast(forecastRes.data.list));
     } catch (err) {
-      console.error('Could not load weather for detected location', err);
+      console.error('Could not load homepage weather snapshot', err);
     }
   };
 
@@ -48,24 +51,24 @@ function Home() {
     try {
       const res = await api.get(`/weather/public?city=${city}`);
       setLiveWeather(res.data.weather);
+      const forecastRes = await api.get(`/weather/public/raw-forecast?city=${city}`);
+      setForecastTipKey(getTipKeyFromForecast(forecastRes.data.list));
     } catch (err) {
       console.error('Could not load fallback weather', err);
     }
   };
-  const todaysTipKey = getTipKeyFromWeather(liveWeather);
- const features = [
-    {
-      icon: <FaCloudSun className="text-green-600" size={28} />,
-      title: t('home.card1Title'),
-      desc: liveWeather
-        ? `${liveWeather.city}: ${liveWeather.temperature}°C, ${liveWeather.description}`
-        : t('home.card1Desc'),
-      link: '/weather-detail',
+  const forecastTipKey = getTipKeyFromForecast(liveWeather);
+  const features = [
+        {
+      icon: <FaLightbulb className="text-green-600" size={28} />,
+      title: t('home.card2Title'),
+      desc: t(`home.tips.${forecastTipKey}Short`),
+      link: '/tip-detail',
     },
     {
       icon: <FaLightbulb className="text-green-600" size={28} />,
       title: t('home.card2Title'),
-      desc: t(`home.tips.${todaysTipKey}`),
+      desc: t(`home.tips.${forecastTipKey}`),
       link: '/tip-detail',
     },
     {

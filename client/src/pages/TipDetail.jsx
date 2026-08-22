@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
-import { getTipKeyFromWeather } from '../utils/tipHelper';
+import { getTipKeyFromForecast } from '../utils/tipHelper';
 import { FaLightbulb, FaMapMarkerAlt } from 'react-icons/fa';
 
 function TipDetail() {
   const { t } = useTranslation();
   const { token } = useAuth();
   const [weather, setWeather] = useState(null);
+  const [tipKey, setTipKey] = useState('default');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,6 +32,8 @@ function TipDetail() {
     try {
       const res = await api.get(`/weather/public?lat=${lat}&lon=${lon}`);
       setWeather(res.data.weather);
+      const forecastRes = await api.get(`/weather/public/raw-forecast?lat=${lat}&lon=${lon}`);
+      setTipKey(getTipKeyFromForecast(forecastRes.data.list));
     } catch (err) {
       console.error(err);
     } finally {
@@ -42,14 +45,14 @@ function TipDetail() {
     try {
       const res = await api.get(`/weather/public?city=${city}`);
       setWeather(res.data.weather);
+      const forecastRes = await api.get(`/weather/public/raw-forecast?city=${city}`);
+      setTipKey(getTipKeyFromForecast(forecastRes.data.list));
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
-
-  const todaysTipKey = getTipKeyFromWeather(weather);
 
   return (
     <div>
@@ -64,13 +67,13 @@ function TipDetail() {
           <>
             {weather && (
               <p className="text-sm text-gray-500 flex items-center gap-1 mb-3">
-                <FaMapMarkerAlt size={12} /> {weather.city} — {weather.temperature}°C, {weather.description}
+                <FaMapMarkerAlt size={12} /> {weather.city} — {t('tipDetail.basedOnForecast')}
               </p>
             )}
             <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-8 mb-8">
               <FaLightbulb className="text-yellow-500 mb-4" size={36} />
               <p className="text-xs text-gray-500 mb-2">{t('tipDetail.liveTip')}</p>
-              <p className="text-base text-gray-800 leading-relaxed">{t(`home.tips.${todaysTipKey}Long`)}</p>
+              <p className="text-base text-gray-800 leading-relaxed">{t(`home.tips.${tipKey}Long`)}</p>
             </div>
           </>
         )}
