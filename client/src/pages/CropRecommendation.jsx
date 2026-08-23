@@ -174,10 +174,13 @@ function CropRecommendation() {
               .map((c, i) => (
                 <div key={i} className="bg-green-50 border border-green-200 rounded-xl p-5">
                   <FaCheckCircle className="text-green-600 mb-2" size={20} />
-                  <h3 className="font-semibold text-gray-800">{t(`crop.cropNames.${c.name}`, c.name)}</h3>
-                  <p className="text-sm text-gray-500 mt-2">{t('crop.expectedYield')}: {c.expectedYield}</p>
-                  <p className="text-sm text-gray-500">{t('crop.duration')}: {c.duration}</p>
-                  <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {c.waterNeed}</p>
+                                    <h3 className="font-semibold text-gray-800">{t(`crop.cropNames.${c.name}`, c.name)}</h3>
+                  <p className="text-xs text-gray-500 mt-2 leading-relaxed">{t(`crop.descriptions.${c.descKey}`)}</p>
+                  <div className="mt-2 space-y-0.5">
+                    <p className="text-sm text-gray-500">{t('crop.expectedYield')}: {c.expectedYield}</p>
+                    <p className="text-sm text-gray-500">{t('crop.duration')}: {c.duration}</p>
+                    <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {c.waterNeed}</p>
+                  </div>
                 </div>
               ))}
           </div>

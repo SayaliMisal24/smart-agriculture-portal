@@ -171,7 +171,20 @@
         "lots": "A Lot",
         "some": "Some",
         "very_little": "Very Little / None"
-      }
+      },
+          "suggestionCodes": {
+      "grayishWhite": "Grayish-white soil often lacks nutrients. Add compost or organic manure.",
+      "reddish": "Reddish soil may lack organic matter. Consider adding compost regularly.",
+      "sandy": "Sandy soil drains too fast and loses nutrients. Add organic matter to help retain water and nutrients.",
+      "clayey": "Clayey soil holds too much water. Improve drainage and mix in sand/organic matter.",
+      "dryCracked": "Soil is too dry. Increase irrigation frequency.",
+      "waterlogged": "Soil is waterlogged. Improve drainage to avoid root rot.",
+      "poorDrainage": "Poor drainage detected. Consider raised beds or drainage channels.",
+      "poorGrowth": "Poor past crop growth suggests low fertility. Get a proper soil test done at a nearby Krishi Kendra.",
+      "averageGrowth": "Average crop growth. Adding balanced fertilizer could improve yield.",
+      "lowOrganicMatter": "Very little organic matter present. Add compost, cow dung manure, or green manure.",
+      "greatSoil": "Your soil health looks great! Maintain current practices."
+    }
     }
   },
   "crop": {
@@ -222,6 +235,36 @@
       "Cucumber": "Cucumber",
       "Onion": "Onion",
       "Tomato": "Tomato"
+    },
+        "descriptions": {
+      "rice": "A staple cereal crop that thrives in standing water and clayey soil. Best suited for regions with heavy monsoon rainfall or reliable irrigation, rice is labor-intensive but offers strong, dependable yields when water supply is consistent.",
+      "wheat": "A winter cereal that grows well in cooler temperatures with moderate water. Wheat is relatively low-maintenance once established and stores well after harvest, making it a reliable choice for the Rabi season.",
+      "bajra": "A hardy, drought-tolerant millet that performs well even in poor, sandy soils with minimal water. Bajra is an excellent choice for farmers facing water scarcity, requiring far less irrigation than cereals like rice or wheat.",
+      "jowar": "A resilient millet crop known for tolerating dry spells and less fertile soil. Jowar is valued both as food grain and fodder for livestock, making it a dual-purpose crop for mixed farming.",
+      "maize": "A versatile, fast-growing cereal that adapts well to a range of soils. Maize has a shorter growing period than many cereals, allowing for quicker turnaround, and is in steady demand for food, feed, and industrial use.",
+      "ragi": "A nutrient-dense millet that grows reliably even under low water conditions. Ragi is increasingly valued for its health benefits and is well-suited to marginal soils where other cereals may struggle.",
+      "tur": "A long-duration pulse crop known for improving soil fertility through nitrogen fixation. Tur requires relatively little water once established and is a valuable addition to crop rotation plans.",
+      "gram": "A cool-season pulse that performs well in low-water conditions and light soils. Gram is a dependable Rabi crop with strong market demand and modest input requirements.",
+      "moong": "A quick-growing pulse ideal for the short Zaid season between main crop cycles. Moong requires minimal water and helps enrich soil nitrogen, making it useful as a rotational crop.",
+      "urad": "A kharif-season pulse that tolerates a range of soil types with modest water needs. Urad is commonly grown alongside cereals and contributes to soil health through nitrogen fixation.",
+      "matki": "A hardy, drought-resistant pulse well suited to sandy soils with very limited water availability. Matki is a good option for farmers in water-stressed regions seeking a low-risk, short-duration crop.",
+      "soybean": "An important oilseed and protein crop that performs well in black and loamy soils with moderate water. Soybean has strong commercial demand and fits well into kharif rotation cycles.",
+      "cotton": "A long-duration cash crop that thrives in black soil with moderate water needs. Cotton requires sustained care through its growing cycle but offers strong returns as a major commercial crop.",
+      "sugarcane": "A high-water, long-duration crop that generates substantial yield per acre. Sugarcane requires significant irrigation investment and land commitment for nearly a full year, but is typically sold under stable, government-supported pricing to mills.",
+      "groundnut": "An oilseed crop well suited to sandy and loamy soils with moderate water needs. Groundnut also improves soil fertility and has consistent demand for oil production and direct consumption.",
+      "sesame": "A low-water oilseed crop suited to sandy and loamy soils. Sesame is a relatively low-risk, short-duration crop valued for its oil and steady market demand.",
+      "sunflower": "An oilseed crop that adapts well to a variety of soils with moderate water requirements. Sunflower has a relatively short growing cycle and reliable demand for oil production.",
+      "mustard": "A cool-season oilseed crop that performs well with low water input. Mustard is a dependable Rabi crop valued for its oil and by-products used as animal feed.",
+      "safflower": "A drought-tolerant oilseed suited to black and loamy soils with minimal water needs. Safflower is a good choice for water-limited Rabi season planning.",
+      "onion": "A high-value vegetable crop with strong, consistent market demand. Onion requires moderate water and careful storage handling after harvest to avoid spoilage, but offers strong returns per acre.",
+      "tomato": "A high-yield vegetable crop that requires consistent moderate watering and attentive care. Tomato offers strong returns but is more sensitive to pests and disease than staple grains.",
+      "greenChili": "A widely-grown spice crop with steady market demand and moderate water needs. Green chili offers good returns relative to the land area required, though it benefits from regular pest monitoring.",
+      "brinjal": "A reliable vegetable crop suited to loamy and clayey soils with moderate water. Brinjal has consistent local market demand and a relatively manageable growing cycle.",
+      "okra": "A fast-growing vegetable crop with a short harvest cycle and moderate water needs. Okra allows for quick turnaround and repeated harvesting within a single season.",
+      "potato": "A high-yield vegetable crop that performs well in loamy, well-drained soil with moderate water. Potato has strong market demand and is a dependable choice for the Rabi season.",
+      "garlic": "A low-water spice crop with a longer growing duration but strong market value. Garlic stores well after harvest, offering flexibility in when to sell.",
+      "ginger": "A long-duration spice crop that requires moderate, consistent moisture and rich loamy soil. Ginger has strong commercial value but demands a longer land commitment than most vegetables.",
+      "turmeric": "A long-duration spice crop valued for its strong, stable market demand. Turmeric requires moderate water and a substantial growing period, but stores well and offers reliable returns."
     },
     "selectMultipleHint": "Tap on one or more crops you'd like to grow, then confirm your selection.",
     "confirmSelection": "Confirm Selection",

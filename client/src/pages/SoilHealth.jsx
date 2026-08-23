@@ -157,7 +157,7 @@ function SoilHealth() {
             <h3 className="font-semibold text-gray-700 mb-2">{t('soilHealth.suggestions')}:</h3>
             <ul className="space-y-1 text-sm text-gray-600 mb-6">
               {existingReport.suggestions.map((s, i) => (
-                <li key={i}>• {s}</li>
+                <li key={i}>• {t(`soilHealth.suggestionCodes.${s}`)}</li>
               ))}
             </ul>
 
@@ -219,7 +219,7 @@ function SoilHealth() {
             <h3 className="font-semibold text-gray-700 mb-2">{t('soilHealth.suggestions')}:</h3>
             <ul className="space-y-1 text-sm text-gray-600 mb-6">
               {result.suggestions.map((s, i) => (
-                <li key={i}>• {s}</li>
+                <li key={i}>• {t(`soilHealth.suggestionCodes.${s}`)}</li>
               ))}
             </ul>
             <button
