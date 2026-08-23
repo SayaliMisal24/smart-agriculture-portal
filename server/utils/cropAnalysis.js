@@ -28,6 +28,21 @@ const cropDatabase = [
   { name: 'Garlic', descKey: 'garlic', season: 'rabi', soilType: ['loamy', 'sandy'], water: 'low', yield: '30-40 quintal/acre', duration: '130-150 days' },
   { name: 'Ginger', descKey: 'ginger', season: 'kharif', soilType: ['loamy', 'clayey'], water: 'moderate', yield: '80-100 quintal/acre', duration: '180-240 days' },
   { name: 'Turmeric (Halad)', descKey: 'turmeric', season: 'kharif', soilType: ['loamy', 'clayey'], water: 'moderate', yield: '60-80 quintal/acre', duration: '210-240 days' },
+  { name: 'Green Gram Fodder (Chawali)', descKey: 'chawali', season: 'kharif', soilType: ['sandy', 'loamy'], water: 'low', yield: '5-7 quintal/acre', duration: '65-75 days' },
+  { name: 'Castor', descKey: 'castor', season: 'kharif', soilType: ['sandy', 'black'], water: 'low', yield: '8-10 quintal/acre', duration: '150-180 days' },
+  { name: 'Niger Seed (Ramtil)', descKey: 'niger', season: 'kharif', soilType: ['loamy', 'sandy'], water: 'low', yield: '3-4 quintal/acre', duration: '90-110 days' },
+  { name: 'Linseed', descKey: 'linseed', season: 'rabi', soilType: ['loamy', 'clayey'], water: 'low', yield: '5-7 quintal/acre', duration: '110-130 days' },
+  { name: 'Guar (Cluster Bean)', descKey: 'guar', season: 'kharif', soilType: ['sandy', 'loamy'], water: 'low', yield: '4-6 quintal/acre', duration: '80-90 days' },
+  { name: 'Field Pea (Vatana)', descKey: 'fieldPea', season: 'rabi', soilType: ['loamy', 'clayey'], water: 'low', yield: '6-8 quintal/acre', duration: '90-100 days' },
+  { name: 'Radish', descKey: 'radish', season: 'rabi', soilType: ['sandy', 'loamy'], water: 'moderate', yield: '80-100 quintal/acre', duration: '40-55 days' },
+  { name: 'Carrot', descKey: 'carrot', season: 'rabi', soilType: ['sandy', 'loamy'], water: 'moderate', yield: '100-150 quintal/acre', duration: '90-100 days' },
+  { name: 'Beetroot', descKey: 'beetroot', season: 'rabi', soilType: ['loamy', 'sandy'], water: 'moderate', yield: '100-140 quintal/acre', duration: '60-70 days' },
+  { name: 'Spinach (Palak)', descKey: 'spinach', season: 'rabi', soilType: ['loamy', 'clayey'], water: 'moderate', yield: '60-80 quintal/acre', duration: '35-45 days' },
+  { name: 'Fenugreek (Methi)', descKey: 'fenugreek', season: 'rabi', soilType: ['loamy', 'sandy'], water: 'low', yield: '40-60 quintal/acre', duration: '30-45 days' },
+  { name: 'Coriander (Dhania)', descKey: 'coriander', season: 'rabi', soilType: ['loamy', 'sandy'], water: 'low', yield: '4-6 quintal/acre', duration: '90-110 days' },
+  { name: 'Cumin (Jeera)', descKey: 'cumin', season: 'rabi', soilType: ['sandy', 'loamy'], water: 'low', yield: '3-4 quintal/acre', duration: '110-120 days' },
+  { name: 'Fennel (Sauf)', descKey: 'fennel', season: 'rabi', soilType: ['loamy', 'sandy'], water: 'moderate', yield: '6-8 quintal/acre', duration: '150-180 days' },
+  { name: 'Chikoo (Sapota)', descKey: 'chikoo', season: 'kharif', soilType: ['loamy', 'sandy'], water: 'moderate', yield: '80-120 quintal/acre', duration: '300-365 days' },
 ];
 
 // Ranks water levels so we can compare "does this farm have enough water for this crop?"

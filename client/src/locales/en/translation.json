@@ -134,6 +134,19 @@
     "pastReports": "Past Reports",
     "fillAllError": "Please answer all questions before submitting.",
     "detailsSubmitted": "Your Submitted Details",
+    "suggestionCodes": {
+      "grayishWhite": "Grayish-white soil often lacks nutrients. Add compost or organic manure.",
+      "reddish": "Reddish soil may lack organic matter. Consider adding compost regularly.",
+      "sandy": "Sandy soil drains too fast and loses nutrients. Add organic matter to help retain water and nutrients.",
+      "clayey": "Clayey soil holds too much water. Improve drainage and mix in sand/organic matter.",
+      "dryCracked": "Soil is too dry. Increase irrigation frequency.",
+      "waterlogged": "Soil is waterlogged. Improve drainage to avoid root rot.",
+      "poorDrainage": "Poor drainage detected. Consider raised beds or drainage channels.",
+      "poorGrowth": "Poor past crop growth suggests low fertility. Get a proper soil test done at a nearby Krishi Kendra.",
+      "averageGrowth": "Average crop growth. Adding balanced fertilizer could improve yield.",
+      "lowOrganicMatter": "Very little organic matter present. Add compost, cow dung manure, or green manure.",
+      "greatSoil": "Your soil health looks great! Maintain current practices."
+    },
     "q": {
       "soilColor": {
         "label": "What color is your soil?",
@@ -171,20 +184,7 @@
         "lots": "A Lot",
         "some": "Some",
         "very_little": "Very Little / None"
-      },
-          "suggestionCodes": {
-      "grayishWhite": "Grayish-white soil often lacks nutrients. Add compost or organic manure.",
-      "reddish": "Reddish soil may lack organic matter. Consider adding compost regularly.",
-      "sandy": "Sandy soil drains too fast and loses nutrients. Add organic matter to help retain water and nutrients.",
-      "clayey": "Clayey soil holds too much water. Improve drainage and mix in sand/organic matter.",
-      "dryCracked": "Soil is too dry. Increase irrigation frequency.",
-      "waterlogged": "Soil is waterlogged. Improve drainage to avoid root rot.",
-      "poorDrainage": "Poor drainage detected. Consider raised beds or drainage channels.",
-      "poorGrowth": "Poor past crop growth suggests low fertility. Get a proper soil test done at a nearby Krishi Kendra.",
-      "averageGrowth": "Average crop growth. Adding balanced fertilizer could improve yield.",
-      "lowOrganicMatter": "Very little organic matter present. Add compost, cow dung manure, or green manure.",
-      "greatSoil": "Your soil health looks great! Maintain current practices."
-    }
+      }
     }
   },
   "crop": {
@@ -223,18 +223,50 @@
       "moderate": "Moderate",
       "high": "High"
     },
-    "cropNames": {
-      "Rice": "Rice",
-      "Maize": "Maize",
-      "Cotton": "Cotton",
-      "Soybean": "Soybean",
+        "cropNames": {
+      "Rice (Paddy)": "Rice (Paddy)",
       "Wheat": "Wheat",
-      "Gram (Chana)": "Gram (Chana)",
+      "Bajra (Pearl Millet)": "Bajra (Pearl Millet)",
+      "Jowar (Sorghum)": "Jowar (Sorghum)",
+      "Maize": "Maize",
+      "Ragi (Finger Millet)": "Ragi (Finger Millet)",
+      "Tur / Arhar (Pigeon Pea)": "Tur / Arhar (Pigeon Pea)",
+      "Gram / Chana (Chickpea)": "Gram / Chana (Chickpea)",
+      "Moong (Green Gram)": "Moong (Green Gram)",
+      "Urad (Black Gram)": "Urad (Black Gram)",
+      "Matki (Moth Bean)": "Matki (Moth Bean)",
+      "Soybean": "Soybean",
+      "Cotton (Kapas)": "Cotton (Kapas)",
+      "Sugarcane": "Sugarcane",
+      "Groundnut (Peanut)": "Groundnut (Peanut)",
+      "Sesame (Til)": "Sesame (Til)",
+      "Sunflower": "Sunflower",
       "Mustard": "Mustard",
-      "Watermelon": "Watermelon",
-      "Cucumber": "Cucumber",
+      "Safflower (Kardi)": "Safflower (Kardi)",
       "Onion": "Onion",
-      "Tomato": "Tomato"
+      "Tomato": "Tomato",
+      "Green Chili": "Green Chili",
+      "Brinjal (Eggplant)": "Brinjal (Eggplant)",
+      "Okra (Bhindi)": "Okra (Bhindi)",
+      "Potato": "Potato",
+      "Garlic": "Garlic",
+      "Ginger": "Ginger",
+      "Turmeric (Halad)": "Turmeric (Halad)",
+      "Green Gram Fodder (Chawali)": "Green Gram Fodder (Chawali)",
+      "Castor": "Castor",
+      "Niger Seed (Ramtil)": "Niger Seed (Ramtil)",
+      "Linseed": "Linseed",
+      "Guar (Cluster Bean)": "Guar (Cluster Bean)",
+      "Field Pea (Vatana)": "Field Pea (Vatana)",
+      "Radish": "Radish",
+      "Carrot": "Carrot",
+      "Beetroot": "Beetroot",
+      "Spinach (Palak)": "Spinach (Palak)",
+      "Fenugreek (Methi)": "Fenugreek (Methi)",
+      "Coriander (Dhania)": "Coriander (Dhania)",
+      "Cumin (Jeera)": "Cumin (Jeera)",
+      "Fennel (Sauf)": "Fennel (Sauf)",
+      "Chikoo (Sapota)": "Chikoo (Sapota)"
     },
         "descriptions": {
       "rice": "A staple cereal crop that thrives in standing water and clayey soil. Best suited for regions with heavy monsoon rainfall or reliable irrigation, rice is labor-intensive but offers strong, dependable yields when water supply is consistent.",
@@ -264,7 +296,22 @@
       "potato": "A high-yield vegetable crop that performs well in loamy, well-drained soil with moderate water. Potato has strong market demand and is a dependable choice for the Rabi season.",
       "garlic": "A low-water spice crop with a longer growing duration but strong market value. Garlic stores well after harvest, offering flexibility in when to sell.",
       "ginger": "A long-duration spice crop that requires moderate, consistent moisture and rich loamy soil. Ginger has strong commercial value but demands a longer land commitment than most vegetables.",
-      "turmeric": "A long-duration spice crop valued for its strong, stable market demand. Turmeric requires moderate water and a substantial growing period, but stores well and offers reliable returns."
+      "turmeric": "A long-duration spice crop valued for its strong, stable market demand. Turmeric requires moderate water and a substantial growing period, but stores well and offers reliable returns.",
+            "chawali": "A quick, low-water fodder and pulse crop useful for filling short gaps in the cropping calendar while adding nitrogen back to the soil.",
+      "castor": "A hardy oilseed crop tolerant of poor soils and dry conditions, valued for industrial oil extraction with relatively low input needs.",
+      "niger": "A low-water oilseed traditionally grown on marginal land, offering a low-risk option where better land isn't available.",
+      "linseed": "A cool-season oilseed valued for its oil and fiber, requiring low water and performing well in the Rabi season.",
+      "guar": "A drought-tolerant legume valued both as a vegetable and for industrial gum extraction, well suited to sandy soils.",
+      "fieldPea": "A cool-season pulse with low water needs, commonly grown for both fresh consumption and dried storage.",
+      "radish": "A fast-maturing root vegetable with a short harvest cycle, well suited to light, sandy soils and moderate watering.",
+      "carrot": "A root vegetable requiring loose, well-drained soil and consistent moderate watering for even root development.",
+      "beetroot": "A short-duration root vegetable with steady market demand, growing well in loamy soil with moderate water.",
+      "spinach": "A fast-growing leafy green with a very short cycle, allowing multiple harvests per season with moderate water needs.",
+      "fenugreek": "A quick-growing leafy and seed crop with low water needs, commonly grown for both greens and spice seed.",
+      "coriander": "A widely-used spice and herb crop requiring low water, valued for both fresh leaves and dried seed.",
+      "cumin": "A low-water spice crop suited to dry Rabi conditions, valued for its seed used widely in cooking.",
+      "fennel": "A moderate-water spice crop with a longer growing cycle, valued for its aromatic seeds with steady market demand.",
+      "chikoo": "A long-duration fruit tree crop requiring moderate water once established, offering reliable annual returns after initial growth years."
     },
     "selectMultipleHint": "Tap on one or more crops you'd like to grow, then confirm your selection.",
     "confirmSelection": "Confirm Selection",
@@ -273,6 +320,13 @@
     "lockWarning": "Your selection cannot be changed once confirmed.",
     "confirmedCrops": "Your Confirmed Crops",
     "selectionConfirmed": "Selection Confirmed"
+  },
+    "cropGuide": {
+    "learnMore": "Learn More →",
+    "notFound": "No crop selected to view.",
+    "overview": "Overview",
+    "suitabilityTitle": "Why This Crop Fits",
+    "suitabilityText": "This crop is well suited to {{soil}} soil during the {{season}} season, based on your farm's conditions."
   },
   "farms": {
     "title": "My Farms",

@@ -176,11 +176,30 @@ function CropRecommendation() {
                   <FaCheckCircle className="text-green-600 mb-2" size={20} />
                                     <h3 className="font-semibold text-gray-800">{t(`crop.cropNames.${c.name}`, c.name)}</h3>
                   <p className="text-xs text-gray-500 mt-2 leading-relaxed">{t(`crop.descriptions.${c.descKey}`)}</p>
-                  <div className="mt-2 space-y-0.5">
+                                    <div className="mt-2 space-y-0.5">
                     <p className="text-sm text-gray-500">{t('crop.expectedYield')}: {c.expectedYield}</p>
                     <p className="text-sm text-gray-500">{t('crop.duration')}: {c.duration}</p>
                     <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {c.waterNeed}</p>
                   </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      localStorage.setItem('viewingCropGuide', JSON.stringify({
+                        name: c.name,
+                        descKey: c.descKey,
+                        season: formData.season,
+                        waterNeed: c.waterNeed,
+                        duration: c.duration,
+                        expectedYield: c.expectedYield,
+                        soilTypeMatch: formData.soilType,
+                      }));
+                      window.open(`/dashboard/farms/${farmId}/crop-guide`, '_blank');
+                    }}
+                    className="text-xs text-green-700 underline mt-2"
+                  >
+                    {t('cropGuide.learnMore')}
+                  </button>
                 </div>
               ))}
           </div>

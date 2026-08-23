@@ -22,6 +22,7 @@ import WeatherDetail from './pages/WeatherDetail';
 import TipDetail from './pages/TipDetail';
 import MarketTrendsDetail from './pages/MarketTrendsDetail';
 import SuccessStoryDetail from './pages/SuccessStoryDetail';
+import CropGrowingGuide from './pages/CropGrowingGuide';
 function Layout() {
   const location = useLocation();
   const hideLayout = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile');
@@ -68,6 +69,14 @@ function Layout() {
   element={
     <ProtectedRoute>
       <CropCalendar />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/dashboard/farms/:farmId/crop-guide"
+  element={
+    <ProtectedRoute>
+      <CropGrowingGuide />
     </ProtectedRoute>
   }
 />
