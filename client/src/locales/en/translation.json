@@ -326,7 +326,12 @@
     "notFound": "No crop selected to view.",
     "overview": "Overview",
     "suitabilityTitle": "Why This Crop Fits",
-    "suitabilityText": "This crop is well suited to {{soil}} soil during the {{season}} season, based on your farm's conditions."
+    "suitabilityText": "This crop is well suited to {{soil}} soil during the {{season}} season, based on your farm's conditions.",
+    "noDescription": "Detailed description not available for this crop yet.",
+        "showFullDetails": "Show Full Details ▼",
+    "showLess": "Show Less ▲",
+    "selectThisCrop": "Select This Crop",
+    "deselect": "Deselect"
   },
   "farms": {
     "title": "My Farms",

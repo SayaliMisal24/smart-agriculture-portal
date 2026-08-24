@@ -17,6 +17,7 @@ function CropRecommendation() {
   const [formData, setFormData] = useState({ season: '', soilType: '', waterAvailability: '' });
   const [crops, setCrops] = useState([]);
   const [selectedCrops, setSelectedCrops] = useState([]); // crops the farmer has checked
+  const [expandedCrop, setExpandedCrop] = useState(null);
   const [confirmed, setConfirmed] = useState(false);
 
   const [error, setError] = useState('');
@@ -103,7 +104,9 @@ function CropRecommendation() {
         : [...prev, cropName] // check: add it
     );
   };
-
+  const toggleExpand = (cropName) => {
+    setExpandedCrop((prev) => (prev === cropName ? null : cropName));
+  };
   const handleConfirmSelection = async () => {
     if (selectedCrops.length === 0) {
       setError(t('crop.selectAtLeastOne'));
@@ -261,30 +264,87 @@ function CropRecommendation() {
               {error}
             </div>
           )}
-
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
             {crops.map((c, i) => {
               const isChecked = selectedCrops.includes(c.name);
+              const isExpanded = expandedCrop === c.name;
               return (
                 <div
                   key={i}
-                  onClick={() => toggleCropSelection(c.name)}
-                  className={`rounded-xl p-5 cursor-pointer border-2 transition ${
-                    isChecked ? 'border-green-600 bg-green-50' : 'border-gray-100 bg-white hover:border-green-200'
-                  }`}
+                  className={`rounded-xl border-2 transition overflow-hidden ${
+                    isChecked ? 'border-green-600 bg-green-50' : 'border-gray-100 bg-white'
+                  } ${isExpanded ? 'sm:col-span-2 md:col-span-3' : ''}`}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <FaLeaf className="text-green-600" size={20} />
-                    <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center ${
-                      isChecked ? 'bg-green-600 border-green-600' : 'border-gray-300'
-                    }`}>
-                      {isChecked && <FaCheck className="text-white" size={12} />}
+                  <div
+                    onClick={() => toggleCropSelection(c.name)}
+                    className="p-5 cursor-pointer hover:border-green-200"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <FaLeaf className="text-green-600" size={20} />
+                      <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center ${
+                        isChecked ? 'bg-green-600 border-green-600' : 'border-gray-300'
+                      }`}>
+                        {isChecked && <FaCheck className="text-white" size={12} />}
+                      </div>
+                    </div>
+                    <h3 className="font-semibold text-gray-800">{t(`crop.cropNames.${c.name}`, c.name)}</h3>
+                    <div className="mt-2 space-y-0.5">
+                      <p className="text-sm text-gray-500">{t('crop.expectedYield')}: {c.expectedYield}</p>
+                      <p className="text-sm text-gray-500">{t('crop.duration')}: {c.duration}</p>
+                      <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {c.waterNeed}</p>
                     </div>
                   </div>
-                  <h3 className="font-semibold text-gray-800">{t(`crop.cropNames.${c.name}`, c.name)}</h3>
-                  <p className="text-sm text-gray-500 mt-2">{t('crop.expectedYield')}: {c.expectedYield}</p>
-                  <p className="text-sm text-gray-500">{t('crop.duration')}: {c.duration}</p>
-                  <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {c.waterNeed}</p>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleExpand(c.name);
+                    }}
+                    className="w-full text-xs text-green-700 font-medium py-2 border-t border-green-100 hover:bg-green-50"
+                  >
+                    {isExpanded ? t('cropGuide.showLess') : t('cropGuide.showFullDetails')}
+                  </button>
+
+                  {isExpanded && (
+                    <div className="p-5 bg-white border-t border-green-100">
+                      <h4 className="font-semibold text-gray-700 mb-2">{t('cropGuide.overview')}</h4>
+                      <p className="text-sm text-gray-600 leading-relaxed mb-4">{t(`crop.descriptions.${c.descKey}`)}</p>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <p className="text-xs text-gray-400">{t('crop.season')}</p>
+                          <p className="font-medium text-gray-800 text-sm">{t(`crop.seasons.${formData.season}`)}</p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <p className="text-xs text-gray-400">{t('crop.water')}</p>
+                          <p className="font-medium text-gray-800 text-sm">{t(`crop.waterLevels.${c.waterNeed}`)}</p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <p className="text-xs text-gray-400">{t('crop.duration')}</p>
+                          <p className="font-medium text-gray-800 text-sm">{c.duration}</p>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <p className="text-xs text-gray-400">{t('crop.expectedYield')}</p>
+                          <p className="font-medium text-gray-800 text-sm">{c.expectedYield}</p>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleCropSelection(c.name);
+                        }}
+                        className={`mt-4 w-full py-2 rounded-lg text-sm font-semibold transition ${
+                          isChecked
+                            ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            : 'bg-green-600 text-white hover:bg-green-700'
+                        }`}
+                      >
+                        {isChecked ? t('cropGuide.deselect') : t('cropGuide.selectThisCrop')}
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}
