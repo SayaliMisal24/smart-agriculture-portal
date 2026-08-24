@@ -315,11 +315,11 @@ Languages: English & Marathi
 
 Team Members
 
-1. Member 1 – __________________
-2. Member 2 – __________________
-3. Member 3 – __________________
-4. Member 4 – __________________
-5. Member 5 – __________________
+1. Member 1 – Sayali Misal
+2. Member 2 – Priya Shinde
+3. Member 3 – Sujal Kothawale
+4. Member 4 – Abhijeet Tikole
+5. Member 5 – Sumit Mangave
 
 📄 License
 
