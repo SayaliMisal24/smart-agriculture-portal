@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Navbar from '../components/Navbar';
 import api from '../utils/api';
 import { FaLeaf, FaCheckCircle, FaCheck } from 'react-icons/fa';
-
+import { getCultivationTipKeys } from '../utils/cultivationTips';
 function CropRecommendation() {
   const { t } = useTranslation();
   const { farmId } = useParams();
@@ -309,7 +309,9 @@ function CropRecommendation() {
                   {isExpanded && (
                     <div className="p-5 bg-white border-t border-green-100">
                       <h4 className="font-semibold text-gray-700 mb-2">{t('cropGuide.overview')}</h4>
-                      <p className="text-sm text-gray-600 leading-relaxed mb-4">{t(`crop.descriptions.${c.descKey}`)}</p>
+                      <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                        {c.descKey ? t(`crop.descriptions.${c.descKey}`) : t('cropGuide.noDescription')}
+                      </p>
 
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <div className="bg-gray-50 rounded-lg p-3">
@@ -329,7 +331,29 @@ function CropRecommendation() {
                           <p className="font-medium text-gray-800 text-sm">{c.expectedYield}</p>
                         </div>
                       </div>
-
+                      {(() => {
+                        const tips = getCultivationTipKeys(c.waterNeed, formData.season);
+                        return (
+                          <div className="mt-4 space-y-3">
+                            <div>
+                              <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.landPrep')}</h5>
+                              <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.prepKey}`)}</p>
+                            </div>
+                            <div>
+                              <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.sowing')}</h5>
+                              <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.sowingKey}`)}</p>
+                            </div>
+                            <div>
+                              <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.careMaintenance')}</h5>
+                              <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.careKey}`)}</p>
+                            </div>
+                            <div>
+                              <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.harvesting')}</h5>
+                              <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.harvestKey}`)}</p>
+                            </div>
+                          </div>
+                        );
+                      })()}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();

@@ -62,6 +62,18 @@
     "goToFarms": "Go to My Farms",
     "viewDetails": "View Details"
   },
+    "cultivationTips": {
+    "prep_kharif": "Prepare the land before the monsoon arrives — plough and level the field so water drains evenly rather than pooling in low spots. Incorporate any compost or well-rotted manure into the soil 2-3 weeks before sowing so it has time to break down.",
+    "prep_rabi": "Prepare the land after the kharif harvest while soil moisture from monsoon rains is still present. A shallow ploughing followed by leveling helps retain this residual moisture for germination.",
+    "prep_zaid": "Since this is a short summer-season crop, prepare the land quickly with minimal delay between harvest of the previous crop and sowing, to make the most of the short growing window.",
+    "sowing_low": "Since this crop needs relatively little water, sow at a slightly wider spacing to reduce competition for the limited available moisture between plants.",
+    "sowing_moderate": "Sow at standard recommended spacing for this crop type, ensuring even seed depth so germination is uniform across the field.",
+    "sowing_high": "Since this crop needs substantial water, ensure your irrigation source and channels are ready before sowing, so young seedlings aren't left waiting for their first watering.",
+    "care_low": "Water sparingly and only when the topsoil feels dry to the touch — overwatering a low-water crop can do more harm than underwatering it. Focus more attention on weeding than on irrigation, since weeds compete heavily for the limited moisture available.",
+    "care_moderate": "Maintain a consistent watering schedule rather than occasional heavy watering, and monitor for wilting during unusually hot spells as a sign more frequent watering may be needed temporarily.",
+    "care_high": "Establish a reliable, regular irrigation routine from the start, and monitor soil moisture closely — this crop is less forgiving of dry spells than lower-water alternatives.",
+    "harvest_general": "Harvest at the right maturity stage rather than rushing — for grains and pulses this usually means waiting until the crop has visibly dried and hardened; for vegetables and fruits, harvest at peak ripeness for the best market price and shelf life. Handle harvested produce carefully to avoid bruising or damage that reduces its sale value."
+  },
   "auth": {
     "fullName": "Full Name",
     "email": "Email",
@@ -331,7 +343,11 @@
         "showFullDetails": "Show Full Details ▼",
     "showLess": "Show Less ▲",
     "selectThisCrop": "Select This Crop",
-    "deselect": "Deselect"
+    "deselect": "Deselect",
+    "landPrep": "Land Preparation",
+    "sowing": "Sowing",
+    "careMaintenance": "Care & Maintenance",
+    "harvesting": "Harvesting"
   },
   "farms": {
     "title": "My Farms",
