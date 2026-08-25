@@ -347,7 +347,9 @@
     "landPrep": "जमीन तयारी",
     "sowing": "पेरणी",
     "careMaintenance": "काळजी आणि देखभाल",
-    "harvesting": "काढणी"
+    "harvesting": "काढणी",
+    "editSelection": "निवड संपादित करा",
+    "saveChanges": "बदल जतन करा"
   },
   "farms": {
     "title": "माझी शेते",

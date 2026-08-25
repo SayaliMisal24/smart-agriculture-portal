@@ -1,4 +1,3 @@
-// Full crop database organized by your categories, with season/soil/water suitability
 const cropDatabase = [
   { name: 'Rice (Paddy)', descKey: 'rice', season: 'kharif', soilType: ['clayey', 'loamy'], water: 'high', yield: '25-30 quintal/acre', duration: '120-150 days' },
   { name: 'Wheat', descKey: 'wheat', season: 'rabi', soilType: ['loamy', 'clayey'], water: 'moderate', yield: '18-22 quintal/acre', duration: '110-130 days' },
@@ -28,6 +27,16 @@ const cropDatabase = [
   { name: 'Garlic', descKey: 'garlic', season: 'rabi', soilType: ['loamy', 'sandy'], water: 'low', yield: '30-40 quintal/acre', duration: '130-150 days' },
   { name: 'Ginger', descKey: 'ginger', season: 'kharif', soilType: ['loamy', 'clayey'], water: 'moderate', yield: '80-100 quintal/acre', duration: '180-240 days' },
   { name: 'Turmeric (Halad)', descKey: 'turmeric', season: 'kharif', soilType: ['loamy', 'clayey'], water: 'moderate', yield: '60-80 quintal/acre', duration: '210-240 days' },
+  { name: 'Bengal Gram (Kabuli Chana)', descKey: 'kabuliChana', season: 'rabi', soilType: ['loamy', 'sandy'], water: 'low', yield: '7-9 quintal/acre', duration: '95-110 days' },
+  { name: 'Lentil (Masoor)', descKey: 'masoor', season: 'rabi', soilType: ['loamy', 'clayey'], water: 'low', yield: '6-8 quintal/acre', duration: '100-120 days' },
+  { name: 'Cabbage', descKey: 'cabbage', season: 'rabi', soilType: ['loamy', 'sandy'], water: 'moderate', yield: '150-200 quintal/acre', duration: '80-100 days' },
+  { name: 'Cauliflower', descKey: 'cauliflower', season: 'rabi', soilType: ['loamy', 'sandy'], water: 'moderate', yield: '100-150 quintal/acre', duration: '90-110 days' },
+  { name: 'Cucumber', descKey: 'cucumber', season: 'zaid', soilType: ['sandy', 'loamy'], water: 'moderate', yield: '80-100 quintal/acre', duration: '55-65 days' },
+  { name: 'Watermelon', descKey: 'watermelon', season: 'zaid', soilType: ['sandy', 'loamy'], water: 'high', yield: '150-250 quintal/acre', duration: '80-90 days' },
+  { name: 'Muskmelon', descKey: 'muskmelon', season: 'zaid', soilType: ['sandy', 'loamy'], water: 'high', yield: '100-150 quintal/acre', duration: '80-95 days' },
+  { name: 'Banana', descKey: 'banana', season: 'kharif', soilType: ['loamy', 'clayey'], water: 'high', yield: '300-400 quintal/acre', duration: '300-365 days' },
+  { name: 'Grapes', descKey: 'grapes', season: 'rabi', soilType: ['loamy', 'sandy'], water: 'moderate', yield: '80-120 quintal/acre', duration: '150-180 days' },
+  { name: 'Pomegranate', descKey: 'pomegranate', season: 'rabi', soilType: ['loamy', 'sandy'], water: 'low', yield: '60-100 quintal/acre', duration: '150-180 days' },
   { name: 'Green Gram Fodder (Chawali)', descKey: 'chawali', season: 'kharif', soilType: ['sandy', 'loamy'], water: 'low', yield: '5-7 quintal/acre', duration: '65-75 days' },
   { name: 'Castor', descKey: 'castor', season: 'kharif', soilType: ['sandy', 'black'], water: 'low', yield: '8-10 quintal/acre', duration: '150-180 days' },
   { name: 'Niger Seed (Ramtil)', descKey: 'niger', season: 'kharif', soilType: ['loamy', 'sandy'], water: 'low', yield: '3-4 quintal/acre', duration: '90-110 days' },
@@ -45,7 +54,6 @@ const cropDatabase = [
   { name: 'Chikoo (Sapota)', descKey: 'chikoo', season: 'kharif', soilType: ['loamy', 'sandy'], water: 'moderate', yield: '80-120 quintal/acre', duration: '300-365 days' },
 ];
 
-// Ranks water levels so we can compare "does this farm have enough water for this crop?"
 const waterRank = { low: 1, moderate: 2, high: 3 };
 
 function recommendCrops({ season, soilType, waterAvailability }) {
@@ -55,18 +63,15 @@ function recommendCrops({ season, soilType, waterAvailability }) {
     (crop) =>
       crop.season === season &&
       crop.soilType.includes(soilType) &&
-      waterRank[crop.water] <= availableRank // exclude crops needing MORE water than available
+      waterRank[crop.water] <= availableRank
   );
 
-  // If nothing matches soil type exactly, relax the soil filter (but keep the water rule)
   if (matches.length === 0) {
     matches = cropDatabase.filter(
       (crop) => crop.season === season && waterRank[crop.water] <= availableRank
     );
   }
 
-  // Still nothing? Relax the water rule too, but only as an absolute last resort,
-  // and clearly sort so the closest water-need crops still appear first
   if (matches.length === 0) {
     matches = cropDatabase.filter((crop) => crop.season === season);
   }
@@ -75,14 +80,13 @@ function recommendCrops({ season, soilType, waterAvailability }) {
     matches = cropDatabase;
   }
 
-  // Sort by exact water match first, then by how close the water need is
   matches.sort((a, b) => {
     const diffA = Math.abs(waterRank[a.water] - availableRank);
     const diffB = Math.abs(waterRank[b.water] - availableRank);
     return diffA - diffB;
   });
 
-    const recommendedCrops = matches.slice(0, 12).map((c) => ({
+  const recommendedCrops = matches.slice(0, 12).map((c) => ({
     name: c.name,
     descKey: c.descKey,
     expectedYield: c.yield,

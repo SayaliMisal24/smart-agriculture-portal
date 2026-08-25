@@ -58,10 +58,12 @@ function Home() {
   };
   const features = [
         {
-      icon: <FaLightbulb className="text-green-600" size={28} />,
-      title: t('home.card2Title'),
-      desc: t(`home.tips.${forecastTipKey}Short`),
-      link: '/tip-detail',
+      icon: <FaCloudSun className="text-green-600" size={28} />,
+      title: t('home.card1Title'),
+      desc: liveWeather
+        ? `${liveWeather.city}: ${liveWeather.temperature}°C, ${liveWeather.description}`
+        : t('home.card1Desc'),
+      link: '/weather-detail',
     },
     {
       icon: <FaLightbulb className="text-green-600" size={28} />,

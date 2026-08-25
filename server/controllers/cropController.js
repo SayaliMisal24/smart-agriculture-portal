@@ -97,5 +97,35 @@ const getLatestCropRecommendation = async (req, res) => {
     res.status(500).json({ message: 'Server error fetching crop recommendation' });
   }
 };
+// Update the confirmed crop selection AFTER it's already been locked - this is
+// an intentional exception to the usual "locked forever" rule, since farmers
+// may want to reconsider their choice
+const updateSelection = async (req, res) => {
+  try {
+    const { farmId, cropNames } = req.body;
 
-module.exports = { getCropRecommendation, selectCrops, getLatestCropRecommendation };
+    if (!farmId || !cropNames || !Array.isArray(cropNames) || cropNames.length === 0) {
+      return res.status(400).json({ message: 'farmId and at least one crop are required' });
+    }
+
+    const farm = await Farm.findOne({ _id: farmId, user: req.user.id });
+    if (!farm) {
+      return res.status(404).json({ message: 'Farm not found' });
+    }
+
+    farm.selectedCrops = cropNames;
+    await farm.save();
+
+    const record = await CropRecommendation.findOneAndUpdate(
+      { farm: farmId, user: req.user.id },
+      { selectedCrops: cropNames },
+      { new: true, sort: { createdAt: -1 } }
+    );
+
+    res.status(200).json({ message: 'Selection updated', record });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error updating crop selection' });
+  }
+};
+module.exports = { getCropRecommendation, selectCrops, getLatestCropRecommendation, updateSelection };

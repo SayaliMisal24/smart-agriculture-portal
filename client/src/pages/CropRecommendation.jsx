@@ -18,6 +18,10 @@ function CropRecommendation() {
   const [crops, setCrops] = useState([]);
   const [selectedCrops, setSelectedCrops] = useState([]); // crops the farmer has checked
   const [expandedCrop, setExpandedCrop] = useState(null);
+  const [editingSelection, setEditingSelection] = useState(false);
+  const [editSelectedCrops, setEditSelectedCrops] = useState([]);
+  const [editError, setEditError] = useState('');
+  const [savingEdit, setSavingEdit] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
 
   const [error, setError] = useState('');
@@ -125,7 +129,25 @@ function CropRecommendation() {
       setConfirming(false);
     }
   };
-
+  const handleSaveEditedSelection = async () => {
+    if (editSelectedCrops.length === 0) {
+      setEditError(t('crop.selectAtLeastOne'));
+      return;
+    }
+    setSavingEdit(true);
+    setEditError('');
+    try {
+      const res = await api.patch('/crop/update-selection', { farmId, cropNames: editSelectedCrops }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      setExistingRecord(res.data.record);
+      setEditingSelection(false);
+    } catch (err) {
+      setEditError(err.response?.data?.message || t('irrigation.error'));
+    } finally {
+      setSavingEdit(false);
+    }
+  };
   if (checkingStatus) {
     return (
       <div>
@@ -170,49 +192,138 @@ function CropRecommendation() {
             </div>
           </div>
 
-          <h3 className="font-semibold text-gray-700 mb-3">{t('crop.confirmedCrops')}:</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-            {existingRecord.recommendedCrops
-              .filter((c) => existingRecord.selectedCrops?.includes(c.name))
-              .map((c, i) => (
-                <div key={i} className="bg-green-50 border border-green-200 rounded-xl p-5">
-                  <FaCheckCircle className="text-green-600 mb-2" size={20} />
-                                    <h3 className="font-semibold text-gray-800">{t(`crop.cropNames.${c.name}`, c.name)}</h3>
-                  <p className="text-xs text-gray-500 mt-2 leading-relaxed">{t(`crop.descriptions.${c.descKey}`)}</p>
-                                    <div className="mt-2 space-y-0.5">
-                    <p className="text-sm text-gray-500">{t('crop.expectedYield')}: {c.expectedYield}</p>
-                    <p className="text-sm text-gray-500">{t('crop.duration')}: {c.duration}</p>
-                    <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {c.waterNeed}</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      localStorage.setItem('viewingCropGuide', JSON.stringify({
-                        name: c.name,
-                        descKey: c.descKey,
-                        season: formData.season,
-                        waterNeed: c.waterNeed,
-                        duration: c.duration,
-                        expectedYield: c.expectedYield,
-                        soilTypeMatch: formData.soilType,
-                      }));
-                      window.open(`/dashboard/farms/${farmId}/crop-guide`, '_blank');
-                    }}
-                    className="text-xs text-green-700 underline mt-2"
-                  >
-                    {t('cropGuide.learnMore')}
-                  </button>
-                </div>
-              ))}
+                    <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-gray-700">{t('crop.confirmedCrops')}:</h3>
+            {!editingSelection && (
+              <button
+                onClick={() => {
+                  setEditSelectedCrops(existingRecord.selectedCrops || []);
+                  setEditingSelection(true);
+                }}
+                className="text-sm text-green-700 underline"
+              >
+                {t('cropGuide.editSelection')}
+              </button>
+            )}
           </div>
 
-          <button
-            onClick={() => navigate(`/dashboard/farms/${farmId}`)}
-            className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-medium"
-          >
-            {t('wizard.continueToNext')}
-          </button>
+          {editError && (
+            <div className="bg-red-100 text-red-700 text-sm p-3 rounded mb-4">{editError}</div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+            {existingRecord.recommendedCrops
+              .filter((c) => editingSelection || existingRecord.selectedCrops?.includes(c.name))
+              .map((c, i) => {
+                const isSelected = editingSelection
+                  ? editSelectedCrops.includes(c.name)
+                  : existingRecord.selectedCrops?.includes(c.name);
+                const isExpanded = expandedCrop === c.name;
+                const tips = getCultivationTipKeys(c.waterNeed, existingRecord.season);
+
+                return (
+                  <div
+                    key={i}
+                    className={`rounded-xl border-2 transition overflow-hidden ${
+                      isSelected ? 'border-green-600 bg-green-50' : 'border-gray-100 bg-white'
+                    } ${isExpanded ? 'sm:col-span-2 md:col-span-3' : ''}`}
+                  >
+                    <div
+                      onClick={() => {
+                        if (editingSelection) {
+                          setEditSelectedCrops((prev) =>
+                            prev.includes(c.name) ? prev.filter((n) => n !== c.name) : [...prev, c.name]
+                          );
+                        }
+                      }}
+                      className={editingSelection ? 'p-5 cursor-pointer' : 'p-5'}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <FaLeaf className="text-green-600" size={20} />
+                        {editingSelection ? (
+                          <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center ${
+                            isSelected ? 'bg-green-600 border-green-600' : 'border-gray-300'
+                          }`}>
+                            {isSelected && <FaCheck className="text-white" size={12} />}
+                          </div>
+                        ) : (
+                          <FaCheckCircle className="text-green-600" size={18} />
+                        )}
+                      </div>
+                      <h3 className="font-semibold text-gray-800">{t(`crop.cropNames.${c.name}`, c.name)}</h3>
+                      <div className="mt-2 space-y-0.5">
+                        <p className="text-sm text-gray-500">{t('crop.expectedYield')}: {c.expectedYield}</p>
+                        <p className="text-sm text-gray-500">{t('crop.duration')}: {c.duration}</p>
+                        <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {c.waterNeed}</p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleExpand(c.name);
+                      }}
+                      className="w-full text-xs text-green-700 font-medium py-2 border-t border-green-100 hover:bg-green-50"
+                    >
+                      {isExpanded ? t('cropGuide.showLess') : t('cropGuide.showFullDetails')}
+                    </button>
+
+                    {isExpanded && (
+                      <div className="p-5 bg-white border-t border-green-100">
+                        <h4 className="font-semibold text-gray-700 mb-2">{t('cropGuide.overview')}</h4>
+                        <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                          {c.descKey ? t(`crop.descriptions.${c.descKey}`) : t('cropGuide.noDescription')}
+                        </p>
+                        <div className="space-y-3">
+                          <div>
+                            <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.landPrep')}</h5>
+                            <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.prepKey}`)}</p>
+                          </div>
+                          <div>
+                            <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.sowing')}</h5>
+                            <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.sowingKey}`)}</p>
+                          </div>
+                          <div>
+                            <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.careMaintenance')}</h5>
+                            <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.careKey}`)}</p>
+                          </div>
+                          <div>
+                            <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.harvesting')}</h5>
+                            <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.harvestKey}`)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+          </div>
+
+          {editingSelection ? (
+            <div className="flex gap-3">
+              <button
+                onClick={handleSaveEditedSelection}
+                disabled={savingEdit || editSelectedCrops.length === 0}
+                className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-medium disabled:opacity-50"
+              >
+                {savingEdit ? t('crop.confirming') : t('cropGuide.saveChanges')}
+              </button>
+              <button
+                onClick={() => setEditingSelection(false)}
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg font-medium"
+              >
+                {t('cropGuide.deselect')}
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => navigate(`/dashboard/farms/${farmId}`)}
+              className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-medium"
+            >
+              {t('wizard.continueToNext')}
+            </button>
+          )}
         </div>
       </div>
     );
