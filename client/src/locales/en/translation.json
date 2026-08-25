@@ -219,6 +219,8 @@
     "previous": "Previous",
     "yourSelections": "Your Selections",
     "next": "Next",
+    "daysUnit": "days",
+    "quintalPerAcreUnit": "quintal/acre",
     "seasons": {
       "kharif": "Kharif (Monsoon)",
       "rabi": "Rabi (Winter)",

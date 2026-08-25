@@ -2,7 +2,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../components/Navbar';
 import { FaLeaf, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-
+import { formatDuration, formatYield } from '../utils/cropFormat';
 function CropDetail() {
   const { t } = useTranslation();
   const { index, farmId } = useParams();
@@ -48,9 +48,9 @@ function CropDetail() {
           <h1 className="text-3xl font-bold text-gray-800 mb-4">{t(`crop.cropNames.${crop.name}`, crop.name)}</h1>
 
           <div className="space-y-3 text-gray-700">
-            <p><span className="font-medium">{t('crop.expectedYield')}:</span> {crop.expectedYield}</p>
-            <p><span className="font-medium">{t('crop.duration')}:</span> {crop.duration}</p>
-            <p><span className="font-medium">{t('crop.waterNeed')}:</span> {crop.waterNeed}</p>
+            <p><span className="font-medium">{t('crop.expectedYield')}:</span> {formatYield(crop.expectedYield, t)}</p>
+            <p><span className="font-medium">{t('crop.duration')}:</span> {formatDuration(crop.duration, t)}</p>
+            <p><span className="font-medium">{t('crop.waterNeed')}:</span> {t(`crop.waterLevels.${crop.waterNeed}`)}</p>
           </div>
 
           <div className="flex justify-between mt-8">

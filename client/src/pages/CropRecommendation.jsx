@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar';
 import api from '../utils/api';
 import { FaLeaf, FaCheckCircle, FaCheck } from 'react-icons/fa';
 import { getCultivationTipKeys } from '../utils/cultivationTips';
+import { formatDuration, formatYield } from '../utils/cropFormat';
 function CropRecommendation() {
   const { t } = useTranslation();
   const { farmId } = useParams();
@@ -252,9 +253,9 @@ function CropRecommendation() {
                       </div>
                       <h3 className="font-semibold text-gray-800">{t(`crop.cropNames.${c.name}`, c.name)}</h3>
                       <div className="mt-2 space-y-0.5">
-                        <p className="text-sm text-gray-500">{t('crop.expectedYield')}: {c.expectedYield}</p>
-                        <p className="text-sm text-gray-500">{t('crop.duration')}: {c.duration}</p>
-                        <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {c.waterNeed}</p>
+                        <p className="text-sm text-gray-500">{t('crop.expectedYield')}: {formatYield(c.expectedYield, t)}</p>
+                        <p className="text-sm text-gray-500">{t('crop.duration')}: {formatDuration(c.duration, t)}</p>
+                        <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {t(`crop.waterLevels.${c.waterNeed}`)}</p>
                       </div>
                     </div>
 
@@ -399,11 +400,11 @@ function CropRecommendation() {
                       </div>
                     </div>
                     <h3 className="font-semibold text-gray-800">{t(`crop.cropNames.${c.name}`, c.name)}</h3>
-                    <div className="mt-2 space-y-0.5">
-                      <p className="text-sm text-gray-500">{t('crop.expectedYield')}: {c.expectedYield}</p>
-                      <p className="text-sm text-gray-500">{t('crop.duration')}: {c.duration}</p>
-                      <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {c.waterNeed}</p>
-                    </div>
+                      <div className="mt-2 space-y-0.5">
+                        <p className="text-sm text-gray-500">{t('crop.expectedYield')}: {formatYield(c.expectedYield, t)}</p>
+                        <p className="text-sm text-gray-500">{t('crop.duration')}: {formatDuration(c.duration, t)}</p>
+                        <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {t(`crop.waterLevels.${c.waterNeed}`)}</p>
+                      </div>
                   </div>
 
                   <button
@@ -433,14 +434,14 @@ function CropRecommendation() {
                           <p className="text-xs text-gray-400">{t('crop.water')}</p>
                           <p className="font-medium text-gray-800 text-sm">{t(`crop.waterLevels.${c.waterNeed}`)}</p>
                         </div>
-                        <div className="bg-gray-50 rounded-lg p-3">
-                          <p className="text-xs text-gray-400">{t('crop.duration')}</p>
-                          <p className="font-medium text-gray-800 text-sm">{c.duration}</p>
-                        </div>
-                        <div className="bg-gray-50 rounded-lg p-3">
-                          <p className="text-xs text-gray-400">{t('crop.expectedYield')}</p>
-                          <p className="font-medium text-gray-800 text-sm">{c.expectedYield}</p>
-                        </div>
+                          <div className="bg-gray-50 rounded-lg p-3">
+                            <p className="text-xs text-gray-400">{t('crop.duration')}</p>
+                            <p className="font-medium text-gray-800 text-sm">{formatDuration(c.duration, t)}</p>
+                          </div>
+                          <div className="bg-gray-50 rounded-lg p-3">
+                            <p className="text-xs text-gray-400">{t('crop.expectedYield')}</p>
+                            <p className="font-medium text-gray-800 text-sm">{formatYield(c.expectedYield, t)}</p>
+                          </div>
                       </div>
                       {(() => {
                         const tips = getCultivationTipKeys(c.waterNeed, formData.season);

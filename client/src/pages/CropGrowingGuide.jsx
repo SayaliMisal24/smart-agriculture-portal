@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../components/Navbar';
+import { formatDuration, formatYield } from '../utils/cropFormat';
 import { FaLeaf, FaTint, FaCalendarAlt, FaSeedling, FaChartBar } from 'react-icons/fa';
 
 function CropGrowingGuide() {
@@ -69,14 +70,18 @@ function CropGrowingGuide() {
               <FaSeedling size={14} />
               <p className="text-xs text-gray-500">{t('crop.duration')}</p>
             </div>
-            <p className="font-semibold text-gray-800">{cropInfo.duration || '—'}</p>
+            <p className="font-semibold text-gray-800">
+              {cropInfo.duration ? formatDuration(cropInfo.duration, t) : '—'}
+            </p>
           </div>
           <div className="bg-white rounded-xl shadow p-4">
             <div className="flex items-center gap-2 mb-1 text-green-600">
               <FaChartBar size={14} />
               <p className="text-xs text-gray-500">{t('crop.expectedYield')}</p>
             </div>
-            <p className="font-semibold text-gray-800">{cropInfo.expectedYield || '—'}</p>
+            <p className="font-semibold text-gray-800">
+              {cropInfo.expectedYield ? formatYield(cropInfo.expectedYield, t) : '—'}
+            </p>
           </div>
         </div>
 
