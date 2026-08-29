@@ -273,9 +273,19 @@ function CropRecommendation() {
                     {isExpanded && (
                       <div className="p-5 bg-white border-t border-green-100">
                         <h4 className="font-semibold text-gray-700 mb-2">{t('cropGuide.overview')}</h4>
-                        <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                          {c.descKey ? t(`crop.descriptions.${c.descKey}`) : t('cropGuide.noDescription')}
+                          <p className="text-sm text-gray-600 leading-relaxed mb-2">
+                          {t('cropGuide.autoSummary', {
+                            season: t(`crop.seasons.${(editingSelection || existingRecord) ? existingRecord?.season || formData.season : formData.season}`),
+                            water: t(`crop.waterLevels.${c.waterNeed}`),
+                            duration: formatDuration(c.duration, t),
+                            yieldAmount: formatYield(c.expectedYield, t),
+                          })}
                         </p>
+                        {c.descKey && (
+                          <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                            {t(`crop.descriptions.${c.descKey}`)}
+                          </p>
+                        )}
                         <div className="space-y-3">
                           <div>
                             <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.landPrep')}</h5>
@@ -421,9 +431,19 @@ function CropRecommendation() {
                   {isExpanded && (
                     <div className="p-5 bg-white border-t border-green-100">
                       <h4 className="font-semibold text-gray-700 mb-2">{t('cropGuide.overview')}</h4>
-                      <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                        {c.descKey ? t(`crop.descriptions.${c.descKey}`) : t('cropGuide.noDescription')}
-                      </p>
+                                              <p className="text-sm text-gray-600 leading-relaxed mb-2">
+                          {t('cropGuide.autoSummary', {
+                            season: t(`crop.seasons.${(editingSelection || existingRecord) ? existingRecord?.season || formData.season : formData.season}`),
+                            water: t(`crop.waterLevels.${c.waterNeed}`),
+                            duration: formatDuration(c.duration, t),
+                            yieldAmount: formatYield(c.expectedYield, t),
+                          })}
+                        </p>
+                        {c.descKey && (
+                          <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                            {t(`crop.descriptions.${c.descKey}`)}
+                          </p>
+                        )}
 
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <div className="bg-gray-50 rounded-lg p-3">

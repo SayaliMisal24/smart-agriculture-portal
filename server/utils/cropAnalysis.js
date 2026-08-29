@@ -97,4 +97,4 @@ function recommendCrops({ season, soilType, waterAvailability }) {
   return recommendedCrops;
 }
 
-module.exports = { recommendCrops };
+module.exports = { recommendCrops, cropDatabase };

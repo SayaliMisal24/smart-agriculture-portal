@@ -1,6 +1,4 @@
-// Calculates irrigation advice using codes/keys instead of hardcoded English sentences,
-// so the frontend can translate them into any language
-function calculateIrrigation({ soilMoisture, weatherCondition, temperature, lastIrrigationDate, rainExpectedSoon }) {
+function calculateIrrigation({ soilMoisture, weatherCondition, temperature, lastIrrigationDate, rainExpectedSoon, cropWaterNeed }) {
   let recommendationKey = '';
   let waterAmountKey = '';
   let nextIrrigationDays = 0;
@@ -14,7 +12,7 @@ function calculateIrrigation({ soilMoisture, weatherCondition, temperature, last
   } else if (rainExpectedSoon && soilMoisture !== 'dry_cracked') {
     recommendationKey = 'skipRainSoon';
     waterAmountKey = 'noneRainExpected';
-    nextIrrigationDays = 5;
+    nextIrrigationDays = 6;
   } else if (soilMoisture === 'waterlogged') {
     recommendationKey = 'skipWaterlogged';
     waterAmountKey = 'none';
@@ -43,6 +41,15 @@ function calculateIrrigation({ soilMoisture, weatherCondition, temperature, last
       waterAmountKey = 'none';
       nextIrrigationDays = 4;
     }
+  }
+
+  // Adjust the interval based on the crop's own water requirement.
+  // High-water crops (rice, sugarcane, banana) need more frequent watering
+  // than the base calculation assumes; low-water crops can safely wait longer.
+  if (cropWaterNeed === 'high') {
+    nextIrrigationDays = Math.max(1, nextIrrigationDays - 1);
+  } else if (cropWaterNeed === 'low') {
+    nextIrrigationDays = nextIrrigationDays + 1;
   }
 
   const baseDate = lastIrrigationDate ? new Date(lastIrrigationDate) : new Date();

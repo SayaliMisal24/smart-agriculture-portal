@@ -215,6 +215,12 @@ function SmartIrrigation() {
                 {advice.lastIrrigationDate && (
                   <p className="mt-1">{t('irrigation.lastIrrigated')}: {formatDate(advice.lastIrrigationDate)}</p>
                 )}
+                {advice.selectedCropName && (
+                  <p className="mt-1">
+                    {t('irrigation.calculatedFor')}: {t(`crop.cropNames.${advice.selectedCropName}`, advice.selectedCropName)}
+                    {' '}({t(`crop.waterLevels.${advice.cropWaterNeed}`)} {t('irrigation.waterNeedLabel')})
+                  </p>
+                )}
               </div>
             </div>
 

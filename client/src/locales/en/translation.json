@@ -351,7 +351,8 @@
     "careMaintenance": "Care & Maintenance",
     "harvesting": "Harvesting",
     "editSelection": "Edit Selection",
-    "saveChanges": "Save Changes"
+    "saveChanges": "Save Changes",
+    "autoSummary": "This is a {{season}}-season crop that requires {{water}} water availability, with a typical growing duration of {{duration}} and an expected yield around {{yieldAmount}}."
   },
   "farms": {
     "title": "My Farms",
@@ -426,6 +427,8 @@
     "historyTitle": "Irrigation History",
     "sowingDateLabel": "Sowing Date",
     "checkAgainDate": "Check Again On",
+    "calculatedFor": "Calculated for",
+    "waterNeedLabel": "water crop",
     "codes": {
       "skipRainNow": "Skip irrigation today — rain is occurring right now.",
       "skipRainSoon": "Rain is expected in the next 2-3 days. You can skip irrigation - the rainfall should replenish your soil moisture.",

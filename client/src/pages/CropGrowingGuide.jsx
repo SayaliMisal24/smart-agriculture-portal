@@ -39,11 +39,21 @@ function CropGrowingGuide() {
           <h1 className="text-2xl font-bold text-gray-800">{t(`crop.cropNames.${cropInfo.name}`, cropInfo.name)}</h1>
         </div>
 
-        <div className="bg-white rounded-xl shadow p-6 mb-6">
+          <div className="bg-white rounded-xl shadow p-6 mb-6">
           <h3 className="font-semibold text-gray-700 mb-2">{t('cropGuide.overview')}</h3>
-          <p className="text-sm text-gray-600 leading-relaxed">
-            {cropInfo.descKey ? t(`crop.descriptions.${cropInfo.descKey}`) : t('cropGuide.noDescription')}
+          <p className="text-sm text-gray-600 leading-relaxed mb-3">
+            {t('cropGuide.autoSummary', {
+              season: cropInfo.season ? t(`crop.seasons.${cropInfo.season}`) : '—',
+              water: cropInfo.waterNeed ? t(`crop.waterLevels.${cropInfo.waterNeed}`) : '—',
+              duration: cropInfo.duration ? formatDuration(cropInfo.duration, t) : '—',
+              yieldAmount: cropInfo.expectedYield ? formatYield(cropInfo.expectedYield, t) : '—',
+            })}
           </p>
+          {cropInfo.descKey && (
+            <p className="text-sm text-gray-600 leading-relaxed">
+              {t(`crop.descriptions.${cropInfo.descKey}`)}
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-6">

@@ -4,7 +4,7 @@ const Farm = require('../models/Farm');
 const IrrigationLog = require('../models/IrrigationLog');
 const { calculateIrrigation } = require('../utils/irrigationAnalysis');
 const { completeStep } = require('../utils/stepProgress');
-
+const { cropDatabase } = require('../utils/cropAnalysis');
 const IRRIGATION_STEP = 4;
 
 // Step A: Farmer sets the sowing date (only needs to be done once)
@@ -47,17 +47,29 @@ const getIrrigationAdvice = async (req, res) => {
       return res.status(400).json({ message: 'Please complete a Soil Health report first.' });
     }
 
+    const farm = await Farm.findOne({ _id: farmId, user: req.user.id });
+    if (!farm) {
+      return res.status(404).json({ message: 'Farm not found' });
+    }
+
+    // Figure out the selected crop's own water requirement, if one is chosen
+    let cropWaterNeed = 'moderate';
+    if (farm.selectedCrops && farm.selectedCrops.length > 0) {
+      const cropInfo = cropDatabase.find((c) => c.name === farm.selectedCrops[0]);
+      if (cropInfo) {
+        cropWaterNeed = cropInfo.water;
+      }
+    }
+
     const apiKey = process.env.OPENWEATHER_API_KEY?.trim();
 
-    // Current weather
     const currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
     const weatherRes = await axios.get(currentUrl);
     const weatherData = weatherRes.data;
 
-    // 5-day forecast (checked every 3 hours) - we scan the next ~3 days for any rain
     const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}`;
     const forecastRes = await axios.get(forecastUrl);
-    const forecastList = forecastRes.data.list.slice(0, 24); // next ~3 days (8 entries/day x 3)
+    const forecastList = forecastRes.data.list.slice(0, 24);
 
     const rainExpectedSoon = forecastList.some((entry) =>
       ['Rain', 'Drizzle', 'Thunderstorm'].includes(entry.weather[0].main)
@@ -71,11 +83,11 @@ const getIrrigationAdvice = async (req, res) => {
       temperature: weatherData.main.temp,
       lastIrrigationDate: lastLog ? lastLog.date : null,
       rainExpectedSoon,
+      cropWaterNeed,
     });
 
     let updatedFarm = null;
-    const farm = await Farm.findOne({ _id: farmId, user: req.user.id });
-    if (farm && !farm.completedSteps.includes(IRRIGATION_STEP) && farm.currentStep === IRRIGATION_STEP) {
+    if (!farm.completedSteps.includes(IRRIGATION_STEP) && farm.currentStep === IRRIGATION_STEP) {
       updatedFarm = await completeStep(farmId, IRRIGATION_STEP);
     }
 
@@ -88,6 +100,8 @@ const getIrrigationAdvice = async (req, res) => {
       rainExpectedSoon,
       soilMoisture: latestSoil.moisture,
       lastIrrigationDate: lastLog ? lastLog.date : null,
+      cropWaterNeed,
+      selectedCropName: farm.selectedCrops?.[0] || null,
       farm: updatedFarm,
     });
   } catch (error) {
@@ -95,7 +109,6 @@ const getIrrigationAdvice = async (req, res) => {
     res.status(500).json({ message: 'Could not calculate irrigation advice.' });
   }
 };
-
 // Step C: Farmer logs that they actually irrigated on a specific date
 const logIrrigation = async (req, res) => {
   try {
