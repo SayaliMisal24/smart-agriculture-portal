@@ -11,10 +11,20 @@ function Home() {
   const { token } = useAuth();
   const [liveWeather, setLiveWeather] = useState(null);
   const [forecastTipKey, setForecastTipKey] = useState('default');
+  const [stats, setStats] = useState({ userCount: 0, visitCount: 0 });
   useEffect(() => {
     fetchDefaultWeather();
+    loadStats();
   }, []);
-
+    const loadStats = async () => {
+    try {
+      await api.post('/stats/visit');
+      const res = await api.get('/stats');
+      setStats(res.data);
+    } catch (err) {
+      console.error('Could not load site stats', err);
+    }
+  };
   const fetchDefaultWeather = () => {
     if (!navigator.geolocation) {
       // Browser doesn't support geolocation at all - fall back to a default city
@@ -102,6 +112,10 @@ function Home() {
           <p className="mt-4 text-lg text-gray-100">
             {t('home.heroSubtitle')}
           </p>
+            <div className="flex gap-6 mb-4 text-white/90 text-sm">
+              <span>{t('home.usersLabel')}: <strong>{stats.userCount}</strong></span>
+              <span>{t('home.visitsLabel')}: <strong>{stats.visitCount}</strong></span>
+            </div>
           <div className="mt-6 flex gap-4">
             <Link
               to={token ? '/dashboard/farms' : '/signup'}

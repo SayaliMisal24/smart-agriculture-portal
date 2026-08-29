@@ -2,7 +2,22 @@ function calculateIrrigation({ soilMoisture, weatherCondition, temperature, last
   let recommendationKey = '';
   let waterAmountKey = '';
   let nextIrrigationDays = 0;
+  // No irrigation has ever been logged for this farm yet - encourage the
+  // farmer to log their first watering right away rather than showing a
+  // calculated multi-day estimate that has nothing real to base itself on
+  if (!lastIrrigationDate) {
+    const isRainingNow = weatherCondition === 'Rain' || weatherCondition === 'Drizzle' || weatherCondition === 'Thunderstorm';
+    const recommendationKey = isRainingNow ? 'firstLogRaining' : 'firstLogPrompt';
+    const nextDate = new Date();
+    nextDate.setDate(nextDate.getDate() + 1); // suggest "by tomorrow" as the starting point
 
+    return {
+      recommendationKey,
+      waterAmountKey: isRainingNow ? 'none' : 'moderate1520',
+      nextIrrigationDays: 1,
+      nextIrrigationDate: nextDate,
+    };
+  }
   const isRainingNow = weatherCondition === 'Rain' || weatherCondition === 'Drizzle' || weatherCondition === 'Thunderstorm';
 
   if (isRainingNow) {

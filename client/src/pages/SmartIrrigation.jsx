@@ -84,7 +84,7 @@ function SmartIrrigation() {
     }
   };
 
-  const handleLogIrrigation = async (e) => {
+    const handleLogIrrigation = async (e) => {
     e.preventDefault();
     if (!logDateInput) return;
 
@@ -99,7 +99,13 @@ function SmartIrrigation() {
       setLogDateInput('');
       await loadAdviceAndHistory(farm.location);
     } catch (err) {
-      setError(err.response?.data?.message || t('irrigation.error'));
+      const msg = err.response?.data?.message;
+      const recentDate = err.response?.data?.mostRecentDate;
+      if (recentDate) {
+        setError(`${msg} (${formatDate(recentDate)})`);
+      } else {
+        setError(msg || t('irrigation.error'));
+      }
     } finally {
       setLoggingIrrigation(false);
     }

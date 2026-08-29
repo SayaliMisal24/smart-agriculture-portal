@@ -13,6 +13,7 @@ const cropRoutes = require('./routes/cropRoutes');
 const weatherRoutes = require('./routes/weatherRoutes');
 const irrigationRoutes = require('./routes/irrigationRoutes');
 const calendarRoutes = require('./routes/calendarRoutes');
+const statsRoutes = require('./routes/statsRoutes');
 // Create the Express app
 const app = express();
 
@@ -35,6 +36,7 @@ app.use('/api/crop', cropRoutes);
 app.use('/api/weather', weatherRoutes);
 app.use('/api/irrigation', irrigationRoutes);
 app.use('/api/calendar', calendarRoutes);
+app.use('/api/stats', statsRoutes);
 // A simple test route
 app.get('/', (req, res) => {
   res.json({ message: 'Smart Agriculture Portal API is running!' });

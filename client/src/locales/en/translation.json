@@ -36,7 +36,9 @@
     "card3Desc": "Wheat and tomato prices are trending up this week across major markets.",
     "card4Title": "Farmer Success Story",
     "card4Desc": "\"This portal helped me plan irrigation better and save water.\" — A. Patil, Nashik",
-        "tips": {
+    "usersLabel": "Farmers Registered",
+    "visitsLabel": "Site Visits",
+    "tips": {
       "rainy": "Rain is active in your area — hold off on spraying pesticides, as it will wash off before working.",
       "rainyShort": "Hold off on spraying — rain expected",
       "rainyLong": "Our forecast indicates rain across multiple periods over the next two days in your area, and this changes what your crops need right now. Spraying pesticides or fertilizer during this window is largely wasted, since the water washes the product off leaves before it has time to work. This is also a good time to check your field drainage — standing water around root zones for more than a day can lead to root rot, especially in crops that aren't naturally water-tolerant. If your soil already tends to hold water, consider clearing any blocked drainage channels now while it's easy to see where water is pooling. Once the rain clears, give the field a day to firm up before walking heavy equipment across it, since wet soil compacts easily and that compaction can hurt root growth for weeks afterward. Plan to hold off on any pesticide or fertilizer application until at least a few hours after the rain fully stops.",
@@ -437,7 +439,9 @@
       "irrigateDryHot": "Soil is dry and temperature is high, with no rain expected. Irrigate today, preferably early morning or evening.",
       "irrigateDry": "Soil is dry with no rain expected. Irrigate today.",
       "irrigateHot": "Soil moisture is okay, but high temperature increases evaporation. Light irrigation recommended.",
-      "adequate": "Soil moisture is adequate. No irrigation needed today."
+      "adequate": "Soil moisture is adequate. No irrigation needed today.",
+      "firstLogPrompt": "No irrigation has been logged yet for this farm. We recommend irrigating soon and logging the date below, so future recommendations can be calculated accurately.",
+      "firstLogRaining": "No irrigation has been logged yet for this farm. It's currently raining, so you can wait — log your first irrigation date once you actually water the field."
     },
     "waterAmounts": {
       "none": "None needed",

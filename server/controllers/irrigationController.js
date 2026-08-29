@@ -118,6 +118,15 @@ const logIrrigation = async (req, res) => {
       return res.status(400).json({ message: 'farmId and date are required' });
     }
 
+    const mostRecent = await IrrigationLog.findOne({ user: req.user.id, farm: farmId }).sort({ date: -1 });
+
+    if (mostRecent && new Date(date) <= new Date(mostRecent.date)) {
+      return res.status(400).json({
+        message: 'This date is not later than your most recent logged irrigation. The next irrigation date is based on your latest entry.',
+        mostRecentDate: mostRecent.date,
+      });
+    }
+
     const log = new IrrigationLog({
       user: req.user.id,
       farm: farmId,
