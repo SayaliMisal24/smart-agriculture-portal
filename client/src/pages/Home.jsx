@@ -6,22 +6,29 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FaCloudSun, FaChartLine, FaLightbulb, FaQuoteLeft } from 'react-icons/fa';
 import { getTipKeyFromForecast } from '../utils/tipHelper';
-
+import { getOrCreateVisitorId } from '../utils/visitorId';
 function Home() {
   const { t } = useTranslation();
   const { token } = useAuth();
   const [liveWeather, setLiveWeather] = useState(null);
   const [forecastTipKey, setForecastTipKey] = useState('default');
-  const [stats, setStats] = useState({ userCount: 0, visitCount: 0 });
+    const [stats, setStats] = useState({
+    userCount: 0,
+    farmCount: 0,
+    soilReportCount: 0,
+    cropConfirmedCount: 0,
+    uniqueVisitorCount: 0,
+  });
 
   useEffect(() => {
     fetchDefaultWeather();
     loadStats();
   }, []);
 
-  const loadStats = async () => {
+    const loadStats = async () => {
     try {
-      await api.post('/stats/visit');
+      const visitorId = getOrCreateVisitorId();
+      await api.post('/stats/visit', { visitorId });
       const res = await api.get('/stats');
       setStats(res.data);
     } catch (err) {
@@ -162,25 +169,29 @@ function Home() {
           ))}
         </motion.div>
       </section>
-
-      {/* STATS SECTION - always visible */}
+      {/* STATS SECTION - real platform activity data */}
       <section className="max-w-6xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+        <h2 className="text-2xl font-bold text-gray-800 text-center mb-8">{t('home.statsTitle')}</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 text-center">
+          <div className="bg-white rounded-2xl shadow p-6">
+            <p className="text-3xl font-bold text-green-700">{stats.uniqueVisitorCount}</p>
+            <p className="text-sm text-gray-500 mt-1">{t('home.visitsLabel')}</p>
+          </div>
           <div className="bg-white rounded-2xl shadow p-6">
             <p className="text-3xl font-bold text-green-700">{stats.userCount}</p>
             <p className="text-sm text-gray-500 mt-1">{t('home.usersLabel')}</p>
           </div>
           <div className="bg-white rounded-2xl shadow p-6">
-            <p className="text-3xl font-bold text-green-700">{stats.visitCount}</p>
-            <p className="text-sm text-gray-500 mt-1">{t('home.visitsLabel')}</p>
+            <p className="text-3xl font-bold text-green-700">{stats.farmCount}</p>
+            <p className="text-sm text-gray-500 mt-1">{t('home.farmsLabel')}</p>
           </div>
           <div className="bg-white rounded-2xl shadow p-6">
-            <p className="text-3xl font-bold text-green-700">11</p>
-            <p className="text-sm text-gray-500 mt-1">{t('home.stepsLabel')}</p>
+            <p className="text-3xl font-bold text-green-700">{stats.soilReportCount}</p>
+            <p className="text-sm text-gray-500 mt-1">{t('home.soilReportsLabel')}</p>
           </div>
           <div className="bg-white rounded-2xl shadow p-6">
-            <p className="text-3xl font-bold text-green-700">2</p>
-            <p className="text-sm text-gray-500 mt-1">{t('home.languagesLabel')}</p>
+            <p className="text-3xl font-bold text-green-700">{stats.cropConfirmedCount}</p>
+            <p className="text-sm text-gray-500 mt-1">{t('home.cropsConfirmedLabel')}</p>
           </div>
         </div>
       </section>
