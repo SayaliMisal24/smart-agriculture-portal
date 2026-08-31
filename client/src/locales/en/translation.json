@@ -38,6 +38,8 @@
     "card4Desc": "\"This portal helped me plan irrigation better and save water.\" — A. Patil, Nashik",
     "usersLabel": "Farmers Registered",
     "visitsLabel": "Site Visits",
+    "stepsLabel": "Guided Steps",
+    "languagesLabel": "Languages Supported",
     "tips": {
       "rainy": "Rain is active in your area — hold off on spraying pesticides, as it will wash off before working.",
       "rainyShort": "Hold off on spraying — rain expected",

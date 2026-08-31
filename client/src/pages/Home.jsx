@@ -6,17 +6,20 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FaCloudSun, FaChartLine, FaLightbulb, FaQuoteLeft } from 'react-icons/fa';
 import { getTipKeyFromForecast } from '../utils/tipHelper';
+
 function Home() {
   const { t } = useTranslation();
   const { token } = useAuth();
   const [liveWeather, setLiveWeather] = useState(null);
   const [forecastTipKey, setForecastTipKey] = useState('default');
   const [stats, setStats] = useState({ userCount: 0, visitCount: 0 });
+
   useEffect(() => {
     fetchDefaultWeather();
     loadStats();
   }, []);
-    const loadStats = async () => {
+
+  const loadStats = async () => {
     try {
       await api.post('/stats/visit');
       const res = await api.get('/stats');
@@ -25,9 +28,9 @@ function Home() {
       console.error('Could not load site stats', err);
     }
   };
+
   const fetchDefaultWeather = () => {
     if (!navigator.geolocation) {
-      // Browser doesn't support geolocation at all - fall back to a default city
       fetchWeatherByCity('Nagpur');
       return;
     }
@@ -38,14 +41,13 @@ function Home() {
         fetchWeatherByCoords(latitude, longitude);
       },
       (error) => {
-        // User denied permission or location failed - fall back to a default city
         console.error('Geolocation failed or denied', error);
         fetchWeatherByCity('Nagpur');
       }
     );
   };
 
-    const fetchWeatherByCoords = async (lat, lon) => {
+  const fetchWeatherByCoords = async (lat, lon) => {
     try {
       const res = await api.get(`/weather/public?lat=${lat}&lon=${lon}`);
       setLiveWeather(res.data.weather);
@@ -66,8 +68,9 @@ function Home() {
       console.error('Could not load fallback weather', err);
     }
   };
+
   const features = [
-        {
+    {
       icon: <FaCloudSun className="text-green-600" size={28} />,
       title: t('home.card1Title'),
       desc: liveWeather
@@ -78,7 +81,7 @@ function Home() {
     {
       icon: <FaLightbulb className="text-green-600" size={28} />,
       title: t('home.card2Title'),
-      desc: t(`home.tips.${forecastTipKey}`),
+      desc: t(`home.tips.${forecastTipKey}Short`),
       link: '/tip-detail',
     },
     {
@@ -94,7 +97,7 @@ function Home() {
       link: '/success-story-detail',
     },
   ];
-  
+
   return (
     <div>
       {/* HERO SECTION */}
@@ -102,7 +105,6 @@ function Home() {
         className="relative bg-cover bg-center min-h-[500px] flex items-center"
         style={{ backgroundImage: `url(https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1600&q=80)` }}
       >
-        {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-black/30"></div>
 
         <div className="relative max-w-3xl mx-8 md:mx-16 text-white">
@@ -112,10 +114,6 @@ function Home() {
           <p className="mt-4 text-lg text-gray-100">
             {t('home.heroSubtitle')}
           </p>
-            <div className="flex gap-6 mb-4 text-white/90 text-sm">
-              <span>{t('home.usersLabel')}: <strong>{stats.userCount}</strong></span>
-              <span>{t('home.visitsLabel')}: <strong>{stats.visitCount}</strong></span>
-            </div>
           <div className="mt-6 flex gap-4">
             <Link
               to={token ? '/dashboard/farms' : '/signup'}
@@ -133,15 +131,14 @@ function Home() {
         </div>
       </section>
 
- {/* FEATURE CARDS */}
+      {/* FEATURE CARDS - logged-out visitors only */}
+            {/* FEATURE CARDS - shown to everyone, logged in or not */}
       <section className="max-w-6xl mx-auto px-6 -mt-12 relative z-10">
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"
           initial="hidden"
           animate="visible"
-          variants={{
-            visible: { transition: { staggerChildren: 0.15 } },
-          }}
+          variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
         >
           {features.map((f, i) => (
             <motion.div
@@ -166,7 +163,27 @@ function Home() {
         </motion.div>
       </section>
 
-      <div className="h-20"></div>
+      {/* STATS SECTION - always visible */}
+      <section className="max-w-6xl mx-auto px-6 py-16">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+          <div className="bg-white rounded-2xl shadow p-6">
+            <p className="text-3xl font-bold text-green-700">{stats.userCount}</p>
+            <p className="text-sm text-gray-500 mt-1">{t('home.usersLabel')}</p>
+          </div>
+          <div className="bg-white rounded-2xl shadow p-6">
+            <p className="text-3xl font-bold text-green-700">{stats.visitCount}</p>
+            <p className="text-sm text-gray-500 mt-1">{t('home.visitsLabel')}</p>
+          </div>
+          <div className="bg-white rounded-2xl shadow p-6">
+            <p className="text-3xl font-bold text-green-700">11</p>
+            <p className="text-sm text-gray-500 mt-1">{t('home.stepsLabel')}</p>
+          </div>
+          <div className="bg-white rounded-2xl shadow p-6">
+            <p className="text-3xl font-bold text-green-700">2</p>
+            <p className="text-sm text-gray-500 mt-1">{t('home.languagesLabel')}</p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
