@@ -100,6 +100,11 @@ function CropCalendar() {
                 {t(`calendar.months.${a.month.toLowerCase()}`, a.month)}
               </p>
               <p className="text-sm text-gray-500">{t(`calendar.activities.${a.activityKey}`)}</p>
+              {a.weatherNoteKey && (
+                <p className="text-xs text-blue-600 bg-blue-50 rounded-md px-2 py-1 mt-1 inline-block">
+                  {t(`calendar.${a.weatherNoteKey}`)}
+                </p>
+              )}
             </div>
           </div>
         ))}

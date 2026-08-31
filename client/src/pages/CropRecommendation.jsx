@@ -3,9 +3,10 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../components/Navbar';
 import api from '../utils/api';
-import { FaLeaf, FaCheckCircle, FaCheck } from 'react-icons/fa';
-import { getCultivationTipKeys } from '../utils/cultivationTips';
 import { formatDuration, formatYield } from '../utils/cropFormat';
+import { getCultivationTipKeys } from '../utils/cultivationTips';
+import { FaLeaf, FaCheckCircle, FaCheck } from 'react-icons/fa';
+
 function CropRecommendation() {
   const { t } = useTranslation();
   const { farmId } = useParams();
@@ -17,13 +18,14 @@ function CropRecommendation() {
 
   const [formData, setFormData] = useState({ season: '', soilType: '', waterAvailability: '' });
   const [crops, setCrops] = useState([]);
-  const [selectedCrops, setSelectedCrops] = useState([]); // crops the farmer has checked
+  const [selectedCrops, setSelectedCrops] = useState([]);
+  const [confirmed, setConfirmed] = useState(false);
   const [expandedCrop, setExpandedCrop] = useState(null);
+
   const [editingSelection, setEditingSelection] = useState(false);
   const [editSelectedCrops, setEditSelectedCrops] = useState([]);
   const [editError, setEditError] = useState('');
   const [savingEdit, setSavingEdit] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -101,17 +103,16 @@ function CropRecommendation() {
     }
   };
 
-  // Toggle a crop's checkbox on/off
   const toggleCropSelection = (cropName) => {
     setSelectedCrops((prev) =>
-      prev.includes(cropName)
-        ? prev.filter((c) => c !== cropName) // uncheck: remove it
-        : [...prev, cropName] // check: add it
+      prev.includes(cropName) ? prev.filter((c) => c !== cropName) : [...prev, cropName]
     );
   };
+
   const toggleExpand = (cropName) => {
     setExpandedCrop((prev) => (prev === cropName ? null : cropName));
   };
+
   const handleConfirmSelection = async () => {
     if (selectedCrops.length === 0) {
       setError(t('crop.selectAtLeastOne'));
@@ -130,6 +131,7 @@ function CropRecommendation() {
       setConfirming(false);
     }
   };
+
   const handleSaveEditedSelection = async () => {
     if (editSelectedCrops.length === 0) {
       setEditError(t('crop.selectAtLeastOne'));
@@ -149,6 +151,7 @@ function CropRecommendation() {
       setSavingEdit(false);
     }
   };
+
   if (checkingStatus) {
     return (
       <div>
@@ -160,12 +163,12 @@ function CropRecommendation() {
     );
   }
 
-  // Already completed before (in an earlier visit) - read only
+  // Already completed before - read only, with expandable details + edit option
   if (alreadyCompleted && existingRecord) {
     return (
       <div>
         <Navbar />
-        <div className="max-w-3xl mx-auto p-6">
+        <div className="max-w-4xl mx-auto p-6">
           <Link to={`/dashboard/farms/${farmId}`} className="text-sm text-green-700 hover:underline">
             ← {t('farmDetail.backToFarms')}
           </Link>
@@ -193,7 +196,7 @@ function CropRecommendation() {
             </div>
           </div>
 
-                    <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold text-gray-700">{t('crop.confirmedCrops')}:</h3>
             {!editingSelection && (
               <button
@@ -273,9 +276,9 @@ function CropRecommendation() {
                     {isExpanded && (
                       <div className="p-5 bg-white border-t border-green-100">
                         <h4 className="font-semibold text-gray-700 mb-2">{t('cropGuide.overview')}</h4>
-                          <p className="text-sm text-gray-600 leading-relaxed mb-2">
+                        <p className="text-sm text-gray-600 leading-relaxed mb-2">
                           {t('cropGuide.autoSummary', {
-                            season: t(`crop.seasons.${(editingSelection || existingRecord) ? existingRecord?.season || formData.season : formData.season}`),
+                            season: t(`crop.seasons.${existingRecord.season}`),
                             water: t(`crop.waterLevels.${c.waterNeed}`),
                             duration: formatDuration(c.duration, t),
                             yieldAmount: formatYield(c.expectedYield, t),
@@ -355,9 +358,9 @@ function CropRecommendation() {
               <div key={i} className="bg-green-50 border border-green-200 rounded-xl p-5">
                 <FaCheckCircle className="text-green-600 mb-2" size={20} />
                 <h3 className="font-semibold text-gray-800">{t(`crop.cropNames.${c.name}`, c.name)}</h3>
-                <p className="text-sm text-gray-500 mt-2">{t('crop.expectedYield')}: {c.expectedYield}</p>
-                <p className="text-sm text-gray-500">{t('crop.duration')}: {c.duration}</p>
-                <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {c.waterNeed}</p>
+                <p className="text-sm text-gray-500 mt-2">{t('crop.expectedYield')}: {formatYield(c.expectedYield, t)}</p>
+                <p className="text-sm text-gray-500">{t('crop.duration')}: {formatDuration(c.duration, t)}</p>
+                <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {t(`crop.waterLevels.${c.waterNeed}`)}</p>
               </div>
             ))}
           </div>
@@ -386,20 +389,23 @@ function CropRecommendation() {
               {error}
             </div>
           )}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
             {crops.map((c, i) => {
               const isChecked = selectedCrops.includes(c.name);
               const isExpanded = expandedCrop === c.name;
+              const tips = getCultivationTipKeys(c.waterNeed, formData.season);
+
               return (
                 <div
                   key={i}
                   className={`rounded-xl border-2 transition overflow-hidden ${
-                    isChecked ? 'border-green-600 bg-green-50' : 'border-gray-100 bg-white'
+                    isChecked ? 'border-green-600 bg-green-50' : 'border-gray-100 bg-white hover:border-green-200'
                   } ${isExpanded ? 'sm:col-span-2 md:col-span-3' : ''}`}
                 >
                   <div
                     onClick={() => toggleCropSelection(c.name)}
-                    className="p-5 cursor-pointer hover:border-green-200"
+                    className="p-5 cursor-pointer"
                   >
                     <div className="flex items-center justify-between mb-2">
                       <FaLeaf className="text-green-600" size={20} />
@@ -410,11 +416,11 @@ function CropRecommendation() {
                       </div>
                     </div>
                     <h3 className="font-semibold text-gray-800">{t(`crop.cropNames.${c.name}`, c.name)}</h3>
-                      <div className="mt-2 space-y-0.5">
-                        <p className="text-sm text-gray-500">{t('crop.expectedYield')}: {formatYield(c.expectedYield, t)}</p>
-                        <p className="text-sm text-gray-500">{t('crop.duration')}: {formatDuration(c.duration, t)}</p>
-                        <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {t(`crop.waterLevels.${c.waterNeed}`)}</p>
-                      </div>
+                    <div className="mt-2 space-y-0.5">
+                      <p className="text-sm text-gray-500">{t('crop.expectedYield')}: {formatYield(c.expectedYield, t)}</p>
+                      <p className="text-sm text-gray-500">{t('crop.duration')}: {formatDuration(c.duration, t)}</p>
+                      <p className="text-sm text-gray-500">{t('crop.waterNeed')}: {t(`crop.waterLevels.${c.waterNeed}`)}</p>
+                    </div>
                   </div>
 
                   <button
@@ -431,61 +437,38 @@ function CropRecommendation() {
                   {isExpanded && (
                     <div className="p-5 bg-white border-t border-green-100">
                       <h4 className="font-semibold text-gray-700 mb-2">{t('cropGuide.overview')}</h4>
-                                              <p className="text-sm text-gray-600 leading-relaxed mb-2">
-                          {t('cropGuide.autoSummary', {
-                            season: t(`crop.seasons.${(editingSelection || existingRecord) ? existingRecord?.season || formData.season : formData.season}`),
-                            water: t(`crop.waterLevels.${c.waterNeed}`),
-                            duration: formatDuration(c.duration, t),
-                            yieldAmount: formatYield(c.expectedYield, t),
-                          })}
+                      <p className="text-sm text-gray-600 leading-relaxed mb-2">
+                        {t('cropGuide.autoSummary', {
+                          season: t(`crop.seasons.${formData.season}`),
+                          water: t(`crop.waterLevels.${c.waterNeed}`),
+                          duration: formatDuration(c.duration, t),
+                          yieldAmount: formatYield(c.expectedYield, t),
+                        })}
+                      </p>
+                      {c.descKey && (
+                        <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                          {t(`crop.descriptions.${c.descKey}`)}
                         </p>
-                        {c.descKey && (
-                          <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                            {t(`crop.descriptions.${c.descKey}`)}
-                          </p>
-                        )}
-
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <div className="bg-gray-50 rounded-lg p-3">
-                          <p className="text-xs text-gray-400">{t('crop.season')}</p>
-                          <p className="font-medium text-gray-800 text-sm">{t(`crop.seasons.${formData.season}`)}</p>
+                      )}
+                      <div className="space-y-3">
+                        <div>
+                          <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.landPrep')}</h5>
+                          <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.prepKey}`)}</p>
                         </div>
-                        <div className="bg-gray-50 rounded-lg p-3">
-                          <p className="text-xs text-gray-400">{t('crop.water')}</p>
-                          <p className="font-medium text-gray-800 text-sm">{t(`crop.waterLevels.${c.waterNeed}`)}</p>
+                        <div>
+                          <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.sowing')}</h5>
+                          <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.sowingKey}`)}</p>
                         </div>
-                          <div className="bg-gray-50 rounded-lg p-3">
-                            <p className="text-xs text-gray-400">{t('crop.duration')}</p>
-                            <p className="font-medium text-gray-800 text-sm">{formatDuration(c.duration, t)}</p>
-                          </div>
-                          <div className="bg-gray-50 rounded-lg p-3">
-                            <p className="text-xs text-gray-400">{t('crop.expectedYield')}</p>
-                            <p className="font-medium text-gray-800 text-sm">{formatYield(c.expectedYield, t)}</p>
-                          </div>
+                        <div>
+                          <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.careMaintenance')}</h5>
+                          <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.careKey}`)}</p>
+                        </div>
+                        <div>
+                          <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.harvesting')}</h5>
+                          <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.harvestKey}`)}</p>
+                        </div>
                       </div>
-                      {(() => {
-                        const tips = getCultivationTipKeys(c.waterNeed, formData.season);
-                        return (
-                          <div className="mt-4 space-y-3">
-                            <div>
-                              <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.landPrep')}</h5>
-                              <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.prepKey}`)}</p>
-                            </div>
-                            <div>
-                              <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.sowing')}</h5>
-                              <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.sowingKey}`)}</p>
-                            </div>
-                            <div>
-                              <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.careMaintenance')}</h5>
-                              <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.careKey}`)}</p>
-                            </div>
-                            <div>
-                              <h5 className="text-xs font-semibold text-gray-500 uppercase mb-1">{t('cropGuide.harvesting')}</h5>
-                              <p className="text-sm text-gray-600">{t(`cultivationTips.${tips.harvestKey}`)}</p>
-                            </div>
-                          </div>
-                        );
-                      })()}
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -538,6 +521,15 @@ function CropRecommendation() {
         {error && (
           <div className="bg-red-100 text-red-700 text-sm p-3 rounded mb-4">
             {error}
+          </div>
+        )}
+
+        {!latestSoilReport && (
+          <div className="bg-yellow-100 text-yellow-800 text-sm p-4 rounded-lg mb-4">
+            {t('crop.noSoilReport')}{' '}
+            <Link to={`/dashboard/farms/${farmId}/soil-health`} className="underline font-medium">
+              {t('crop.goToSoilHealth')}
+            </Link>
           </div>
         )}
 

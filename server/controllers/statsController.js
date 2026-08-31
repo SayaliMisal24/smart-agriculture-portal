@@ -3,14 +3,15 @@ const Farm = require('../models/Farm');
 const SoilReport = require('../models/SoilReport');
 const CropRecommendation = require('../models/CropRecommendation');
 const Visitor = require('../models/Visitor');
-
 const getStats = async (req, res) => {
   try {
+    const existingFarmIds = await Farm.find({}).distinct('_id');
+
     const [userCount, farmCount, soilReportCount, cropConfirmedCount, uniqueVisitorCount] = await Promise.all([
       User.countDocuments(),
       Farm.countDocuments(),
-      SoilReport.countDocuments(),
-      CropRecommendation.countDocuments({ selectedCrops: { $exists: true, $ne: [] } }),
+      SoilReport.countDocuments({ farm: { $in: existingFarmIds } }),
+      CropRecommendation.countDocuments({ farm: { $in: existingFarmIds }, selectedCrops: { $exists: true, $ne: [] } }),
       Visitor.countDocuments(),
     ]);
 
@@ -26,7 +27,6 @@ const getStats = async (req, res) => {
     res.status(500).json({ message: 'Server error fetching stats' });
   }
 };
-
 // Records a visit ONLY if this visitorId hasn't been seen before -
 // this is what makes the count genuinely "unique visitors" rather than raw page loads
 const recordVisit = async (req, res) => {

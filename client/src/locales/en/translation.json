@@ -101,6 +101,9 @@
     "selectBoth": "Please choose a crop and a sowing month.",
     "noCropsYet": "You haven't confirmed any crops yet. Please complete Crop Recommendation first.",
     "sowingMonthLabel": "Sowing Month",
+    "checkWeatherHigh": "This crop needs high water — check the Weather and Smart Irrigation pages regularly this month to avoid missing a watering.",
+    "checkWeatherLow": "This crop needs low water — check Weather before irrigating this month, since overwatering can do more harm than good.",
+    "checkWeatherModerate": "Check the Weather and Smart Irrigation pages this month to keep watering on a steady, consistent schedule.",
     "months": {
       "january": "January", "february": "February", "march": "March", "april": "April",
       "may": "May", "june": "June", "july": "July", "august": "August",

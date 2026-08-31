@@ -50,12 +50,26 @@ const getFarmById = async (req, res) => {
 };
 
 // Delete a farm
+const SoilReport = require('../models/SoilReport');
+const CropRecommendation = require('../models/CropRecommendation');
+const CropCalendar = require('../models/CropCalendar');
+const IrrigationLog = require('../models/IrrigationLog');
+
 const deleteFarm = async (req, res) => {
   try {
     const farm = await Farm.findOneAndDelete({ _id: req.params.id, user: req.user.id });
     if (!farm) {
       return res.status(404).json({ message: 'Farm not found' });
     }
+
+    // Clean up everything tied to this farm so no orphaned data is left behind
+    await Promise.all([
+      SoilReport.deleteMany({ farm: farm._id }),
+      CropRecommendation.deleteMany({ farm: farm._id }),
+      CropCalendar.deleteMany({ farm: farm._id }),
+      IrrigationLog.deleteMany({ farm: farm._id }),
+    ]);
+
     res.status(200).json({ message: 'Farm deleted' });
   } catch (error) {
     console.error(error);

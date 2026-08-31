@@ -1,6 +1,7 @@
 const CropCalendar = require('../models/CropCalendar');
 const Farm = require('../models/Farm');
 const { generateCalendar } = require('../utils/calendarGenerator');
+const { cropDatabase } = require('../utils/cropAnalysis');
 const { canAccessStep, completeStep } = require('../utils/stepProgress');
 
 const CALENDAR_STEP = 5;
@@ -26,7 +27,11 @@ const createCropCalendar = async (req, res) => {
       return res.status(403).json({ message: 'Crop Calendar has already been completed for this farm.' });
     }
 
-    const activities = generateCalendar(selectedCrop, sowingMonth);
+    const cropInfo = cropDatabase.find((c) => c.name === selectedCrop);
+    const cropDurationStr = cropInfo ? cropInfo.duration : null;
+    const cropWaterNeed = cropInfo ? cropInfo.water : 'moderate';
+
+    const activities = generateCalendar(selectedCrop, sowingMonth, cropDurationStr, cropWaterNeed);
 
     const calendar = new CropCalendar({
       user: req.user.id,

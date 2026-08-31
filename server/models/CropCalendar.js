@@ -10,6 +10,7 @@ const cropCalendarSchema = new mongoose.Schema(
       {
         month: String,
         activityKey: String,
+        weatherNoteKey: String,
       },
     ],
   },
