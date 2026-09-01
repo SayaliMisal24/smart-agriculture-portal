@@ -5,11 +5,6 @@ import Navbar from '../components/Navbar';
 import api from '../utils/api';
 import { FaCalendarAlt, FaCheckCircle, FaTractor, FaMapMarkerAlt } from 'react-icons/fa';
 
-const monthKeys = [
-  'january', 'february', 'march', 'april', 'may', 'june',
-  'july', 'august', 'september', 'october', 'november', 'december',
-];
-
 function CropCalendar() {
   const { t } = useTranslation();
   const { farmId } = useParams();
@@ -21,7 +16,6 @@ function CropCalendar() {
   const [existingCalendar, setExistingCalendar] = useState(null);
 
   const [selectedCropForCalendar, setSelectedCropForCalendar] = useState('');
-  const [sowingMonth, setSowingMonth] = useState('');
   const [calendar, setCalendar] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -59,8 +53,8 @@ function CropCalendar() {
     e.preventDefault();
     setError('');
 
-    if (!selectedCropForCalendar || !sowingMonth) {
-      setError(t('calendar.selectBoth'));
+    if (!selectedCropForCalendar) {
+      setError(t('calendar.selectCropError'));
       return;
     }
 
@@ -68,7 +62,7 @@ function CropCalendar() {
     try {
       const res = await api.post(
         '/calendar',
-        { farmId, selectedCrop: selectedCropForCalendar, sowingMonth },
+        { farmId, selectedCrop: selectedCropForCalendar },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
       setCalendar(res.data.calendar);
@@ -77,6 +71,12 @@ function CropCalendar() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const formatDate = (dateStr) => {
+    return new Date(dateStr).toLocaleDateString(undefined, {
+      year: 'numeric', month: 'long', day: 'numeric',
+    });
   };
 
   const renderCalendarCard = (cal) => (
@@ -88,23 +88,29 @@ function CropCalendar() {
         </h2>
       </div>
       <p className="text-sm text-gray-500 mb-6">
-        {t('calendar.sowingMonthLabel')}: {t(`calendar.months.${cal.sowingMonth.toLowerCase()}`, cal.sowingMonth)}
+        {t('calendar.sowingDateLabel')}: {formatDate(cal.sowingDate)}
       </p>
 
-      <div className="space-y-3">
+      <div className="space-y-6">
         {cal.activities.map((a, i) => (
           <div key={i} className="flex gap-4 items-start border-l-2 border-green-200 pl-4 relative">
             <div className="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-green-600"></div>
-            <div>
-              <p className="text-sm font-semibold text-gray-700">
-                {t(`calendar.months.${a.month.toLowerCase()}`, a.month)}
+            <div className="w-full">
+              <p className="text-sm font-bold text-gray-800 mb-1">
+                {t('calendar.monthLabel', { number: a.monthNumber })}: {formatDate(a.startDate)} – {formatDate(a.endDate)}
               </p>
-              <p className="text-sm text-gray-500">{t(`calendar.activities.${a.activityKey}`)}</p>
-              {a.weatherNoteKey && (
-                <p className="text-xs text-blue-600 bg-blue-50 rounded-md px-2 py-1 mt-1 inline-block">
-                  {t(`calendar.${a.weatherNoteKey}`)}
-                </p>
-              )}
+              <p className="text-sm font-semibold text-green-700 mb-2">{t(`calendar.activities.${a.activityKey}`)}</p>
+
+              <div className="space-y-2 text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
+                <p>{t(`calendar.${a.growthStageNoteKey}`)}</p>
+                <p>{t(`calendar.${a.irrigationFreqKey}`)}</p>
+                <p>{t(`calendar.${a.pestWatchKey}`)}</p>
+                {a.weatherNoteKey && (
+                  <p className="text-blue-700 bg-blue-50 rounded px-2 py-1 inline-block">
+                    {t(`calendar.${a.weatherNoteKey}`)}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         ))}
@@ -123,7 +129,6 @@ function CropCalendar() {
     );
   }
 
-  // Already completed - show read-only calendar
   if (alreadyCompleted && existingCalendar) {
     return (
       <div>
@@ -151,7 +156,6 @@ function CropCalendar() {
     );
   }
 
-  // Just generated in this session
   if (calendar) {
     return (
       <div>
@@ -170,7 +174,6 @@ function CropCalendar() {
     );
   }
 
-  // Not done yet - show the setup form
   return (
     <div>
       <Navbar />
@@ -198,7 +201,14 @@ function CropCalendar() {
           </div>
         )}
 
-        {(!farm?.selectedCrops || farm.selectedCrops.length === 0) ? (
+        {!farm?.sowingDate ? (
+          <div className="bg-yellow-100 text-yellow-800 text-sm p-4 rounded-lg">
+            {t('calendar.noSowingDate')}{' '}
+            <Link to={`/dashboard/farms/${farmId}/irrigation`} className="underline font-medium">
+              {t('irrigation.title')}
+            </Link>
+          </div>
+        ) : (!farm?.selectedCrops || farm.selectedCrops.length === 0) ? (
           <div className="bg-yellow-100 text-yellow-800 text-sm p-4 rounded-lg">
             {t('calendar.noCropsYet')}{' '}
             <Link to={`/dashboard/farms/${farmId}/crop-recommendation`} className="underline font-medium">
@@ -207,7 +217,11 @@ function CropCalendar() {
           </div>
         ) : (
           <form onSubmit={handleGenerate} className="bg-white rounded-xl shadow p-6">
-            <div className="mb-4">
+            <p className="text-sm text-gray-500 mb-4">
+              {t('calendar.sowingDateLabel')}: <span className="font-medium text-gray-700">{formatDate(farm.sowingDate)}</span>
+            </p>
+
+            <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">{t('calendar.chooseCrop')}</label>
               <div className="flex flex-wrap gap-2">
                 {farm.selectedCrops.map((cropName) => (
@@ -225,22 +239,6 @@ function CropCalendar() {
                   </button>
                 ))}
               </div>
-            </div>
-
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('calendar.chooseSowingMonth')}</label>
-              <select
-                value={sowingMonth}
-                onChange={(e) => setSowingMonth(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="">--</option>
-                {monthKeys.map((m) => (
-                  <option key={m} value={m.charAt(0).toUpperCase() + m.slice(1)}>
-                    {t(`calendar.months.${m}`)}
-                  </option>
-                ))}
-              </select>
             </div>
 
             <button

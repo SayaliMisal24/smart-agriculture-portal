@@ -8,15 +8,19 @@ const CALENDAR_STEP = 5;
 
 const createCropCalendar = async (req, res) => {
   try {
-    const { farmId, selectedCrop, sowingMonth } = req.body;
+    const { farmId, selectedCrop } = req.body;
 
-    if (!farmId || !selectedCrop || !sowingMonth) {
-      return res.status(400).json({ message: 'farmId, selectedCrop, and sowingMonth are required' });
+    if (!farmId || !selectedCrop) {
+      return res.status(400).json({ message: 'farmId and selectedCrop are required' });
     }
 
     const farm = await Farm.findOne({ _id: farmId, user: req.user.id });
     if (!farm) {
       return res.status(404).json({ message: 'Farm not found' });
+    }
+
+    if (!farm.sowingDate) {
+      return res.status(400).json({ message: 'Please set your sowing date in Smart Irrigation first.' });
     }
 
     const access = canAccessStep(farm, CALENDAR_STEP);
@@ -30,14 +34,15 @@ const createCropCalendar = async (req, res) => {
     const cropInfo = cropDatabase.find((c) => c.name === selectedCrop);
     const cropDurationStr = cropInfo ? cropInfo.duration : null;
     const cropWaterNeed = cropInfo ? cropInfo.water : 'moderate';
+    const cropSeason = cropInfo ? cropInfo.season : null;
 
-    const activities = generateCalendar(selectedCrop, sowingMonth, cropDurationStr, cropWaterNeed);
+    const activities = generateCalendar(selectedCrop, farm.sowingDate, cropDurationStr, cropWaterNeed, cropSeason);
 
     const calendar = new CropCalendar({
       user: req.user.id,
       farm: farmId,
       selectedCrop,
-      sowingMonth,
+      sowingDate: farm.sowingDate,
       activities,
     });
 
