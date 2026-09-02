@@ -130,6 +130,71 @@
       "regularCare": "Regular irrigation and weeding"
     }
   },
+    "disease": {
+    "title": "Crop Disease Detection",
+    "subtitle": "Upload a photo and select visible symptoms to get a preliminary screening.",
+    "uploadPhoto": "Upload a Photo (optional)",
+    "uploadHint": "Click to select a photo of the affected crop",
+    "symptomsTitle": "Select any symptoms you're seeing",
+    "submitButton": "Get Screening Result",
+    "noIssueButton": "No Visible Issue - Skip This Check",
+    "analyzing": "Analyzing...",
+    "selectSymptomsError": "Please select at least one symptom or upload a photo, or choose 'No Visible Issue'.",
+    "noIssueResult": "No disease detected. Your crop appears healthy based on what you reported.",
+    "estimatedLikelihood": "Estimated Likelihood",
+    "organicTreatment": "Organic Treatment",
+    "chemicalTreatment": "Chemical Treatment",
+    "expertConsultNote": "If symptoms are severe or spreading quickly, please consult your nearest Krishi Kendra or agriculture officer for confirmation and expert guidance.",
+    "transparencyNote": "This is a preliminary screening tool based on reported symptoms, not a certified lab diagnosis or true image-based AI analysis.",
+    "symptoms": {
+      "yellowing": "Yellowing Leaves",
+      "spots": "Spots on Leaves",
+      "wilting": "Wilting",
+      "whiteCoating": "White Powdery Coating",
+      "holes": "Holes in Leaves",
+      "stickyResidue": "Sticky Residue",
+      "curledLeaves": "Curled Leaves",
+      "stuntedGrowth": "Stunted Growth"
+    },
+    "diseases": {
+      "leafSpot": {
+        "name": "Fungal Leaf Spot",
+        "symptomsText": "Fungal leaf spot typically causes small, dark, circular spots on leaves that may enlarge and merge over time, sometimes surrounded by a yellow halo.",
+        "organicTreatment": "Remove and destroy affected leaves. Apply a neem oil spray every 7-10 days, and improve air circulation between plants.",
+        "chemicalTreatment": "Apply a copper-based fungicide following label instructions, typically every 10-14 days until symptoms clear."
+      },
+      "powderyMildew": {
+        "name": "Powdery Mildew",
+        "symptomsText": "Powdery mildew appears as a white or grayish powdery coating on leaves and stems, often starting on upper leaf surfaces and spreading in humid conditions.",
+        "organicTreatment": "Spray a diluted mixture of milk and water (1:9 ratio) weekly, or use a baking soda solution. Ensure good air circulation.",
+        "chemicalTreatment": "Apply a sulfur-based or systemic fungicide as per label instructions, avoiding application during peak heat."
+      },
+      "bacterialWilt": {
+        "name": "Bacterial Wilt",
+        "symptomsText": "Bacterial wilt causes sudden wilting of leaves and stems, often starting with lower leaves, even when soil moisture seems adequate.",
+        "organicTreatment": "Remove and destroy affected plants immediately to prevent spread. Rotate crops and avoid planting susceptible crops in the same soil next season.",
+        "chemicalTreatment": "There is no effective chemical cure once infected; focus on removing affected plants and treating soil with recommended bactericides before next planting."
+      },
+      "aphidInfestation": {
+        "name": "Aphid Infestation",
+        "symptomsText": "Aphids are small insects that cluster on new growth and the undersides of leaves, causing curled leaves and a sticky residue (honeydew) on the plant surface.",
+        "organicTreatment": "Spray affected areas with a mixture of water and mild soap, or introduce natural predators like ladybugs. Neem oil is also effective.",
+        "chemicalTreatment": "Apply an appropriate insecticide labeled for aphids, following dosage and safety instructions carefully."
+      },
+      "rust": {
+        "name": "Rust Disease",
+        "symptomsText": "Rust disease causes small, raised, orange-brown pustules on leaves, often appearing in clusters and releasing powdery spores when touched.",
+        "organicTreatment": "Remove affected leaves promptly and improve spacing between plants for better airflow. Neem-based sprays can help slow spread.",
+        "chemicalTreatment": "Apply a triazole or strobilurin-based fungicide as per label instructions at the first sign of infection."
+      },
+      "rootRot": {
+        "name": "Root Rot",
+        "symptomsText": "Root rot causes wilting and yellowing despite adequate soil moisture, often linked to waterlogged or poorly draining soil that suffocates roots.",
+        "organicTreatment": "Improve drainage immediately by creating channels or raised beds. Avoid overwatering and allow soil to dry between waterings where possible.",
+        "chemicalTreatment": "Apply a soil fungicide drench containing appropriate active ingredients, following label instructions, alongside drainage improvements."
+      }
+    }
+  },
   "dashboard": {
     "welcome": "Welcome back",
     "tagline": "Here's an overview of your farming activity.",

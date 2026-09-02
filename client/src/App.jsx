@@ -23,6 +23,7 @@ import TipDetail from './pages/TipDetail';
 import MarketTrendsDetail from './pages/MarketTrendsDetail';
 import SuccessStoryDetail from './pages/SuccessStoryDetail';
 import CropGrowingGuide from './pages/CropGrowingGuide';
+import DiseaseDetection from './pages/DiseaseDetection';
 function Layout() {
   const location = useLocation();
   const hideLayout = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile');
@@ -61,6 +62,14 @@ function Layout() {
   element={
     <ProtectedRoute>
       <CropRecommendation />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/dashboard/farms/:farmId/disease-detection"
+  element={
+    <ProtectedRoute>
+      <DiseaseDetection />
     </ProtectedRoute>
   }
 />

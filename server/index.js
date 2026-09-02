@@ -14,6 +14,7 @@ const weatherRoutes = require('./routes/weatherRoutes');
 const irrigationRoutes = require('./routes/irrigationRoutes');
 const calendarRoutes = require('./routes/calendarRoutes');
 const statsRoutes = require('./routes/statsRoutes');
+const diseaseRoutes = require('./routes/diseaseRoutes');
 // Create the Express app
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/user', userRoutes);
+app.use('/api/disease', diseaseRoutes);
 app.use('/api/market', marketRoutes);
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
