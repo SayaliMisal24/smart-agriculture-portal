@@ -103,8 +103,20 @@ function DiseaseDetection() {
     }
   };
 
+    const severityColors = {
+    high: 'bg-red-100 text-red-700',
+    medium: 'bg-yellow-100 text-yellow-800',
+    low: 'bg-green-100 text-green-700',
+  };
+
   const renderResultCard = (record) => (
     <div className="bg-white rounded-2xl shadow-lg p-6">
+      {record.cropName && (
+        <p className="text-xs text-gray-400 mb-3">
+          {t('disease.forCrop')}: <span className="font-medium text-gray-600">{t(`crop.cropNames.${record.cropName}`, record.cropName)}</span>
+        </p>
+      )}
+
       {record.photoPath && (
         <img
           src={`http://localhost:5000${record.photoPath}`}
@@ -120,17 +132,25 @@ function DiseaseDetection() {
         </div>
       ) : (
         <>
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <FaBug className="text-red-500" size={20} />
               <h3 className="font-bold text-gray-800 text-lg">{t(`disease.diseases.${record.diseaseKey}.name`)}</h3>
             </div>
-            <span className="text-sm bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-medium">
-              {t('disease.estimatedLikelihood')}: {record.confidencePercent}%
-            </span>
+            <div className="flex items-center gap-2">
+              {record.severity && (
+                <span className={`text-xs px-3 py-1 rounded-full font-medium ${severityColors[record.severity]}`}>
+                  {t(`disease.severity.${record.severity}`)}
+                </span>
+              )}
+              <span className="text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-medium">
+                {record.confidencePercent}% {t('disease.estimatedLikelihood')}
+              </span>
+            </div>
           </div>
 
-          <p className="text-sm text-gray-600 mb-4">{t(`disease.diseases.${record.diseaseKey}.symptomsText`)}</p>
+          <p className="text-sm text-gray-600 mt-3 mb-2">{t(`disease.diseases.${record.diseaseKey}.symptomsText`)}</p>
+          <p className="text-sm text-gray-500 italic mb-4">{t(`disease.diseases.${record.diseaseKey}.causeText`)}</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div className="bg-green-50 rounded-xl p-4">
@@ -145,6 +165,11 @@ function DiseaseDetection() {
               </div>
               <p className="text-sm text-gray-600">{t(`disease.diseases.${record.diseaseKey}.chemicalTreatment`)}</p>
             </div>
+          </div>
+
+          <div className="bg-purple-50 rounded-xl p-4 mb-4">
+            <p className="text-sm font-semibold text-purple-700 mb-1">{t('disease.preventionTitle')}</p>
+            <p className="text-sm text-gray-600">{t(`disease.diseases.${record.diseaseKey}.prevention`)}</p>
           </div>
 
           <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 flex items-start gap-2">

@@ -4,11 +4,13 @@ const diseaseDetectionSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     farm: { type: mongoose.Schema.Types.ObjectId, ref: 'Farm', required: true },
-    photoPath: { type: String, default: null }, // null if farmer chose "no visible issue"
-    symptoms: [{ type: String }], // symptom keys the farmer checked
+    cropName: { type: String, default: null },
+    photoPath: { type: String, default: null },
+    symptoms: [{ type: String }],
     skippedNoIssue: { type: Boolean, default: false },
-    diseaseKey: { type: String, default: null }, // null if no issue / healthy
+    diseaseKey: { type: String, default: null },
     confidencePercent: { type: Number, default: null },
+    severity: { type: String, default: null },
   },
   { timestamps: true }
 );

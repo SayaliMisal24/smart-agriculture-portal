@@ -130,7 +130,7 @@
       "regularCare": "Regular irrigation and weeding"
     }
   },
-    "disease": {
+      "disease": {
     "title": "Crop Disease Detection",
     "subtitle": "Upload a photo and select visible symptoms to get a preliminary screening.",
     "uploadPhoto": "Upload a Photo (optional)",
@@ -141,11 +141,18 @@
     "analyzing": "Analyzing...",
     "selectSymptomsError": "Please select at least one symptom or upload a photo, or choose 'No Visible Issue'.",
     "noIssueResult": "No disease detected. Your crop appears healthy based on what you reported.",
-    "estimatedLikelihood": "Estimated Likelihood",
+    "estimatedLikelihood": "likelihood",
+    "forCrop": "Screening for",
     "organicTreatment": "Organic Treatment",
     "chemicalTreatment": "Chemical Treatment",
+    "preventionTitle": "Prevention for Next Season",
     "expertConsultNote": "If symptoms are severe or spreading quickly, please consult your nearest Krishi Kendra or agriculture officer for confirmation and expert guidance.",
-    "transparencyNote": "This is a preliminary screening tool based on reported symptoms, not a certified lab diagnosis or true image-based AI analysis.",
+    "transparencyNote": "This is a preliminary screening tool based on reported symptoms and your crop type, not a certified lab diagnosis or true image-based AI analysis.",
+    "severity": {
+      "high": "High Severity",
+      "medium": "Medium Severity",
+      "low": "Low Severity"
+    },
     "symptoms": {
       "yellowing": "Yellowing Leaves",
       "spots": "Spots on Leaves",
@@ -157,41 +164,141 @@
       "stuntedGrowth": "Stunted Growth"
     },
     "diseases": {
-      "leafSpot": {
-        "name": "Fungal Leaf Spot",
-        "symptomsText": "Fungal leaf spot typically causes small, dark, circular spots on leaves that may enlarge and merge over time, sometimes surrounded by a yellow halo.",
-        "organicTreatment": "Remove and destroy affected leaves. Apply a neem oil spray every 7-10 days, and improve air circulation between plants.",
-        "chemicalTreatment": "Apply a copper-based fungicide following label instructions, typically every 10-14 days until symptoms clear."
+      "riceBlast": {
+        "name": "Rice Blast",
+        "symptomsText": "Rice blast causes diamond-shaped gray-green lesions with brown borders on leaves, which can expand and merge, sometimes affecting the stem and grain panicle.",
+        "causeText": "Caused by the fungus Magnaporthe oryzae, favored by high humidity, dense planting, and excess nitrogen fertilizer.",
+        "organicTreatment": "Improve field drainage and spacing between plants. Apply a Trichoderma-based biofungicide and avoid excess nitrogen application.",
+        "chemicalTreatment": "Apply a tricyclazole-based fungicide at the first sign of lesions, following label dosage and timing instructions.",
+        "prevention": "Use blast-resistant rice varieties where available, avoid excess nitrogen, and maintain proper spacing for airflow next season."
       },
-      "powderyMildew": {
+      "bacterialLeafBlight": {
+        "name": "Bacterial Leaf Blight",
+        "symptomsText": "Bacterial leaf blight causes yellowing that starts at leaf tips and margins, progressing into wilting, particularly visible during the vegetative growth stage.",
+        "causeText": "Caused by Xanthomonas oryzae bacteria, spreading rapidly through irrigation water and wind-driven rain.",
+        "organicTreatment": "Drain and dry the field periodically to disrupt bacterial spread, and avoid working in fields when leaves are wet.",
+        "chemicalTreatment": "Apply a copper-based bactericide as per label instructions; antibiotics like streptocycline may be used under expert guidance.",
+        "prevention": "Use disease-free certified seed, avoid excess nitrogen, and ensure balanced field drainage for the next planting."
+      },
+      "wheatRust": {
+        "name": "Wheat Rust",
+        "symptomsText": "Wheat rust appears as small, raised, orange-brown to reddish-brown pustules on leaves and stems, releasing a powdery spore mass when touched.",
+        "causeText": "Caused by Puccinia fungal species, spreading rapidly through wind-borne spores especially in humid, moderate-temperature conditions.",
+        "organicTreatment": "Remove and destroy heavily infected plant debris after harvest, and ensure balanced field spacing for airflow.",
+        "chemicalTreatment": "Apply a triazole-based fungicide at early pustule appearance, repeating as per label instructions if conditions remain favorable for spread.",
+        "prevention": "Choose rust-resistant wheat varieties for next season and avoid late sowing, which increases exposure to peak rust conditions."
+      },
+      "stemBorer": {
+        "name": "Stem Borer",
+        "symptomsText": "Stem borer larvae tunnel into stems, causing dead central shoots (\"dead heart\") in young plants or empty, unfilled grain heads in mature plants.",
+        "causeText": "Caused by moth larvae of various stem borer species that bore into the plant stem to feed, often unnoticed until visible damage appears.",
+        "organicTreatment": "Remove and destroy affected stems/dead hearts promptly, and encourage natural predators like parasitic wasps.",
+        "chemicalTreatment": "Apply a labeled systemic insecticide at early larval stage, timed according to local pest monitoring advisories.",
+        "prevention": "Remove crop residue after harvest to eliminate overwintering larvae, and consider pheromone traps for early detection next season."
+      },
+      "pulseWilt": {
+        "name": "Fusarium Wilt",
+        "symptomsText": "Fusarium wilt causes yellowing and wilting that typically progresses from lower leaves upward, often with stunted overall growth, even with adequate soil moisture.",
+        "causeText": "Caused by soil-borne Fusarium fungus that infects through the root system and blocks water transport within the plant.",
+        "organicTreatment": "Remove and destroy affected plants, avoid replanting susceptible pulses in the same soil, and improve soil organic matter to support beneficial microbes.",
+        "chemicalTreatment": "Apply a soil fungicide drench containing carbendazim or similar active ingredients as per label instructions before symptoms spread further.",
+        "prevention": "Practice crop rotation with non-host crops for at least 2-3 seasons, and use wilt-resistant varieties where available."
+      },
+      "podBorer": {
+        "name": "Pod Borer",
+        "symptomsText": "Pod borer larvae create visible holes in developing pods, often feeding on seeds inside, alongside stunted growth in heavily affected plants.",
+        "causeText": "Caused by moth larvae (commonly Helicoverpa species) that lay eggs on flowers and young pods, with larvae feeding directly on developing seeds.",
+        "organicTreatment": "Use pheromone traps to monitor and reduce moth populations, and apply neem-based sprays during flowering and pod formation.",
+        "chemicalTreatment": "Apply a labeled insecticide targeted at pod borers during flowering, following recommended timing to protect developing pods.",
+        "prevention": "Rotate crops with non-host species, and consider intercropping with trap crops that attract pod borer moths away from the main crop next season."
+      },
+      "powderyMildewPulse": {
         "name": "Powdery Mildew",
-        "symptomsText": "Powdery mildew appears as a white or grayish powdery coating on leaves and stems, often starting on upper leaf surfaces and spreading in humid conditions.",
-        "organicTreatment": "Spray a diluted mixture of milk and water (1:9 ratio) weekly, or use a baking soda solution. Ensure good air circulation.",
-        "chemicalTreatment": "Apply a sulfur-based or systemic fungicide as per label instructions, avoiding application during peak heat."
+        "symptomsText": "Powdery mildew appears as a white, powdery fungal coating on leaves and stems, often accompanied by stunted growth in heavily affected plants.",
+        "causeText": "Caused by fungal species favored by moderate temperatures and high humidity, spreading via airborne spores.",
+        "organicTreatment": "Spray a diluted milk-and-water solution (1:9) weekly, and ensure adequate spacing between plants for airflow.",
+        "chemicalTreatment": "Apply a sulfur-based fungicide as per label instructions, avoiding application during peak daytime heat.",
+        "prevention": "Choose mildew-resistant varieties where available and avoid overly dense planting next season."
       },
-      "bacterialWilt": {
-        "name": "Bacterial Wilt",
-        "symptomsText": "Bacterial wilt causes sudden wilting of leaves and stems, often starting with lower leaves, even when soil moisture seems adequate.",
-        "organicTreatment": "Remove and destroy affected plants immediately to prevent spread. Rotate crops and avoid planting susceptible crops in the same soil next season.",
-        "chemicalTreatment": "There is no effective chemical cure once infected; focus on removing affected plants and treating soil with recommended bactericides before next planting."
+      "cottonBollworm": {
+        "name": "Cotton Bollworm",
+        "symptomsText": "Cotton bollworm larvae create visible holes in bolls and squares, often with stunted growth in heavily infested plants, and larvae may be visible inside damaged bolls.",
+        "causeText": "Caused by Helicoverpa armigera moth larvae that feed directly on developing cotton bolls and squares, causing significant yield loss if unmanaged.",
+        "organicTreatment": "Use pheromone traps for early detection and apply neem-based sprays during peak flowering and boll formation.",
+        "chemicalTreatment": "Apply a labeled insecticide rotation (to avoid resistance buildup) timed to larval hatching, following local pest advisory schedules.",
+        "prevention": "Practice crop rotation, remove crop residue after harvest, and consider Bt cotton varieties where locally approved and available."
+      },
+      "leafCurlVirus": {
+        "name": "Leaf Curl Virus",
+        "symptomsText": "Leaf curl virus causes upward curling and yellowing of leaves alongside stunted overall plant growth, typically spread by whitefly vectors.",
+        "causeText": "Caused by a virus transmitted through whitefly feeding, with no direct cure once a plant is infected.",
+        "organicTreatment": "Remove and destroy infected plants promptly to reduce virus spread, and use yellow sticky traps to monitor and reduce whitefly populations.",
+        "chemicalTreatment": "Apply a labeled insecticide targeting whitefly vectors, since controlling the insect vector is the main way to slow viral spread.",
+        "prevention": "Use virus-resistant varieties where available, and control whitefly populations early in the season before symptoms typically appear."
+      },
+      "rustOilseed": {
+        "name": "Rust Disease",
+        "symptomsText": "Rust disease causes small, raised, orange-brown pustules on leaves, often in clusters, releasing powdery spores when touched or brushed.",
+        "causeText": "Caused by fungal rust species that spread through wind-borne spores, particularly in humid conditions with moderate temperatures.",
+        "organicTreatment": "Remove and destroy heavily affected leaves promptly, and ensure proper plant spacing for adequate airflow.",
+        "chemicalTreatment": "Apply a triazole or strobilurin-based fungicide at the first sign of pustules, following label instructions for repeat application.",
+        "prevention": "Select rust-resistant varieties for next season and avoid excessively dense planting that limits airflow."
       },
       "aphidInfestation": {
         "name": "Aphid Infestation",
-        "symptomsText": "Aphids are small insects that cluster on new growth and the undersides of leaves, causing curled leaves and a sticky residue (honeydew) on the plant surface.",
-        "organicTreatment": "Spray affected areas with a mixture of water and mild soap, or introduce natural predators like ladybugs. Neem oil is also effective.",
-        "chemicalTreatment": "Apply an appropriate insecticide labeled for aphids, following dosage and safety instructions carefully."
+        "symptomsText": "Aphids cluster on new growth and leaf undersides, causing curled leaves and a sticky honeydew residue that can attract sooty mold.",
+        "causeText": "Caused by small sap-feeding insects that reproduce rapidly in warm conditions, often spreading plant viruses as they feed.",
+        "organicTreatment": "Spray a mild soap-and-water solution directly on aphid clusters, or introduce natural predators like ladybugs. Neem oil is also effective.",
+        "chemicalTreatment": "Apply a labeled insecticide for aphids, following dosage instructions and avoiding spraying during pollinator activity hours.",
+        "prevention": "Monitor new growth regularly early in the season, since catching aphid colonies early prevents larger infestations later."
       },
-      "rust": {
-        "name": "Rust Disease",
-        "symptomsText": "Rust disease causes small, raised, orange-brown pustules on leaves, often appearing in clusters and releasing powdery spores when touched.",
-        "organicTreatment": "Remove affected leaves promptly and improve spacing between plants for better airflow. Neem-based sprays can help slow spread.",
-        "chemicalTreatment": "Apply a triazole or strobilurin-based fungicide as per label instructions at the first sign of infection."
+      "earlyBlight": {
+        "name": "Early Blight",
+        "symptomsText": "Early blight causes dark, concentric-ringed spots on lower leaves first, often with yellowing around the spots, progressing to wilting if untreated.",
+        "causeText": "Caused by Alternaria fungal species, favored by warm temperatures alternating with periods of leaf wetness.",
+        "organicTreatment": "Remove and destroy affected lower leaves promptly, and apply a copper-based organic fungicide spray every 7-10 days.",
+        "chemicalTreatment": "Apply a chlorothalonil or mancozeb-based fungicide as per label instructions at the first sign of spotting.",
+        "prevention": "Rotate crops with non-host species, avoid overhead watering that wets leaves, and mulch to reduce soil splash onto lower leaves."
+      },
+      "fruitBorer": {
+        "name": "Fruit Borer",
+        "symptomsText": "Fruit borer larvae create visible entry holes in developing fruits, often with stunted growth in heavily infested plants and visible frass near entry points.",
+        "causeText": "Caused by moth larvae (commonly Helicoverpa species) that bore into fruits to feed, causing direct crop loss and secondary rot.",
+        "organicTreatment": "Use pheromone traps for monitoring, and apply neem-based sprays during flowering and early fruit set.",
+        "chemicalTreatment": "Apply a labeled insecticide targeted at fruit borers, timed to egg-laying and early larval stages per local pest advisories.",
+        "prevention": "Remove and destroy damaged fruits promptly to prevent larvae completing their life cycle in the field."
+      },
+      "powderyMildewVeg": {
+        "name": "Powdery Mildew",
+        "symptomsText": "Powdery mildew appears as a white, powdery fungal coating on leaves, often with stunted growth in severely affected plants.",
+        "causeText": "Caused by fungal species favored by moderate temperatures and high humidity, spreading rapidly via airborne spores.",
+        "organicTreatment": "Spray a diluted milk-and-water solution (1:9) or baking soda solution weekly, ensuring good airflow between plants.",
+        "chemicalTreatment": "Apply a sulfur-based or systemic fungicide as per label instructions, avoiding application during peak heat.",
+        "prevention": "Choose mildew-resistant varieties where available, and avoid overly dense planting next season."
+      },
+      "bacterialWiltVeg": {
+        "name": "Bacterial Wilt",
+        "symptomsText": "Bacterial wilt causes sudden wilting despite adequate soil moisture, often starting with lower leaves and progressing rapidly through the whole plant.",
+        "causeText": "Caused by soil-borne Ralstonia bacteria that block the plant's water-conducting tissue, often entering through root wounds.",
+        "organicTreatment": "Remove and destroy affected plants immediately, and avoid replanting susceptible crops in the same soil for several seasons.",
+        "chemicalTreatment": "There is no effective chemical cure once infected; focus on removing affected plants and treating soil before next planting.",
+        "prevention": "Practice crop rotation with non-host species and avoid working in fields when soil is excessively wet, which spreads bacteria between plants."
       },
       "rootRot": {
         "name": "Root Rot",
         "symptomsText": "Root rot causes wilting and yellowing despite adequate soil moisture, often linked to waterlogged or poorly draining soil that suffocates roots.",
-        "organicTreatment": "Improve drainage immediately by creating channels or raised beds. Avoid overwatering and allow soil to dry between waterings where possible.",
-        "chemicalTreatment": "Apply a soil fungicide drench containing appropriate active ingredients, following label instructions, alongside drainage improvements."
+        "causeText": "Caused by soil-borne fungal pathogens (such as Pythium or Rhizoctonia species) that thrive in oxygen-poor, waterlogged soil conditions.",
+        "organicTreatment": "Improve drainage immediately by creating channels or raised beds, and avoid overwatering going forward.",
+        "chemicalTreatment": "Apply a soil fungicide drench containing appropriate active ingredients, alongside drainage improvements, following label instructions.",
+        "prevention": "Improve field drainage before next planting and avoid overwatering, particularly during early growth stages."
+      },
+      "aphidGeneral": {
+        "name": "Aphid Infestation",
+        "symptomsText": "Aphids cluster on new growth and leaf undersides, causing curled leaves, holes from feeding damage, and a sticky honeydew residue.",
+        "causeText": "Caused by small sap-feeding insects that reproduce rapidly in warm weather and can spread plant viruses between crops.",
+        "organicTreatment": "Spray a mild soap-and-water solution on affected areas, or introduce natural predators like ladybugs.",
+        "chemicalTreatment": "Apply a labeled insecticide for aphids, following dosage instructions carefully.",
+        "prevention": "Monitor new growth regularly, since early aphid colonies are much easier to manage than established infestations."
       }
     }
   },

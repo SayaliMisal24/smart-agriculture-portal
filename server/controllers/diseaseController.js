@@ -27,8 +27,11 @@ const submitDiseaseCheck = async (req, res) => {
       return res.status(403).json({ message: 'Disease Detection has already been completed for this farm.' });
     }
 
+    const cropName = farm.selectedCrops && farm.selectedCrops.length > 0 ? farm.selectedCrops[0] : null;
+
     let diseaseKey = null;
     let confidencePercent = null;
+    let severity = null;
     let symptomList = [];
 
     const isSkipped = skippedNoIssue === 'true' || skippedNoIssue === true;
@@ -42,10 +45,12 @@ const submitDiseaseCheck = async (req, res) => {
         symptoms: symptomList,
         soilMoisture: latestSoil ? latestSoil.moisture : null,
         soilDrainage: latestSoil ? latestSoil.drainage : null,
+        cropName,
       });
 
       diseaseKey = result.diseaseKey;
       confidencePercent = result.confidencePercent;
+      severity = result.severity;
     }
 
     const photoPath = req.file ? `/uploads/${req.file.filename}` : null;
@@ -53,11 +58,13 @@ const submitDiseaseCheck = async (req, res) => {
     const record = new DiseaseDetection({
       user: req.user.id,
       farm: farmId,
+      cropName,
       photoPath,
       symptoms: symptomList,
       skippedNoIssue: isSkipped,
       diseaseKey,
       confidencePercent,
+      severity,
     });
 
     await record.save();
