@@ -1,62 +1,52 @@
-// Maps each crop name to its category, so we can pick realistic,
-// commonly-known diseases specific to that category rather than generic ones
-const cropCategoryMap = {
-  'Rice (Paddy)': 'cereal', 'Wheat': 'cereal', 'Bajra (Pearl Millet)': 'cereal',
-  'Jowar (Sorghum)': 'cereal', 'Maize': 'cereal', 'Ragi (Finger Millet)': 'cereal',
-  'Tur / Arhar (Pigeon Pea)': 'pulse', 'Gram / Chana (Chickpea)': 'pulse', 'Moong (Green Gram)': 'pulse',
-  'Urad (Black Gram)': 'pulse', 'Matki (Moth Bean)': 'pulse', 'Bengal Gram (Kabuli Chana)': 'pulse',
-  'Lentil (Masoor)': 'pulse', 'Field Pea (Vatana)': 'pulse',
-  'Soybean': 'oilseed', 'Cotton (Kapas)': 'oilseed', 'Sugarcane': 'oilseed', 'Groundnut (Peanut)': 'oilseed',
-  'Sesame (Til)': 'oilseed', 'Sunflower': 'oilseed', 'Mustard': 'oilseed', 'Safflower (Kardi)': 'oilseed',
-  'Castor': 'oilseed', 'Niger Seed (Ramtil)': 'oilseed', 'Linseed': 'oilseed', 'Guar (Cluster Bean)': 'oilseed',
-  'Onion': 'vegetable', 'Tomato': 'vegetable', 'Green Chili': 'vegetable', 'Brinjal (Eggplant)': 'vegetable',
-  'Okra (Bhindi)': 'vegetable', 'Potato': 'vegetable', 'Garlic': 'vegetable', 'Ginger': 'vegetable',
-  'Turmeric (Halad)': 'vegetable', 'Cabbage': 'vegetable', 'Cauliflower': 'vegetable', 'Cucumber': 'vegetable',
-  'Radish': 'vegetable', 'Carrot': 'vegetable', 'Beetroot': 'vegetable', 'Spinach (Palak)': 'vegetable',
-  'Fenugreek (Methi)': 'vegetable', 'Coriander (Dhania)': 'vegetable', 'Cumin (Jeera)': 'vegetable', 'Fennel (Sauf)': 'vegetable',
-};
-
-// Real, commonly-known diseases grouped by crop category, each with
-// distinct symptom patterns for accurate matching
+// Each disease lists the SPECIFIC crops it applies to, so a millet
+// like Bajra never gets a rice-specific or wheat-specific disease suggested
 const diseaseDatabase = [
-  // CEREAL diseases
-  { key: 'riceBlast', category: 'cereal', symptoms: ['spots', 'yellowing'], severity: 'high' },
-  { key: 'bacterialLeafBlight', category: 'cereal', symptoms: ['yellowing', 'wilting'], severity: 'high' },
-  { key: 'wheatRust', category: 'cereal', symptoms: ['spots', 'holes'], severity: 'medium' },
-  { key: 'stemBorer', category: 'cereal', symptoms: ['holes', 'stuntedGrowth'], severity: 'medium' },
+  // RICE-specific
+  { key: 'riceBlast', crops: ['Rice (Paddy)'], symptoms: ['spots', 'yellowing'], severity: 'high' },
+  { key: 'bacterialLeafBlight', crops: ['Rice (Paddy)'], symptoms: ['yellowing', 'wilting'], severity: 'high' },
 
-  // PULSE diseases
-  { key: 'pulseWilt', category: 'pulse', symptoms: ['wilting', 'yellowing', 'stuntedGrowth'], severity: 'high' },
-  { key: 'podBorer', category: 'pulse', symptoms: ['holes', 'stuntedGrowth'], severity: 'medium' },
-  { key: 'powderyMildewPulse', category: 'pulse', symptoms: ['whiteCoating', 'stuntedGrowth'], severity: 'low' },
+  // WHEAT-specific
+  { key: 'wheatRust', crops: ['Wheat'], symptoms: ['spots', 'holes'], severity: 'medium' },
 
-  // OILSEED / CASH CROP diseases
-  { key: 'cottonBollworm', category: 'oilseed', symptoms: ['holes', 'stuntedGrowth'], severity: 'high' },
-  { key: 'leafCurlVirus', category: 'oilseed', symptoms: ['curledLeaves', 'yellowing', 'stuntedGrowth'], severity: 'high' },
-  { key: 'rustOilseed', category: 'oilseed', symptoms: ['spots', 'yellowing'], severity: 'medium' },
-  { key: 'aphidInfestation', category: 'oilseed', symptoms: ['curledLeaves', 'stickyResidue'], severity: 'medium' },
+  // MILLETS (Bajra, Jowar, Ragi) + Maize
+  { key: 'stemBorer', crops: ['Bajra (Pearl Millet)', 'Jowar (Sorghum)', 'Maize', 'Sugarcane', 'Rice (Paddy)'], symptoms: ['holes', 'stuntedGrowth'], severity: 'medium' },
+  { key: 'downyMildewMillet', crops: ['Bajra (Pearl Millet)', 'Jowar (Sorghum)', 'Maize'], symptoms: ['yellowing', 'stuntedGrowth'], severity: 'high' },
+  { key: 'ergotDisease', crops: ['Bajra (Pearl Millet)', 'Jowar (Sorghum)'], symptoms: ['spots', 'stuntedGrowth'], severity: 'medium' },
 
-  // VEGETABLE / SPICE diseases
-  { key: 'earlyBlight', category: 'vegetable', symptoms: ['spots', 'yellowing', 'wilting'], severity: 'medium' },
-  { key: 'fruitBorer', category: 'vegetable', symptoms: ['holes', 'stuntedGrowth'], severity: 'high' },
-  { key: 'powderyMildewVeg', category: 'vegetable', symptoms: ['whiteCoating', 'stuntedGrowth'], severity: 'low' },
-  { key: 'bacterialWiltVeg', category: 'vegetable', symptoms: ['wilting', 'yellowing'], severity: 'high' },
+  // PULSES
+  { key: 'pulseWilt', crops: ['Tur / Arhar (Pigeon Pea)', 'Gram / Chana (Chickpea)', 'Moong (Green Gram)', 'Urad (Black Gram)', 'Lentil (Masoor)', 'Bengal Gram (Kabuli Chana)', 'Field Pea (Vatana)'], symptoms: ['wilting', 'yellowing', 'stuntedGrowth'], severity: 'high' },
+  { key: 'podBorer', crops: ['Tur / Arhar (Pigeon Pea)', 'Gram / Chana (Chickpea)', 'Moong (Green Gram)', 'Urad (Black Gram)'], symptoms: ['holes', 'stuntedGrowth'], severity: 'medium' },
+  { key: 'powderyMildewPulse', crops: ['Gram / Chana (Chickpea)', 'Moong (Green Gram)', 'Field Pea (Vatana)'], symptoms: ['whiteCoating', 'stuntedGrowth'], severity: 'low' },
 
-  // UNIVERSAL - can appear in any category, so listed separately
-  { key: 'rootRot', category: 'universal', symptoms: ['wilting', 'yellowing', 'stuntedGrowth'], severity: 'high', soilRiskFactor: 'waterlogged' },
-  { key: 'aphidGeneral', category: 'universal', symptoms: ['curledLeaves', 'stickyResidue', 'holes'], severity: 'low' },
+  // COTTON-specific
+  { key: 'cottonBollworm', crops: ['Cotton (Kapas)'], symptoms: ['holes', 'stuntedGrowth'], severity: 'high' },
+  { key: 'leafCurlVirus', crops: ['Cotton (Kapas)', 'Okra (Bhindi)', 'Tomato'], symptoms: ['curledLeaves', 'yellowing', 'stuntedGrowth'], severity: 'high' },
+
+  // OILSEEDS (Soybean, Groundnut, Sunflower, Mustard, Sesame, Safflower, Castor, Niger, Linseed)
+  { key: 'rustOilseed', crops: ['Groundnut (Peanut)', 'Sunflower', 'Mustard', 'Soybean'], symptoms: ['spots', 'yellowing'], severity: 'medium' },
+  { key: 'aphidInfestation', crops: ['Mustard', 'Sunflower', 'Safflower (Kardi)', 'Sesame (Til)'], symptoms: ['curledLeaves', 'stickyResidue'], severity: 'medium' },
+  { key: 'collarRot', crops: ['Groundnut (Peanut)', 'Castor', 'Soybean'], symptoms: ['wilting', 'stuntedGrowth'], severity: 'high' },
+
+  // VEGETABLES & SPICES
+  { key: 'earlyBlight', crops: ['Tomato', 'Potato', 'Brinjal (Eggplant)'], symptoms: ['spots', 'yellowing', 'wilting'], severity: 'medium' },
+  { key: 'fruitBorer', crops: ['Tomato', 'Brinjal (Eggplant)', 'Okra (Bhindi)', 'Green Chili'], symptoms: ['holes', 'stuntedGrowth'], severity: 'high' },
+  { key: 'powderyMildewVeg', crops: ['Cucumber', 'Watermelon', 'Muskmelon', 'Okra (Bhindi)', 'Cauliflower', 'Cabbage'], symptoms: ['whiteCoating', 'stuntedGrowth'], severity: 'low' },
+  { key: 'bacterialWiltVeg', crops: ['Tomato', 'Brinjal (Eggplant)', 'Potato', 'Ginger', 'Turmeric (Halad)'], symptoms: ['wilting', 'yellowing'], severity: 'high' },
+  { key: 'purpleBlotch', crops: ['Onion', 'Garlic'], symptoms: ['spots', 'yellowing'], severity: 'medium' },
+  { key: 'clubRoot', crops: ['Cabbage', 'Cauliflower', 'Radish'], symptoms: ['wilting', 'stuntedGrowth'], severity: 'high' },
+
+  // FRUITS
+  { key: 'anthracnoseFruit', crops: ['Banana', 'Grapes', 'Pomegranate', 'Chikoo (Sapota)'], symptoms: ['spots', 'yellowing'], severity: 'medium' },
+
+  // UNIVERSAL - genuinely can affect almost any crop, applies regardless of crop name
+  { key: 'rootRot', crops: [], symptoms: ['wilting', 'yellowing', 'stuntedGrowth'], severity: 'high', soilRiskFactor: 'waterlogged', universal: true },
+  { key: 'aphidGeneral', crops: [], symptoms: ['curledLeaves', 'stickyResidue', 'holes'], severity: 'low', universal: true },
 ];
 
-function getCropCategory(cropName) {
-  return cropCategoryMap[cropName] || 'universal';
-}
-
 function analyzeDisease({ symptoms, soilMoisture, soilDrainage, cropName }) {
-  const category = getCropCategory(cropName);
-
-  // Only consider diseases relevant to this crop's category, plus universal ones
+  // Only consider diseases that explicitly list this crop, plus genuinely universal ones
   const relevantDiseases = diseaseDatabase.filter(
-    (d) => d.category === category || d.category === 'universal'
+    (d) => d.universal || d.crops.includes(cropName)
   );
 
   const scored = relevantDiseases.map((d) => {
@@ -83,4 +73,4 @@ function analyzeDisease({ symptoms, soilMoisture, soilDrainage, cropName }) {
   return { diseaseKey: topMatch.key, confidencePercent, severity: topMatch.severity };
 }
 
-module.exports = { analyzeDisease, getCropCategory };
+module.exports = { analyzeDisease };

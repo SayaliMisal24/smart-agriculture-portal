@@ -148,6 +148,8 @@
     "preventionTitle": "Prevention for Next Season",
     "expertConsultNote": "If symptoms are severe or spreading quickly, please consult your nearest Krishi Kendra or agriculture officer for confirmation and expert guidance.",
     "transparencyNote": "This is a preliminary screening tool based on reported symptoms and your crop type, not a certified lab diagnosis or true image-based AI analysis.",
+    "takePhotoButton": "Take Photo",
+    "chooseGalleryButton": "Choose from Gallery",
     "severity": {
       "high": "High Severity",
       "medium": "Medium Severity",
@@ -164,6 +166,54 @@
       "stuntedGrowth": "Stunted Growth"
     },
     "diseases": {
+      "downyMildewMillet": {
+        "name": "Downy Mildew",
+        "symptomsText": "Downy mildew in millets causes yellowing streaks on leaves alongside stunted, distorted growth, sometimes with a downy white growth visible on leaf undersides in humid conditions.",
+        "causeText": "Caused by Sclerospora fungal species, favored by high humidity and often transmitted through infected seed.",
+        "organicTreatment": "Remove and destroy infected plants promptly, and use disease-free treated seed for future planting.",
+        "chemicalTreatment": "Apply a metalaxyl-based seed treatment before sowing, and a foliar fungicide if symptoms appear in standing crop.",
+        "prevention": "Use certified disease-free seed and treat seed with a recommended fungicide before sowing next season."
+      },
+      "ergotDisease": {
+        "name": "Ergot Disease",
+        "symptomsText": "Ergot disease produces dark, hardened fungal structures replacing normal grain in the seed head, alongside stunted growth in severely affected plants.",
+        "causeText": "Caused by Claviceps fungal species that infect flowers during the flowering stage, particularly favored by cool, wet conditions at flowering time.",
+        "organicTreatment": "Remove and destroy infected seed heads before harvest to prevent spread, and avoid dense planting that increases humidity around flowers.",
+        "chemicalTreatment": "Apply a fungicide spray timed to the flowering stage if ergot has been a recurring issue in your field.",
+        "prevention": "Practice crop rotation and deep ploughing after harvest to bury fungal spores, reducing infection risk next season."
+      },
+      "collarRot": {
+        "name": "Collar Rot",
+        "symptomsText": "Collar rot causes wilting and stunted growth with visible rotting at the stem base near soil level, often leading to plant collapse in severe cases.",
+        "causeText": "Caused by soil-borne fungal pathogens that attack the stem base, favored by excess soil moisture and poor drainage.",
+        "organicTreatment": "Improve drainage around affected plants immediately, and avoid piling soil or mulch directly against the stem base.",
+        "chemicalTreatment": "Apply a fungicide drench at the stem base as per label instructions, alongside drainage improvements.",
+        "prevention": "Ensure proper field drainage before planting and avoid overwatering, particularly during early growth stages."
+      },
+      "purpleBlotch": {
+        "name": "Purple Blotch",
+        "symptomsText": "Purple blotch causes small white lesions that develop purple centers on leaves, often expanding and causing yellowing of the surrounding leaf tissue.",
+        "causeText": "Caused by Alternaria porri fungal species, favored by high humidity and moderate temperatures, particularly in dense plantings.",
+        "organicTreatment": "Improve spacing for airflow and remove infected leaves promptly. A copper-based organic spray can help slow spread.",
+        "chemicalTreatment": "Apply a mancozeb-based fungicide as per label instructions at the first sign of lesions, repeating on a 7-10 day schedule.",
+        "prevention": "Avoid overhead irrigation that wets leaves, and ensure adequate plant spacing for airflow next season."
+      },
+      "clubRoot": {
+        "name": "Club Root",
+        "symptomsText": "Club root causes stunted, wilted growth above ground, with swollen, distorted root galls visible if roots are examined below the soil surface.",
+        "causeText": "Caused by a soil-borne pathogen that persists in soil for years, favored by acidic, poorly-drained soil conditions.",
+        "organicTreatment": "Remove and destroy affected plants completely including roots, and avoid planting related vegetables in the same soil for several years.",
+        "chemicalTreatment": "Soil fumigation may be considered for severely affected fields under expert guidance, alongside liming to raise soil pH.",
+        "prevention": "Test and adjust soil pH toward neutral before planting, and rotate with unrelated crop families for at least 3-4 seasons."
+      },
+      "anthracnoseFruit": {
+        "name": "Anthracnose",
+        "symptomsText": "Anthracnose causes dark, sunken spots on fruit and leaves that can expand and merge, often with a slightly pink or orange spore mass visible in humid conditions.",
+        "causeText": "Caused by Colletotrichum fungal species, favored by warm, humid, and wet conditions, spreading through rain splash and contaminated tools.",
+        "organicTreatment": "Remove and destroy affected fruit and leaves promptly, and apply a copper-based organic fungicide on a preventive schedule during humid periods.",
+        "chemicalTreatment": "Apply a labeled fungicide as per instructions at first sign of spotting, particularly before and during humid weather periods.",
+        "prevention": "Prune for good airflow, avoid overhead watering, and remove fallen fruit/debris promptly to reduce fungal carryover to next season."
+      },
       "riceBlast": {
         "name": "Rice Blast",
         "symptomsText": "Rice blast causes diamond-shaped gray-green lesions with brown borders on leaves, which can expand and merge, sometimes affecting the stem and grain panicle.",

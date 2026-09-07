@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../components/Navbar';
 import api from '../utils/api';
-import { FaBug, FaCheckCircle, FaCamera, FaExclamationTriangle, FaLeaf, FaFlask } from 'react-icons/fa';
+import { FaBug, FaCheckCircle, FaCamera, FaImage, FaExclamationTriangle, FaLeaf, FaFlask } from 'react-icons/fa';
 
 const symptomOptions = [
   'yellowing', 'spots', 'wilting', 'whiteCoating',
@@ -250,17 +250,41 @@ function DiseaseDetection() {
 
         <div className="bg-white rounded-xl shadow p-6 mb-4">
           <h3 className="font-semibold text-gray-700 mb-3">{t('disease.uploadPhoto')}</h3>
-          <label className="border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center py-8 cursor-pointer hover:border-green-400">
-            {photoPreview ? (
-              <img src={photoPreview} alt="Preview" className="max-h-48 rounded-lg" />
-            ) : (
-              <>
-                <FaCamera className="text-gray-400 mb-2" size={28} />
-                <span className="text-sm text-gray-500">{t('disease.uploadHint')}</span>
-              </>
-            )}
-            <input type="file" accept=".jpg,.jpeg,.png" className="hidden" onChange={handlePhotoChange} />
-          </label>
+
+          {photoPreview ? (
+            <div className="mb-4">
+              <img src={photoPreview} alt="Preview" className="max-h-64 rounded-lg mx-auto" />
+            </div>
+          ) : (
+            <div className="border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center py-8 mb-4">
+              <FaCamera className="text-gray-400 mb-2" size={28} />
+              <span className="text-sm text-gray-500">{t('disease.uploadHint')}</span>
+            </div>
+          )}
+
+          <div className="flex gap-3">
+            <label className="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-lg text-sm font-medium cursor-pointer">
+              <FaCamera size={14} />
+              {t('disease.takePhotoButton')}
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={handlePhotoChange}
+              />
+            </label>
+            <label className="flex-1 flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-lg text-sm font-medium cursor-pointer">
+              <FaImage size={14} />
+              {t('disease.chooseGalleryButton')}
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png"
+                className="hidden"
+                onChange={handlePhotoChange}
+              />
+            </label>
+          </div>
         </div>
 
         <div className="bg-white rounded-xl shadow p-6 mb-6">
