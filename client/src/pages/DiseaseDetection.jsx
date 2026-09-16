@@ -26,7 +26,7 @@ function DiseaseDetection() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [selectedCropForCheck, setSelectedCropForCheck] = useState('');
   useEffect(() => {
     checkStatusAndLoad();
   }, [farmId]);
@@ -72,9 +72,16 @@ function DiseaseDetection() {
 
   const handleSubmit = async (skipNoIssue = false) => {
     setError('');
-    if (!skipNoIssue && selectedSymptoms.length === 0 && !photoFile) {
-      setError(t('disease.selectSymptomsError'));
-      return;
+
+    if (!skipNoIssue) {
+      if (!selectedCropForCheck) {
+        setError(t('disease.selectCropError'));
+        return;
+      }
+      if (selectedSymptoms.length === 0) {
+        setError(t('disease.selectSymptomsError'));
+        return;
+      }
     }
 
     setLoading(true);
@@ -84,6 +91,7 @@ function DiseaseDetection() {
       formData.append('skippedNoIssue', skipNoIssue);
       if (!skipNoIssue) {
         formData.append('symptoms', JSON.stringify(selectedSymptoms));
+        formData.append('cropName', selectedCropForCheck);
       }
       if (photoFile && !skipNoIssue) {
         formData.append('photo', photoFile);
@@ -172,9 +180,13 @@ function DiseaseDetection() {
             <p className="text-sm text-gray-600">{t(`disease.diseases.${record.diseaseKey}.prevention`)}</p>
           </div>
 
-          <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 flex items-start gap-2">
+          <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 flex items-start gap-2 mb-2">
             <FaExclamationTriangle className="text-orange-500 mt-0.5 shrink-0" size={14} />
             <p className="text-xs text-gray-600">{t('disease.expertConsultNote')}</p>
+          </div>
+
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <p className="text-xs text-gray-600">{t('disease.maharashtraNote')}</p>
           </div>
         </>
       )}
@@ -247,7 +259,29 @@ function DiseaseDetection() {
         {error && (
           <div className="bg-red-100 text-red-700 text-sm p-3 rounded mb-4">{error}</div>
         )}
-
+        {farm?.selectedCrops && farm.selectedCrops.length > 0 && (
+          <div className="bg-white rounded-xl shadow p-6 mb-4">
+            <h3 className="font-semibold text-gray-700 mb-3">
+              {t('disease.selectCropTitle')} <span className="text-red-500">*</span>
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {farm.selectedCrops.map((cropName) => (
+                <button
+                  key={cropName}
+                  type="button"
+                  onClick={() => setSelectedCropForCheck(cropName)}
+                  className={`px-4 py-2 rounded-lg text-sm border transition ${
+                    selectedCropForCheck === cropName
+                      ? 'bg-green-600 text-white border-green-600'
+                      : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100'
+                  }`}
+                >
+                  {t(`crop.cropNames.${cropName}`, cropName)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="bg-white rounded-xl shadow p-6 mb-4">
           <h3 className="font-semibold text-gray-700 mb-3">{t('disease.uploadPhoto')}</h3>
 
@@ -288,7 +322,9 @@ function DiseaseDetection() {
         </div>
 
         <div className="bg-white rounded-xl shadow p-6 mb-6">
-          <h3 className="font-semibold text-gray-700 mb-3">{t('disease.symptomsTitle')}</h3>
+          <h3 className="font-semibold text-gray-700 mb-3">
+            {t('disease.symptomsTitle')} <span className="text-red-500">*</span>
+          </h3>
           <div className="flex flex-wrap gap-2">
             {symptomOptions.map((key) => (
               <button

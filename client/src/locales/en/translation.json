@@ -131,6 +131,9 @@
     }
   },
       "disease": {
+    "selectCropTitle": "Which crop is this check for?",
+    "selectCropError": "Please select which crop this check is for.",
+    "maharashtraNote": "Maharashtra farmers can also contact the Krishi Vibhag helpline (Kisan Call Center: 1800-180-1551, toll-free) for free expert crop advisory support in Marathi and Hindi.",
     "title": "Crop Disease Detection",
     "subtitle": "Upload a photo and select visible symptoms to get a preliminary screening.",
     "uploadPhoto": "Upload a Photo (optional)",

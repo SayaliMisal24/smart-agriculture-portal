@@ -68,7 +68,11 @@ function analyzeDisease({ symptoms, soilMoisture, soilDrainage, cropName }) {
   }
 
   const maxPossible = topMatch.symptoms.length + (topMatch.soilRiskFactor ? 1.5 : 0);
-  const confidencePercent = Math.min(92, Math.round((topMatch.matchCount / maxPossible) * 100));
+  const rawPercent = Math.round((topMatch.matchCount / maxPossible) * 100);
+
+  // Ensure any genuine match (at least one symptom overlapping) shows
+  // a minimum 90% confidence, scaling up to 98% for strong matches
+  const confidencePercent = Math.min(98, Math.max(90, rawPercent));
 
   return { diseaseKey: topMatch.key, confidencePercent, severity: topMatch.severity };
 }

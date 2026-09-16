@@ -8,7 +8,7 @@ const DISEASE_STEP = 6;
 
 const submitDiseaseCheck = async (req, res) => {
   try {
-    const { farmId, symptoms, skippedNoIssue } = req.body;
+    const { farmId, symptoms, skippedNoIssue, cropName } = req.body;
 
     if (!farmId) {
       return res.status(400).json({ message: 'farmId is required' });
@@ -27,17 +27,23 @@ const submitDiseaseCheck = async (req, res) => {
       return res.status(403).json({ message: 'Disease Detection has already been completed for this farm.' });
     }
 
-    const cropName = farm.selectedCrops && farm.selectedCrops.length > 0 ? farm.selectedCrops[0] : null;
+    const isSkipped = skippedNoIssue === 'true' || skippedNoIssue === true;
 
     let diseaseKey = null;
     let confidencePercent = null;
     let severity = null;
     let symptomList = [];
-
-    const isSkipped = skippedNoIssue === 'true' || skippedNoIssue === true;
+    let finalCropName = cropName || null;
 
     if (!isSkipped) {
+      if (!cropName) {
+        return res.status(400).json({ message: 'Please select which crop this check is for.' });
+      }
+
       symptomList = symptoms ? JSON.parse(symptoms) : [];
+      if (symptomList.length === 0) {
+        return res.status(400).json({ message: 'Please select at least one symptom.' });
+      }
 
       const latestSoil = await SoilReport.findOne({ user: req.user.id, farm: farmId }).sort({ createdAt: -1 });
 
@@ -58,7 +64,7 @@ const submitDiseaseCheck = async (req, res) => {
     const record = new DiseaseDetection({
       user: req.user.id,
       farm: farmId,
-      cropName,
+      cropName: finalCropName,
       photoPath,
       symptoms: symptomList,
       skippedNoIssue: isSkipped,
