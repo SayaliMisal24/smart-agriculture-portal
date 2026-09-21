@@ -1,3 +1,25 @@
+// Shared crop-to-category mapping, reused by Fertilizer and Pesticide modules too
+const cropCategoryMap = {
+  'Rice (Paddy)': 'cereal', 'Wheat': 'cereal', 'Bajra (Pearl Millet)': 'cereal',
+  'Jowar (Sorghum)': 'cereal', 'Maize': 'cereal', 'Ragi (Finger Millet)': 'cereal',
+  'Tur / Arhar (Pigeon Pea)': 'pulse', 'Gram / Chana (Chickpea)': 'pulse', 'Moong (Green Gram)': 'pulse',
+  'Urad (Black Gram)': 'pulse', 'Matki (Moth Bean)': 'pulse', 'Bengal Gram (Kabuli Chana)': 'pulse',
+  'Lentil (Masoor)': 'pulse', 'Field Pea (Vatana)': 'pulse',
+  'Soybean': 'oilseed', 'Cotton (Kapas)': 'oilseed', 'Sugarcane': 'oilseed', 'Groundnut (Peanut)': 'oilseed',
+  'Sesame (Til)': 'oilseed', 'Sunflower': 'oilseed', 'Mustard': 'oilseed', 'Safflower (Kardi)': 'oilseed',
+  'Castor': 'oilseed', 'Niger Seed (Ramtil)': 'oilseed', 'Linseed': 'oilseed', 'Guar (Cluster Bean)': 'oilseed',
+  'Onion': 'vegetable', 'Tomato': 'vegetable', 'Green Chili': 'vegetable', 'Brinjal (Eggplant)': 'vegetable',
+  'Okra (Bhindi)': 'vegetable', 'Potato': 'vegetable', 'Garlic': 'vegetable', 'Ginger': 'spice',
+  'Turmeric (Halad)': 'spice', 'Cabbage': 'vegetable', 'Cauliflower': 'vegetable', 'Cucumber': 'vegetable',
+  'Radish': 'vegetable', 'Carrot': 'vegetable', 'Beetroot': 'vegetable', 'Spinach (Palak)': 'vegetable',
+  'Fenugreek (Methi)': 'vegetable', 'Coriander (Dhania)': 'spice', 'Cumin (Jeera)': 'spice', 'Fennel (Sauf)': 'spice',
+  'Watermelon': 'fruit', 'Muskmelon': 'fruit', 'Banana': 'fruit', 'Grapes': 'fruit',
+  'Pomegranate': 'fruit', 'Chikoo (Sapota)': 'fruit',
+};
+
+function getCropCategory(cropName) {
+  return cropCategoryMap[cropName] || 'vegetable';
+}
 const cropDatabase = [
   { name: 'Rice (Paddy)', descKey: 'rice', season: 'kharif', soilType: ['clayey', 'loamy'], water: 'high', yield: '25-30 quintal/acre', duration: '120-150 days' },
   { name: 'Wheat', descKey: 'wheat', season: 'rabi', soilType: ['loamy', 'clayey'], water: 'moderate', yield: '18-22 quintal/acre', duration: '110-130 days' },
@@ -97,4 +119,4 @@ function recommendCrops({ season, soilType, waterAvailability }) {
   return recommendedCrops;
 }
 
-module.exports = { recommendCrops, cropDatabase };
+module.exports = { recommendCrops, cropDatabase, getCropCategory };

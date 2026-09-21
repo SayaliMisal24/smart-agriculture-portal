@@ -24,6 +24,7 @@ import MarketTrendsDetail from './pages/MarketTrendsDetail';
 import SuccessStoryDetail from './pages/SuccessStoryDetail';
 import CropGrowingGuide from './pages/CropGrowingGuide';
 import DiseaseDetection from './pages/DiseaseDetection';
+import FertilizerRecommendation from './pages/FertilizerRecommendation';
 function Layout() {
   const location = useLocation();
   const hideLayout = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile');
@@ -53,6 +54,14 @@ function Layout() {
   element={
     <ProtectedRoute>
       <SoilHealth />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/dashboard/farms/:farmId/fertilizer"
+  element={
+    <ProtectedRoute>
+      <FertilizerRecommendation />
     </ProtectedRoute>
   }
 />
