@@ -169,6 +169,190 @@
       "stuntedGrowth": "Stunted Growth"
     },
     "diseases": {
+            "sheathBlightRice": {
+        "name": "Sheath Blight",
+        "symptomsText": "Sheath blight causes oval, water-soaked lesions on the leaf sheath near the waterline, often leading to wilting and stunted growth in severe cases.",
+        "causeText": "Caused by Rhizoctonia solani fungus, favored by dense planting, high humidity, and excess nitrogen fertilizer.",
+        "organicTreatment": "Reduce planting density for better airflow, and avoid excess nitrogen application which promotes dense, humid canopy conditions.",
+        "chemicalTreatment": "Apply a validamycin or hexaconazole-based fungicide as per label instructions at first sign of lesions on the sheath.",
+        "prevention": "Maintain balanced fertilization and proper plant spacing next season to reduce humidity within the crop canopy."
+      },
+      "wheatPowderyMildew": {
+        "name": "Powdery Mildew",
+        "symptomsText": "Powdery mildew in wheat appears as a white, powdery fungal coating on leaves and stems, often accompanied by stunted growth in affected tillers.",
+        "causeText": "Caused by Blumeria graminis fungus, favored by cool, humid conditions and dense crop stands.",
+        "organicTreatment": "Improve field airflow through proper spacing, and apply a sulfur-based organic spray at early signs.",
+        "chemicalTreatment": "Apply a triazole-based fungicide as per label instructions at the first appearance of white coating.",
+        "prevention": "Choose mildew-resistant wheat varieties for next season and avoid overly dense sowing rates."
+      },
+      "wheatAphid": {
+        "name": "Wheat Aphid",
+        "symptomsText": "Wheat aphids cluster on leaves and developing ear heads, causing curled leaves, a sticky honeydew residue, and yellowing in heavily infested plants.",
+        "causeText": "Caused by small sap-feeding aphid species that multiply rapidly in mild, dry weather conditions.",
+        "organicTreatment": "Encourage natural predators like ladybugs, and spray a mild soap-water solution on visible aphid clusters.",
+        "chemicalTreatment": "Apply a labeled insecticide for cereal aphids if populations exceed the local economic threshold.",
+        "prevention": "Monitor fields regularly during the tillering to heading stages, when aphid populations typically build up fastest."
+      },
+      "maizeLeafBlight": {
+        "name": "Leaf Blight",
+        "symptomsText": "Leaf blight causes elongated, grayish-tan lesions on leaves that can merge and cause significant leaf area loss, along with wilting and yellowing in severe infections.",
+        "causeText": "Caused by Exserohilum or Bipolaris fungal species, favored by warm, humid conditions and crop residue carryover.",
+        "organicTreatment": "Remove and destroy infected leaf debris after harvest, and rotate with non-host crops.",
+        "chemicalTreatment": "Apply a strobilurin or triazole-based fungicide as per label instructions at first sign of lesions.",
+        "prevention": "Use resistant hybrid varieties where available and practice residue management after harvest."
+      },
+      "pulseLeafSpot": {
+        "name": "Leaf Spot",
+        "symptomsText": "Leaf spot in pulses causes small, dark, circular to irregular spots on leaves, often with yellow halos, which can merge and cause premature leaf drop.",
+        "causeText": "Caused by various fungal pathogens (Cercospora, Alternaria), favored by humid conditions and dense canopy.",
+        "organicTreatment": "Remove and destroy affected leaves, and apply a neem-based spray every 7-10 days during humid periods.",
+        "chemicalTreatment": "Apply a mancozeb or copper-based fungicide as per label instructions at first sign of spotting.",
+        "prevention": "Ensure proper spacing for airflow and rotate crops with non-host species next season."
+      },
+      "cottonLeafSpot": {
+        "name": "Leaf Spot",
+        "symptomsText": "Leaf spot in cotton causes small, angular, dark brown spots on leaves that can expand and cause yellowing of surrounding tissue in humid conditions.",
+        "causeText": "Caused by fungal or bacterial pathogens favored by high humidity and overhead irrigation practices.",
+        "organicTreatment": "Remove and destroy affected leaves promptly, and avoid overhead irrigation that keeps leaves wet for extended periods.",
+        "chemicalTreatment": "Apply a copper-based fungicide as per label instructions at the first sign of spotting.",
+        "prevention": "Use drip irrigation instead of overhead watering where possible, and ensure adequate plant spacing next season."
+      },
+      "sugarcaneRedRot": {
+        "name": "Red Rot",
+        "symptomsText": "Red rot causes wilting and yellowing of leaves alongside stunted growth, with characteristic reddish discoloration visible when the stalk is cut open.",
+        "causeText": "Caused by Colletotrichum falcatum fungus, often spreading through infected planting material (setts).",
+        "organicTreatment": "Remove and destroy infected canes immediately, and avoid using planting material from affected fields.",
+        "chemicalTreatment": "Treat healthy planting setts with a recommended fungicide dip before planting as a preventive measure.",
+        "prevention": "Use disease-free, certified planting material and avoid ratooning (regrowing) from infected fields next season."
+      },
+      "sugarcaneBorer": {
+        "name": "Stalk Borer",
+        "symptomsText": "Stalk borer larvae tunnel into the sugarcane stalk, creating visible entry holes and causing stunted growth with dead central shoots in young canes.",
+        "causeText": "Caused by moth larvae that bore into the stalk to feed, often entering through leaf axils or stalk joints.",
+        "organicTreatment": "Remove and destroy affected stalks/dead hearts promptly, and encourage natural parasitic wasps.",
+        "chemicalTreatment": "Apply a labeled systemic insecticide at early planting stage as a preventive measure in high-risk fields.",
+        "prevention": "Remove and destroy crop residue after harvest to eliminate overwintering larvae before next planting."
+      },
+      "oilseedLeafSpot": {
+        "name": "Leaf Spot",
+        "symptomsText": "Leaf spot in oilseeds causes small, dark, circular spots on leaves with visible holes where affected tissue has dried and fallen out in advanced stages.",
+        "causeText": "Caused by fungal pathogens favored by humid conditions and dense canopy with poor airflow.",
+        "organicTreatment": "Remove and destroy affected leaves, and apply a neem-based spray during humid periods.",
+        "chemicalTreatment": "Apply a mancozeb-based fungicide as per label instructions at first sign of spotting.",
+        "prevention": "Ensure proper plant spacing for airflow and rotate crops with non-host species next season."
+      },
+      "oilseedWhitefly": {
+        "name": "Whitefly Infestation",
+        "symptomsText": "Whitefly infestation causes a white, powdery appearance on leaf undersides, curled leaves, and a sticky honeydew residue that can lead to sooty mold.",
+        "causeText": "Caused by small white-winged insects that feed on plant sap and can transmit plant viruses between crops.",
+        "organicTreatment": "Use yellow sticky traps to monitor and reduce populations, and apply neem oil spray targeting leaf undersides.",
+        "chemicalTreatment": "Apply a labeled insecticide targeting whiteflies, following dosage instructions carefully to avoid resistance buildup.",
+        "prevention": "Monitor new growth regularly early in the season and remove volunteer host plants that harbor whitefly populations."
+      },
+      "lateBlightPotato": {
+        "name": "Late Blight",
+        "symptomsText": "Late blight causes dark, water-soaked spots on leaves that rapidly expand and cause wilting, often with a white fungal growth visible on leaf undersides in humid conditions.",
+        "causeText": "Caused by Phytophthora infestans, a fast-spreading pathogen favored by cool, wet weather conditions.",
+        "organicTreatment": "Remove and destroy infected plant material immediately to slow spread, and improve field drainage and airflow.",
+        "chemicalTreatment": "Apply a copper-based or systemic fungicide as per label instructions at the very first sign of symptoms, given how quickly this disease spreads.",
+        "prevention": "Use certified disease-free seed potatoes and avoid overhead irrigation that keeps foliage wet for extended periods."
+      },
+      "vegAphid": {
+        "name": "Aphid Infestation",
+        "symptomsText": "Aphids cluster on new growth and leaf undersides in vegetable crops, causing curled leaves and a sticky honeydew residue that attracts ants and sooty mold.",
+        "causeText": "Caused by small sap-feeding insects that reproduce rapidly in mild weather and can spread plant viruses.",
+        "organicTreatment": "Spray a mild soap-water solution directly on aphid clusters, or introduce natural predators like ladybugs.",
+        "chemicalTreatment": "Apply a labeled insecticide for aphids, following dosage instructions carefully.",
+        "prevention": "Monitor new growth regularly, since early aphid colonies are much easier to manage than established infestations."
+      },
+      "vegLeafMiner": {
+        "name": "Leaf Miner",
+        "symptomsText": "Leaf miner larvae tunnel within leaf tissue, creating visible winding holes and trails, often accompanied by yellowing around damaged areas.",
+        "causeText": "Caused by small fly larvae that feed between the upper and lower leaf surfaces, leaving distinctive tunnel patterns.",
+        "organicTreatment": "Remove and destroy heavily mined leaves promptly, and use yellow sticky traps to monitor adult fly populations.",
+        "chemicalTreatment": "Apply a labeled systemic insecticide that targets larvae within leaf tissue, following label instructions.",
+        "prevention": "Use floating row covers early in the season to physically prevent adult flies from laying eggs on leaves."
+      },
+      "rhizomeRot": {
+        "name": "Rhizome Rot",
+        "symptomsText": "Rhizome rot causes wilting and yellowing of above-ground shoots alongside stunted growth, with soft, rotting rhizomes visible if the soil is examined near the base.",
+        "causeText": "Caused by soil-borne fungal and bacterial pathogens that thrive in waterlogged, poorly-drained soil conditions.",
+        "organicTreatment": "Improve drainage immediately with raised beds or drainage channels, and avoid planting in low-lying, water-collecting areas.",
+        "chemicalTreatment": "Treat planting rhizomes with a recommended fungicide dip before planting, and apply a soil drench fungicide if rot appears in standing crop.",
+        "prevention": "Ensure well-drained soil and raised bed planting for next season's ginger/turmeric crop, avoiding waterlogged low spots."
+      },
+      "gingerLeafSpot": {
+        "name": "Leaf Spot",
+        "symptomsText": "Leaf spot in ginger and turmeric causes small, dark, water-soaked spots on leaves that expand with yellow margins, sometimes causing premature leaf drying.",
+        "causeText": "Caused by Phyllosticta fungal species, favored by high humidity and dense canopy with poor airflow.",
+        "organicTreatment": "Remove and destroy affected leaves promptly, and apply a copper-based organic fungicide during humid periods.",
+        "chemicalTreatment": "Apply a mancozeb-based fungicide as per label instructions at first sign of spotting, repeating on a 10-14 day schedule.",
+        "prevention": "Ensure proper spacing between rhizome plantings for airflow and avoid overhead irrigation during peak humidity."
+      },
+      "shootBorerGinger": {
+        "name": "Shoot Borer",
+        "symptomsText": "Shoot borer larvae tunnel into pseudostems, creating visible entry holes and causing wilting of the central shoot alongside stunted plant growth.",
+        "causeText": "Caused by moth larvae that bore into the pseudostem to feed, often entering near the base of young shoots.",
+        "organicTreatment": "Remove and destroy affected shoots promptly, and use pheromone traps to monitor and reduce moth populations.",
+        "chemicalTreatment": "Apply a labeled systemic insecticide at the base of plants during early shoot emergence as a preventive measure.",
+        "prevention": "Remove and destroy crop residue after harvest, and consider staggered planting to reduce synchronized moth emergence risk."
+      },
+      "gingerBacterialWilt": {
+        "name": "Bacterial Wilt",
+        "symptomsText": "Bacterial wilt in ginger and turmeric causes sudden wilting of pseudostems and stunted growth, often progressing rapidly through the entire clump.",
+        "causeText": "Caused by Ralstonia solanacearum bacteria that infect through root wounds and block the plant's water-conducting tissue.",
+        "organicTreatment": "Remove and destroy affected plants and surrounding soil immediately, avoiding replanting rhizomes in the same location.",
+        "chemicalTreatment": "There is no effective chemical cure once infected; focus on removing affected material and treating soil before next planting.",
+        "prevention": "Use disease-free certified rhizomes for planting and rotate with non-host crops for several seasons before replanting."
+      },
+      "spiceAphid": {
+        "name": "Aphid & Whitefly Infestation",
+        "symptomsText": "Aphid and whitefly infestation in spice crops causes curled leaves, a sticky honeydew residue, and sometimes a whitish powdery appearance on leaf undersides.",
+        "causeText": "Caused by small sap-feeding insects that cluster on new growth and can spread plant viruses between crops.",
+        "organicTreatment": "Spray a mild soap-water solution or neem oil on affected areas, focusing on leaf undersides where insects cluster.",
+        "chemicalTreatment": "Apply a labeled insecticide targeting the specific pest, following dosage instructions carefully.",
+        "prevention": "Monitor new growth regularly early in the season to catch infestations before they become established."
+      },
+      "fruitFly": {
+        "name": "Fruit Fly",
+        "symptomsText": "Fruit fly larvae create visible entry holes in ripening fruit, often causing internal rotting and premature wilting or dropping of affected fruit.",
+        "causeText": "Caused by fruit fly species that lay eggs in ripening fruit, with larvae feeding inside and causing fruit to rot from within.",
+        "organicTreatment": "Use fruit fly traps baited with methyl eugenol or similar attractants, and remove and destroy fallen/infested fruit promptly.",
+        "chemicalTreatment": "Apply a labeled bait spray or insecticide targeted at fruit flies, timed to coincide with fruit ripening stages.",
+        "prevention": "Practice good field sanitation by removing fallen fruit regularly, which breaks the fruit fly life cycle before next season."
+      },
+      "grapesPowderyMildew": {
+        "name": "Powdery Mildew",
+        "symptomsText": "Powdery mildew in grapes appears as a white, powdery fungal coating on leaves and developing berries, often with stunted growth in severely affected vines.",
+        "causeText": "Caused by Erysiphe necator fungus, favored by warm, dry days with cool, humid nights typical of grape-growing regions.",
+        "organicTreatment": "Apply a sulfur-based organic spray on a regular preventive schedule, and ensure good canopy airflow through proper pruning.",
+        "chemicalTreatment": "Apply a triazole or strobilurin-based fungicide as per label instructions, particularly during the critical bloom-to-berry-set period.",
+        "prevention": "Maintain an open canopy through proper pruning and training next season to reduce humidity within the vine canopy."
+      },
+      "generalLeafSpot": {
+        "name": "General Leaf Spot",
+        "symptomsText": "General leaf spot conditions cause visible spotting and holes on leaves alongside yellowing, consistent with a range of common fungal or bacterial pathogens affecting many crop types.",
+        "causeText": "Likely caused by a fungal or bacterial pathogen common to many crops, often favored by humid conditions and overhead watering.",
+        "organicTreatment": "Remove and destroy visibly affected leaves, improve airflow through proper spacing, and apply a copper-based organic spray.",
+        "chemicalTreatment": "Apply a broad-spectrum fungicide (such as a mancozeb or copper-based product) as per label instructions.",
+        "prevention": "Avoid overhead irrigation that wets leaves, and ensure proper plant spacing for airflow next season."
+      },
+      "generalFungalInfection": {
+        "name": "General Fungal Infection",
+        "symptomsText": "Symptoms including a powdery coating, wilting, and spotting together suggest a general fungal infection common across many crop types, particularly in humid conditions.",
+        "causeText": "Likely caused by one of several common fungal pathogens favored by humidity and reduced airflow around the plant.",
+        "organicTreatment": "Remove and destroy affected plant parts, improve airflow through proper spacing and pruning, and apply a neem-based or copper-based organic spray.",
+        "chemicalTreatment": "Apply a broad-spectrum systemic fungicide as per label instructions, repeating on the recommended schedule if symptoms persist.",
+        "prevention": "Improve field drainage and airflow before next planting, and avoid excess nitrogen fertilization which can promote dense, humid growth."
+      },
+      "generalNutrientStress": {
+        "name": "Nutrient Deficiency / Stress",
+        "symptomsText": "Yellowing combined with stunted growth, without other disease-specific symptoms, often points toward a nutrient deficiency or general plant stress rather than an active disease.",
+        "causeText": "Commonly caused by nitrogen, iron, or micronutrient deficiency in the soil, or general stress from water/temperature fluctuations.",
+        "organicTreatment": "Apply well-composted organic manure to improve overall soil nutrient content, and ensure consistent watering to reduce plant stress.",
+        "chemicalTreatment": "Apply a balanced NPK fertilizer or a specific micronutrient supplement based on which nutrient is likely deficient in your soil.",
+        "prevention": "Get a proper soil nutrient test done before next season to identify and correct any specific deficiencies proactively."
+      },
       "downyMildewMillet": {
         "name": "Downy Mildew",
         "symptomsText": "Downy mildew in millets causes yellowing streaks on leaves alongside stunted, distorted growth, sometimes with a downy white growth visible on leaf undersides in humid conditions.",
