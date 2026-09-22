@@ -121,10 +121,22 @@ function FertilizerRecommendation() {
         </div>
       </div>
 
-      <div className="bg-purple-50 rounded-xl p-4 flex items-start gap-2">
+      <div className="bg-purple-50 rounded-xl p-4 flex items-start gap-2 mb-4">
         <FaCalendarCheck className="text-purple-600 mt-0.5 shrink-0" size={16} />
         <p className="text-sm text-gray-600">{t('fertilizer.applicationGuide')}</p>
       </div>
+
+      <div className="bg-teal-50 rounded-xl p-4 mb-4">
+        <p className="text-sm font-semibold text-teal-700 mb-1">{t('fertilizer.micronutrientsTitle')}</p>
+        <p className="text-sm text-gray-600">{t(`fertilizer.${record.microKey}`)}</p>
+      </div>
+
+      {record.diseaseNoteKey && (
+        <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-4">
+          <p className="text-sm font-semibold text-orange-700 mb-1">{t('fertilizer.diseaseAwareTitle')}</p>
+          <p className="text-sm text-gray-600">{t(`fertilizer.${record.diseaseNoteKey}`)}</p>
+        </div>
+      )}
 
       <p className="text-xs text-gray-400 mt-4">{t('fertilizer.disclaimer')}</p>
     </div>

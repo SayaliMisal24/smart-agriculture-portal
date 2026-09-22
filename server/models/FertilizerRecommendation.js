@@ -13,6 +13,9 @@ const fertilizerRecommendationSchema = new mongoose.Schema(
     leansOrganic: Boolean,
     organicKey: String,
     chemicalKey: String,
+    microKey: String,
+    diseaseNoteKey: String,
+    diseaseKey: String,
   },
   { timestamps: true }
 );

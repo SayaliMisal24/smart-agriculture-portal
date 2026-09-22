@@ -128,7 +128,8 @@
       "harvesting": "Harvesting",
       "pestMonitoring": "Pest and disease monitoring, second fertilizer if needed",
       "regularCare": "Regular irrigation and weeding"
-    }
+    },
+    "addForAnotherCrop": "Add Calendar for Another Crop"
   },
       "disease": {
     "selectCropTitle": "Which crop is this check for?",
@@ -816,7 +817,18 @@
     "spiceOrganic": "Apply well-rotted compost at 2.5-3 tonnes per acre before planting, with a light top-dressing of vermicompost every 2 months during growth.",
     "spiceChemical": "Apply Urea in two to three split doses through the growing season, with DAP and MOP applied as basal dose at planting.",
     "fruitOrganic": "Apply well-rotted farmyard manure at 3-5 tonnes per acre annually, adjusted for tree/vine age, with compost top-dressing during flowering.",
-    "fruitChemical": "Apply Urea in three split doses through the growing season (post-harvest, pre-flowering, fruit development), with DAP and MOP applied at the start of the growing season."
+    "fruitChemical": "Apply Urea in three split doses through the growing season (post-harvest, pre-flowering, fruit development), with DAP and MOP applied at the start of the growing season.",
+    "micronutrientsTitle": "Micronutrients to Watch",
+    "diseaseAwareTitle": "Based on Your Disease Check",
+    "cerealMicro": "Cereals commonly respond well to zinc sulfate application (25 kg/acre) if leaves show pale yellowing between veins, a common zinc deficiency sign in this crop group.",
+    "pulseMicro": "Pulses benefit from a light boron and molybdenum supplement, especially in acidic soils, which supports better nodule formation and nitrogen fixation.",
+    "oilseedMicro": "Oilseeds often respond well to sulfur application (20 kg/acre as gypsum), which directly supports oil content and quality.",
+    "vegetableMicro": "Vegetables commonly benefit from calcium supplementation (via gypsum or calcium nitrate) to reduce blossom-end rot and improve fruit quality.",
+    "spiceMicro": "Spice crops often respond well to potassium-rich foliar sprays during bulb/rhizome development for better size and quality.",
+    "fruitMicro": "Fruit crops commonly benefit from zinc and boron foliar sprays during flowering, which improves fruit set and reduces flower drop.",
+    "diseaseNoteRootRot": "Since a root/collar rot issue was detected, prioritize compost over fresh manure right now, and consider a biofertilizer containing Trichoderma to help suppress soil-borne fungal pathogens while you fertilize.",
+    "diseaseNoteWilt": "Since a wilt-related issue was detected, avoid heavy fresh manure application near root zones for now, and focus fertilizer application away from the base of affected plants to reduce further root stress.",
+    "diseaseNoteNutrientStress": "Since your disease check pointed toward nutrient stress rather than active disease, this fertilizer plan is especially important right now - follow the full recommended quantities to help the crop recover."
   },
   "farms": {
     "title": "My Farms",
