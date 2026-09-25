@@ -1,37 +1,42 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../components/Navbar';
 import api from '../utils/api';
-import { FaBug, FaCheckCircle, FaCamera, FaImage, FaExclamationTriangle, FaLeaf, FaFlask } from 'react-icons/fa';
+import { FaBug, FaCheckCircle, FaCamera, FaImage, FaExclamationTriangle, FaLeaf, FaFlask, FaPlus } from 'react-icons/fa';
 
 const symptomOptions = [
   'yellowing', 'spots', 'wilting', 'whiteCoating',
   'holes', 'stickyResidue', 'curledLeaves', 'stuntedGrowth',
 ];
 
+const severityColors = {
+  high: 'bg-red-100 text-red-700',
+  medium: 'bg-yellow-100 text-yellow-800',
+  low: 'bg-green-100 text-green-700',
+};
+
 function DiseaseDetection() {
   const { t } = useTranslation();
   const { farmId } = useParams();
-  const navigate = useNavigate();
 
   const [farm, setFarm] = useState(null);
+  const [records, setRecords] = useState([]);
   const [checkingStatus, setCheckingStatus] = useState(true);
-  const [alreadyCompleted, setAlreadyCompleted] = useState(false);
-  const [existingRecord, setExistingRecord] = useState(null);
+  const [showForm, setShowForm] = useState(false);
 
+  const [selectedCropForCheck, setSelectedCropForCheck] = useState('');
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
-  const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [selectedCropForCheck, setSelectedCropForCheck] = useState('');
+
   useEffect(() => {
-    checkStatusAndLoad();
+    loadEverything();
   }, [farmId]);
 
-  const checkStatusAndLoad = async () => {
+  const loadEverything = async () => {
     setCheckingStatus(true);
     try {
       const farmRes = await api.get(`/farms/${farmId}`, {
@@ -40,17 +45,14 @@ function DiseaseDetection() {
       const farmData = farmRes.data.farm;
       setFarm(farmData);
 
-      const isDone = farmData.completedSteps.includes(6);
-      setAlreadyCompleted(isDone);
-
-      if (isDone) {
-        const res = await api.get(`/disease?farmId=${farmId}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
-        setExistingRecord(res.data.record);
-      }
+      const res = await api.get(`/disease?farmId=${farmId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      const loadedRecords = res.data.records || [];
+      setRecords(loadedRecords);
+      if (loadedRecords.length === 0) setShowForm(true);
     } catch (err) {
-      console.error('Failed to check farm status', err);
+      console.error('Failed to load disease detection data', err);
     } finally {
       setCheckingStatus(false);
     }
@@ -103,7 +105,12 @@ function DiseaseDetection() {
           'Content-Type': 'multipart/form-data',
         },
       });
-      setResult(res.data.record);
+      setRecords((prev) => [...prev, res.data.record]);
+      setSelectedCropForCheck('');
+      setSelectedSymptoms([]);
+      setPhotoFile(null);
+      setPhotoPreview(null);
+      setShowForm(false);
     } catch (err) {
       setError(err.response?.data?.message || t('irrigation.error'));
     } finally {
@@ -111,14 +118,11 @@ function DiseaseDetection() {
     }
   };
 
-    const severityColors = {
-    high: 'bg-red-100 text-red-700',
-    medium: 'bg-yellow-100 text-yellow-800',
-    low: 'bg-green-100 text-green-700',
-  };
+  const checkedCrops = records.filter((r) => !r.skippedNoIssue).map((r) => r.cropName);
+  const remainingCrops = (farm?.selectedCrops || []).filter((c) => !checkedCrops.includes(c));
 
   const renderResultCard = (record) => (
-    <div className="bg-white rounded-2xl shadow-lg p-6">
+    <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
       {record.cropName && (
         <p className="text-xs text-gray-400 mb-3">
           {t('disease.forCrop')}: <span className="font-medium text-gray-600">{t(`crop.cropNames.${record.cropName}`, record.cropName)}</span>
@@ -206,45 +210,6 @@ function DiseaseDetection() {
     );
   }
 
-  if (alreadyCompleted && existingRecord) {
-    return (
-      <div>
-        <Navbar />
-        <div className="max-w-2xl mx-auto p-6">
-          <Link to={`/dashboard/farms/${farmId}`} className="text-sm text-green-700 hover:underline">
-            ← {t('farmDetail.backToFarms')}
-          </Link>
-          <h1 className="text-xl font-bold text-gray-800 mt-4 mb-4">{t('disease.title')}</h1>
-          {renderResultCard(existingRecord)}
-          <button
-            onClick={() => navigate(`/dashboard/farms/${farmId}`)}
-            className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-medium mt-6"
-          >
-            {t('wizard.continueToNext')}
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (result) {
-    return (
-      <div>
-        <Navbar />
-        <div className="max-w-2xl mx-auto p-6">
-          <h1 className="text-xl font-bold text-gray-800 mb-4">{t('disease.title')}</h1>
-          {renderResultCard(result)}
-          <button
-            onClick={() => navigate(`/dashboard/farms/${farmId}`)}
-            className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-medium mt-6"
-          >
-            {t('wizard.continueToNext')}
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div>
       <Navbar />
@@ -259,106 +224,126 @@ function DiseaseDetection() {
         {error && (
           <div className="bg-red-100 text-red-700 text-sm p-3 rounded mb-4">{error}</div>
         )}
-        {farm?.selectedCrops && farm.selectedCrops.length > 0 && (
-          <div className="bg-white rounded-xl shadow p-6 mb-4">
-            <h3 className="font-semibold text-gray-700 mb-3">
-              {t('disease.selectCropTitle')} <span className="text-red-500">*</span>
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {farm.selectedCrops.map((cropName) => (
-                <button
-                  key={cropName}
-                  type="button"
-                  onClick={() => setSelectedCropForCheck(cropName)}
-                  className={`px-4 py-2 rounded-lg text-sm border transition ${
-                    selectedCropForCheck === cropName
-                      ? 'bg-green-600 text-white border-green-600'
-                      : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100'
-                  }`}
-                >
-                  {t(`crop.cropNames.${cropName}`, cropName)}
-                </button>
-              ))}
-            </div>
-          </div>
+
+        {/* Show all previously submitted reports */}
+        {records.map((record, i) => (
+          <div key={i}>{renderResultCard(record)}</div>
+        ))}
+
+        {/* Show "add for another crop" button if there are remaining crops and form is hidden */}
+        {remainingCrops.length > 0 && !showForm && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg font-medium mb-6"
+          >
+            <FaPlus size={12} /> {t('disease.addForAnotherCrop')}
+          </button>
         )}
-        <div className="bg-white rounded-xl shadow p-6 mb-4">
-          <h3 className="font-semibold text-gray-700 mb-3">{t('disease.uploadPhoto')}</h3>
 
-          {photoPreview ? (
-            <div className="mb-4">
-              <img src={photoPreview} alt="Preview" className="max-h-64 rounded-lg mx-auto" />
+        {/* Show the form when adding a new check */}
+        {showForm && (
+          <>
+            {farm?.selectedCrops && remainingCrops.length > 0 && (
+              <div className="bg-white rounded-xl shadow p-6 mb-4">
+                <h3 className="font-semibold text-gray-700 mb-3">
+                  {t('disease.selectCropTitle')} <span className="text-red-500">*</span>
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {remainingCrops.map((cropName) => (
+                    <button
+                      key={cropName}
+                      type="button"
+                      onClick={() => setSelectedCropForCheck(cropName)}
+                      className={`px-4 py-2 rounded-lg text-sm border transition ${
+                        selectedCropForCheck === cropName
+                          ? 'bg-green-600 text-white border-green-600'
+                          : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100'
+                      }`}
+                    >
+                      {t(`crop.cropNames.${cropName}`, cropName)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="bg-white rounded-xl shadow p-6 mb-4">
+              <h3 className="font-semibold text-gray-700 mb-3">{t('disease.uploadPhoto')}</h3>
+
+              {photoPreview ? (
+                <div className="mb-4">
+                  <img src={photoPreview} alt="Preview" className="max-h-64 rounded-lg mx-auto" />
+                </div>
+              ) : (
+                <div className="border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center py-8 mb-4">
+                  <FaCamera className="text-gray-400 mb-2" size={28} />
+                  <span className="text-sm text-gray-500">{t('disease.uploadHint')}</span>
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <label className="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-lg text-sm font-medium cursor-pointer">
+                  <FaCamera size={14} />
+                  {t('disease.takePhotoButton')}
+                  <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handlePhotoChange} />
+                </label>
+                <label className="flex-1 flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-lg text-sm font-medium cursor-pointer">
+                  <FaImage size={14} />
+                  {t('disease.chooseGalleryButton')}
+                  <input type="file" accept=".jpg,.jpeg,.png" className="hidden" onChange={handlePhotoChange} />
+                </label>
+              </div>
             </div>
-          ) : (
-            <div className="border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center py-8 mb-4">
-              <FaCamera className="text-gray-400 mb-2" size={28} />
-              <span className="text-sm text-gray-500">{t('disease.uploadHint')}</span>
+
+            <div className="bg-white rounded-xl shadow p-6 mb-6">
+              <h3 className="font-semibold text-gray-700 mb-3">
+                {t('disease.symptomsTitle')} <span className="text-red-500">*</span>
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {symptomOptions.map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => toggleSymptom(key)}
+                    className={`px-4 py-2 rounded-lg text-sm border transition ${
+                      selectedSymptoms.includes(key)
+                        ? 'bg-green-600 text-white border-green-600'
+                        : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100'
+                    }`}
+                  >
+                    {t(`disease.symptoms.${key}`)}
+                  </button>
+                ))}
+              </div>
             </div>
-          )}
 
-          <div className="flex gap-3">
-            <label className="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-lg text-sm font-medium cursor-pointer">
-              <FaCamera size={14} />
-              {t('disease.takePhotoButton')}
-              <input
-                type="file"
-                accept="image/*"
-                capture="environment"
-                className="hidden"
-                onChange={handlePhotoChange}
-              />
-            </label>
-            <label className="flex-1 flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-lg text-sm font-medium cursor-pointer">
-              <FaImage size={14} />
-              {t('disease.chooseGalleryButton')}
-              <input
-                type="file"
-                accept=".jpg,.jpeg,.png"
-                className="hidden"
-                onChange={handlePhotoChange}
-              />
-            </label>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow p-6 mb-6">
-          <h3 className="font-semibold text-gray-700 mb-3">
-            {t('disease.symptomsTitle')} <span className="text-red-500">*</span>
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {symptomOptions.map((key) => (
+            <div className="flex flex-wrap gap-3">
               <button
-                key={key}
-                type="button"
-                onClick={() => toggleSymptom(key)}
-                className={`px-4 py-2 rounded-lg text-sm border transition ${
-                  selectedSymptoms.includes(key)
-                    ? 'bg-green-600 text-white border-green-600'
-                    : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100'
-                }`}
+                onClick={() => handleSubmit(false)}
+                disabled={loading}
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50"
               >
-                {t(`disease.symptoms.${key}`)}
+                {loading ? t('disease.analyzing') : t('disease.submitButton')}
               </button>
-            ))}
-          </div>
-        </div>
+              <button
+                onClick={() => handleSubmit(true)}
+                disabled={loading}
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold disabled:opacity-50"
+              >
+                {t('disease.noIssueButton')}
+              </button>
+            </div>
+          </>
+        )}
 
-        <div className="flex flex-wrap gap-3">
-          <button
-            onClick={() => handleSubmit(false)}
-            disabled={loading}
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50"
+        {remainingCrops.length === 0 && records.length > 0 && !showForm && (
+          <Link
+            to={`/dashboard/farms/${farmId}`}
+            className="inline-block bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-medium mt-2"
           >
-            {loading ? t('disease.analyzing') : t('disease.submitButton')}
-          </button>
-          <button
-            onClick={() => handleSubmit(true)}
-            disabled={loading}
-            className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold disabled:opacity-50"
-          >
-            {t('disease.noIssueButton')}
-          </button>
-        </div>
+            {t('wizard.continueToNext')}
+          </Link>
+        )}
       </div>
     </div>
   );

@@ -154,6 +154,7 @@
     "transparencyNote": "This is a preliminary screening tool based on reported symptoms and your crop type, not a certified lab diagnosis or true image-based AI analysis.",
     "takePhotoButton": "Take Photo",
     "chooseGalleryButton": "Choose from Gallery",
+    "addForAnotherCrop": "Add Check for Another Crop",
     "severity": {
       "high": "High Severity",
       "medium": "Medium Severity",
