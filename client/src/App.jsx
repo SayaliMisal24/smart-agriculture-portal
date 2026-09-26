@@ -1,30 +1,32 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import Home from './pages/Home';
-import About from './pages/About';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Dashboard from './pages/Dashboard';
-import MyFarms from './pages/MyFarms';
-import Profile from './pages/Profile';
-import NotFound from './pages/NotFound';
-import FarmDetail from './pages/FarmDetail';
-import ProtectedRoute from './components/ProtectedRoute';
-import SoilHealth from './pages/SoilHealth';
-import CropRecommendation from './pages/CropRecommendation';
-import CropDetail from './pages/CropDetail';
-import Weather from './pages/Weather';
-import SmartIrrigation from './pages/SmartIrrigation';
-import Features from './pages/Features';
-import CropCalendar from './pages/CropCalendar';
-import WeatherDetail from './pages/WeatherDetail';
-import TipDetail from './pages/TipDetail';
-import MarketTrendsDetail from './pages/MarketTrendsDetail';
-import SuccessStoryDetail from './pages/SuccessStoryDetail';
-import CropGrowingGuide from './pages/CropGrowingGuide';
-import DiseaseDetection from './pages/DiseaseDetection';
-import FertilizerRecommendation from './pages/FertilizerRecommendation';
+import { lazy, Suspense } from 'react';
+
+const Home = lazy(() => import('./pages/Home'));
+const Login = lazy(() => import('./pages/Login'));
+const Signup = lazy(() => import('./pages/Signup'));
+const About = lazy(() => import('./pages/About'));
+const Features = lazy(() => import('./pages/Features'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const MyFarms = lazy(() => import('./pages/MyFarms'));
+const FarmDetail = lazy(() => import('./pages/FarmDetail'));
+const Profile = lazy(() => import('./pages/Profile'));
+const SoilHealth = lazy(() => import('./pages/SoilHealth'));
+const CropRecommendation = lazy(() => import('./pages/CropRecommendation'));
+const CropDetail = lazy(() => import('./pages/CropDetail'));
+const CropGrowingGuide = lazy(() => import('./pages/CropGrowingGuide'));
+const Weather = lazy(() => import('./pages/Weather'));
+const SmartIrrigation = lazy(() => import('./pages/SmartIrrigation'));
+const CropCalendar = lazy(() => import('./pages/CropCalendar'));
+const DiseaseDetection = lazy(() => import('./pages/DiseaseDetection'));
+const FertilizerRecommendation = lazy(() => import('./pages/FertilizerRecommendation'));
+const YieldPrediction = lazy(() => import('./pages/YieldPrediction'));
+const MarketFinder = lazy(() => import('./pages/MarketFinder'));
+const MarketPricePrediction = lazy(() => import('./pages/MarketPricePrediction'));
+const WeatherDetail = lazy(() => import('./pages/WeatherDetail'));
+const TipDetail = lazy(() => import('./pages/TipDetail'));
+const MarketTrendsDetail = lazy(() => import('./pages/MarketTrendsDetail'));
+const SuccessStoryDetail = lazy(() => import('./pages/SuccessStoryDetail'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 function Layout() {
   const location = useLocation();
   const hideLayout = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile');
@@ -32,7 +34,8 @@ function Layout() {
   return (
     <>
       {!hideLayout && <Navbar />}
-      <Routes>
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-gray-400">Loading...</div>}>
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
@@ -146,8 +149,25 @@ function Layout() {
     </ProtectedRoute>
   }
 />
+<Route
+  path="/dashboard/farms/:farmId/market-price-prediction"
+  element={<ProtectedRoute><MarketPricePrediction /></ProtectedRoute>}
+/>
+<Route
+  path="/dashboard/farms/:farmId/yield-prediction"
+  element={
+    <ProtectedRoute>
+      <YieldPrediction />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/dashboard/farms/:farmId/market"
+  element={<ProtectedRoute><MarketFinder /></ProtectedRoute>}
+/>
         <Route path="*" element={<NotFound />} />
       </Routes>
+    </Suspense>
       {!hideLayout && <Footer />}
     </>
   

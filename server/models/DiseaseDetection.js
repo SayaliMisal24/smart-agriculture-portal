@@ -14,5 +14,5 @@ const diseaseDetectionSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+diseaseDetectionSchema.index({ farm: 1 });
 module.exports = mongoose.model('DiseaseDetection', diseaseDetectionSchema);

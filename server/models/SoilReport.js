@@ -24,5 +24,5 @@ const soilReportSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+soilReportSchema.index({ farm: 1 });
 module.exports = mongoose.model('SoilReport', soilReportSchema);

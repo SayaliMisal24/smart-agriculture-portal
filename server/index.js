@@ -16,6 +16,9 @@ const calendarRoutes = require('./routes/calendarRoutes');
 const statsRoutes = require('./routes/statsRoutes');
 const diseaseRoutes = require('./routes/diseaseRoutes');
 const fertilizerRoutes = require('./routes/fertilizerRoutes');
+const yieldRoutes = require('./routes/yieldRoutes');
+const marketFinderRoutes = require('./routes/marketFinderRoutes');
+const pricePredictionRoutes = require('./routes/pricePredictionRoutes');
 // Create the Express app
 const app = express();
 
@@ -27,6 +30,9 @@ app.use('/api/user', userRoutes);
 app.use('/api/disease', diseaseRoutes);
 app.use('/api/market', marketRoutes);
 app.use('/api/fertilizer', fertilizerRoutes);
+app.use('/api/yield', yieldRoutes);
+app.use('/api/market-finder', marketFinderRoutes);
+app.use('/api/price-prediction', pricePredictionRoutes);
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected successfully'))

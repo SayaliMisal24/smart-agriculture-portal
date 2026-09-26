@@ -13,10 +13,9 @@ const STEP_ROUTES = {
   5: 'calendar',
   6: 'disease-detection',
   7: 'fertilizer',
-  8: 'pesticide',
-  9: 'yield-prediction',
-  10: 'market',
-  11: 'market-price-prediction',
+  8: 'yield-prediction',
+  9: 'market',
+  10: 'market-price-prediction',
 };
 
 function FarmDetail() {
@@ -41,10 +40,10 @@ function FarmDetail() {
     }
   };
 
-  const stepNames = [
+    const stepNames = [
     t('wizard.step1'), t('wizard.step2'), t('wizard.step3'), t('wizard.step4'),
     t('wizard.step5'), t('wizard.step6'), t('wizard.step7'), t('wizard.step8'),
-    t('wizard.step9'), t('wizard.step10'), t('wizard.step11'),
+    t('wizard.step9'), t('wizard.step10'),
   ];
 
   const handleStepClick = (stepNum, status) => {

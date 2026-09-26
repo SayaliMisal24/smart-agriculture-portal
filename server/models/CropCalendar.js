@@ -21,5 +21,5 @@ const cropCalendarSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+cropCalendarSchema.index({ farm: 1});
 module.exports = mongoose.model('CropCalendar', cropCalendarSchema);

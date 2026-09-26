@@ -13,5 +13,5 @@ const farmSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+farmSchema.index({ user: 1 });
 module.exports = mongoose.model('Farm', farmSchema);

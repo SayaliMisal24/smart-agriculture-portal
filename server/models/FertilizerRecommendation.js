@@ -19,5 +19,5 @@ const fertilizerRecommendationSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+fertilizerRecommendationSchema.index({ farm: 1 });
 module.exports = mongoose.model('FertilizerRecommendation', fertilizerRecommendationSchema);

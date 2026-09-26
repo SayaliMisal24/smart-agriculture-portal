@@ -8,5 +8,5 @@ const irrigationLogSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+irrigationLogSchema.index({ farm: 1 });
 module.exports = mongoose.model('IrrigationLog', irrigationLogSchema);

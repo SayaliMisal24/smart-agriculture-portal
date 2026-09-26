@@ -40,7 +40,7 @@
     "stepsLabel": "Guided Steps",
     "languagesLabel": "Languages Supported",
     "statsTitle": "Real Activity on Our Platform",
-    "visitsLabel": "Unique Visitors",
+    "visitsLabel": "Visitors",
     "farmsLabel": "Farms Registered",
     "soilReportsLabel": "Soil Reports Submitted",
     "cropsConfirmedLabel": "Crops Confirmed",
@@ -886,6 +886,40 @@
       "Haze": "Haze"
     }
   },
+    "pricePred": {
+    "title": "Market Price Prediction",
+    "subtitle": "See a simulated future price trend and the best time to sell.",
+    "generateButton": "Generate Prediction",
+    "generating": "Predicting...",
+    "now": "Now",
+    "week": "Week {{number}}",
+    "trend": { "up": "Prices trending upward", "down": "Prices trending downward", "stable": "Prices are stable" },
+    "bestTimeTitle": "Best Time to Sell",
+    "adviceWait": "Prices are expected to rise over the coming weeks — consider waiting before selling if storage is available.",
+    "adviceSellSoon": "Prices are expected to fall — consider selling sooner rather than later.",
+    "adviceStable": "Prices are expected to remain stable — selling now is a reasonable choice.",
+    "disclaimer": "This is a simplified, simulated projection for demonstration purposes, not a real market forecast.",
+    "wizardComplete": "🎉 All 10 steps complete for this farm!"
+  },
+    "marketFinder": {
+    "title": "Market Finder",
+    "subtitle": "Find nearby markets and current prices for your crop.",
+    "generateButton": "Find Markets",
+    "loading": "Searching markets...",
+    "noMarkets": "No market price data found for this crop today.",
+    "disclaimer": "Prices are real, sourced from data.gov.in (Agmarknet). Distances shown are illustrative, not GPS-calculated."
+  },
+    "yieldPred": {
+    "title": "Yield Prediction",
+    "subtitle": "Estimate your expected yield, income, and expenses for this crop.",
+    "generateButton": "Generate Prediction",
+    "generating": "Calculating...",
+    "expectedYieldLabel": "Expected Yield",
+    "incomeLabel": "Estimated Income",
+    "expenseLabel": "Estimated Expense",
+    "profitLabel": "Estimated Profit",
+    "disclaimer": "These are estimates based on typical yield ranges and illustrative market prices, not guarantees - actual results depend on weather, market conditions, and farming practices."
+  },
   "irrigation": {
     "title": "Smart Irrigation",
     "loading": "Loading irrigation details...",
@@ -938,7 +972,7 @@
     "welcome2": "Home",
     "goToDashboard": "Go to Dashboard"
   },
-  "wizard": {
+   "wizard": {
     "step1": "Soil Health Analyzer",
     "step2": "Crop Recommendation",
     "step3": "Weather Based Farming",
@@ -946,10 +980,9 @@
     "step5": "Crop Calendar",
     "step6": "Crop Disease Detection",
     "step7": "Fertilizer Recommendation",
-    "step8": "Pesticide Recommendation",
-    "step9": "Yield Prediction",
-    "step10": "Market Finder",
-    "step11": "Market Price Prediction",
+    "step8": "Yield Prediction",
+    "step9": "Market Finder",
+    "step10": "Market Price Prediction",
     "viewOnly": "Completed - View Only",
     "loadingStatus": "Checking progress...",
     "continueToNext": "Continue to Next Step"

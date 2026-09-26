@@ -14,5 +14,5 @@ const cropRecommendationSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+cropRecommendationSchema.index({ farm: 1});
 module.exports = mongoose.model('CropRecommendation', cropRecommendationSchema);
