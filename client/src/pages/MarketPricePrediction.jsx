@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../components/Navbar';
 import api from '../utils/api';
@@ -8,11 +8,12 @@ import { FaChartLine, FaCheckCircle, FaArrowUp, FaArrowDown, FaMinus } from 'rea
 function MarketPricePrediction() {
   const { t } = useTranslation();
   const { farmId } = useParams();
-  const navigate = useNavigate();
 
+  const [farm, setFarm] = useState(null);
   const [checkingStatus, setCheckingStatus] = useState(true);
   const [alreadyCompleted, setAlreadyCompleted] = useState(false);
   const [existingRecord, setExistingRecord] = useState(null);
+  const [selectedCropForCheck, setSelectedCropForCheck] = useState('');
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,9 @@ function MarketPricePrediction() {
     setCheckingStatus(true);
     try {
       const farmRes = await api.get(`/farms/${farmId}`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-      const isDone = farmRes.data.farm.completedSteps.includes(10);
+      const farmData = farmRes.data.farm;
+      setFarm(farmData);
+      const isDone = farmData.completedSteps.includes(10);
       setAlreadyCompleted(isDone);
       if (isDone) {
         const res = await api.get(`/price-prediction?farmId=${farmId}`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
@@ -40,9 +43,13 @@ function MarketPricePrediction() {
 
   const handleGenerate = async () => {
     setError('');
+    if (!selectedCropForCheck) {
+      setError(t('pricePred.selectCropError'));
+      return;
+    }
     setLoading(true);
     try {
-      const res = await api.post('/price-prediction', { farmId }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+      const res = await api.post('/price-prediction', { farmId, cropName: selectedCropForCheck }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
       setResult(res.data.record);
     } catch (err) {
       setError(err.response?.data?.message || t('irrigation.error'));
@@ -132,6 +139,29 @@ function MarketPricePrediction() {
         <h1 className="text-2xl font-bold text-gray-800 mt-3 mb-2">{t('pricePred.title')}</h1>
         <p className="text-gray-500 mb-6">{t('pricePred.subtitle')}</p>
         {error && <div className="bg-red-100 text-red-700 text-sm p-3 rounded mb-4">{error}</div>}
+
+        {farm?.selectedCrops && farm.selectedCrops.length > 0 && (
+          <div className="bg-white rounded-xl shadow p-6 mb-4">
+            <h3 className="font-semibold text-gray-700 mb-3">{t('pricePred.selectCropTitle')}</h3>
+            <div className="flex flex-wrap gap-2">
+              {farm.selectedCrops.map((cropName) => (
+                <button
+                  key={cropName}
+                  type="button"
+                  onClick={() => setSelectedCropForCheck(cropName)}
+                  className={`px-4 py-2 rounded-lg text-sm border transition ${
+                    selectedCropForCheck === cropName
+                      ? 'bg-green-600 text-white border-green-600'
+                      : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100'
+                  }`}
+                >
+                  {t(`crop.cropNames.${cropName}`, cropName)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <button onClick={handleGenerate} disabled={loading} className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50">
           {loading ? t('pricePred.generating') : t('pricePred.generateButton')}
         </button>

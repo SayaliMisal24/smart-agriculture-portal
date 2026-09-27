@@ -1,6 +1,9 @@
 const Farm = require('../models/Farm');
+const SoilReport = require('../models/SoilReport');
+const CropRecommendation = require('../models/CropRecommendation');
+const CropCalendar = require('../models/CropCalendar');
+const IrrigationLog = require('../models/IrrigationLog');
 
-// Create a new farm
 const createFarm = async (req, res) => {
   try {
     const { name, location, sizeInAcres } = req.body;
@@ -24,7 +27,6 @@ const createFarm = async (req, res) => {
   }
 };
 
-// Get all farms for logged-in user
 const getMyFarms = async (req, res) => {
   try {
     const farms = await Farm.find({ user: req.user.id }).sort({ createdAt: -1 });
@@ -35,7 +37,6 @@ const getMyFarms = async (req, res) => {
   }
 };
 
-// Get a single farm by ID (must belong to the logged-in user)
 const getFarmById = async (req, res) => {
   try {
     const farm = await Farm.findOne({ _id: req.params.id, user: req.user.id });
@@ -49,12 +50,6 @@ const getFarmById = async (req, res) => {
   }
 };
 
-// Delete a farm
-const SoilReport = require('../models/SoilReport');
-const CropRecommendation = require('../models/CropRecommendation');
-const CropCalendar = require('../models/CropCalendar');
-const IrrigationLog = require('../models/IrrigationLog');
-
 const deleteFarm = async (req, res) => {
   try {
     const farm = await Farm.findOneAndDelete({ _id: req.params.id, user: req.user.id });
@@ -62,7 +57,6 @@ const deleteFarm = async (req, res) => {
       return res.status(404).json({ message: 'Farm not found' });
     }
 
-    // Clean up everything tied to this farm so no orphaned data is left behind
     await Promise.all([
       SoilReport.deleteMany({ farm: farm._id }),
       CropRecommendation.deleteMany({ farm: farm._id }),

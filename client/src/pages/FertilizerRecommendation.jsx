@@ -14,6 +14,7 @@ function FertilizerRecommendation() {
   const [checkingStatus, setCheckingStatus] = useState(true);
   const [alreadyCompleted, setAlreadyCompleted] = useState(false);
   const [existingRecord, setExistingRecord] = useState(null);
+  const [selectedCropForCheck, setSelectedCropForCheck] = useState('');
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -49,11 +50,15 @@ function FertilizerRecommendation() {
 
   const handleGenerate = async () => {
     setError('');
+    if (!selectedCropForCheck) {
+      setError(t('fertilizer.selectCropError'));
+      return;
+    }
     setLoading(true);
     try {
       const res = await api.post(
         '/fertilizer',
-        { farmId },
+        { farmId, cropName: selectedCropForCheck },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
       setResult(res.data.record);
@@ -126,10 +131,12 @@ function FertilizerRecommendation() {
         <p className="text-sm text-gray-600">{t('fertilizer.applicationGuide')}</p>
       </div>
 
-      <div className="bg-teal-50 rounded-xl p-4 mb-4">
-        <p className="text-sm font-semibold text-teal-700 mb-1">{t('fertilizer.micronutrientsTitle')}</p>
-        <p className="text-sm text-gray-600">{t(`fertilizer.${record.microKey}`)}</p>
-      </div>
+      {record.microKey && (
+        <div className="bg-teal-50 rounded-xl p-4 mb-4">
+          <p className="text-sm font-semibold text-teal-700 mb-1">{t('fertilizer.micronutrientsTitle')}</p>
+          <p className="text-sm text-gray-600">{t(`fertilizer.${record.microKey}`)}</p>
+        </div>
+      )}
 
       {record.diseaseNoteKey && (
         <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-4">
@@ -211,16 +218,33 @@ function FertilizerRecommendation() {
         )}
 
         {farm && (
-          <div className="bg-white rounded-xl shadow p-6 mb-6">
+          <div className="bg-white rounded-xl shadow p-6 mb-4">
             <p className="text-sm text-gray-500 mb-1">{t('fertilizer.forFarm')}</p>
             <p className="font-semibold text-gray-800">
               {farm.name} • {farm.sizeInAcres || 1} {t('farms.acres')}
             </p>
-            {farm.selectedCrops && farm.selectedCrops.length > 0 && (
-              <p className="text-sm text-gray-500 mt-2">
-                {t('fertilizer.forCrop')}: <span className="font-medium text-gray-700">{t(`crop.cropNames.${farm.selectedCrops[0]}`, farm.selectedCrops[0])}</span>
-              </p>
-            )}
+          </div>
+        )}
+
+        {farm?.selectedCrops && farm.selectedCrops.length > 0 && (
+          <div className="bg-white rounded-xl shadow p-6 mb-6">
+            <h3 className="font-semibold text-gray-700 mb-3">{t('fertilizer.selectCropTitle')}</h3>
+            <div className="flex flex-wrap gap-2">
+              {farm.selectedCrops.map((cropName) => (
+                <button
+                  key={cropName}
+                  type="button"
+                  onClick={() => setSelectedCropForCheck(cropName)}
+                  className={`px-4 py-2 rounded-lg text-sm border transition ${
+                    selectedCropForCheck === cropName
+                      ? 'bg-green-600 text-white border-green-600'
+                      : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100'
+                  }`}
+                >
+                  {t(`crop.cropNames.${cropName}`, cropName)}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 

@@ -7,7 +7,7 @@ const MARKET_FINDER_STEP = 9;
 
 const submitMarketFinder = async (req, res) => {
   try {
-    const { farmId } = req.body;
+    const { farmId, cropName: requestedCrop } = req.body;
     if (!farmId) return res.status(400).json({ message: 'farmId is required' });
 
     const farm = await Farm.findOne({ _id: farmId, user: req.user.id });
@@ -16,13 +16,12 @@ const submitMarketFinder = async (req, res) => {
       return res.status(400).json({ message: 'Please confirm a crop in Crop Recommendation first.' });
     }
 
+    const cropName = requestedCrop && farm.selectedCrops.includes(requestedCrop) ? requestedCrop : farm.selectedCrops[0];
+
     const access = canAccessStep(farm, MARKET_FINDER_STEP);
     if (!access.allowed) return res.status(403).json({ message: 'Please complete the previous steps first.' });
     if (access.locked) return res.status(403).json({ message: 'Market Finder has already been completed for this farm.' });
 
-    const cropName = farm.selectedCrops[0];
-
-    // Pull real live prices from the same data.gov.in Maharashtra dataset we already use
     const apiKey = process.env.DATA_GOV_API_KEY?.trim();
     const resourceId = '9ef84268-d588-465a-a308-a864a43d0070';
     const url = `https://api.data.gov.in/resource/${resourceId}?api-key=${apiKey}&format=json&limit=8&filters[commodity]=${encodeURIComponent(cropName)}&filters[state]=Maharashtra`;
@@ -32,7 +31,7 @@ const submitMarketFinder = async (req, res) => {
       const response = await axios.get(url);
       markets = (response.data.records || []).map((r, i) => ({
         name: r.market,
-        distance: `${(i + 1) * 12} km`, // illustrative distance since we don't have real GPS-based distance
+        distance: `${(i + 1) * 12} km`,
         price: Number(r.modal_price) || 0,
       }));
     } catch (err) {
