@@ -19,6 +19,7 @@ const fertilizerRoutes = require('./routes/fertilizerRoutes');
 const yieldRoutes = require('./routes/yieldRoutes');
 const marketFinderRoutes = require('./routes/marketFinderRoutes');
 const pricePredictionRoutes = require('./routes/pricePredictionRoutes');
+const { startDailySnapshots } = require('./utils/priceHistory');
 const compression = require('compression');
 // Create the Express app
 const app = express();
@@ -36,7 +37,10 @@ app.use('/api/market-finder', marketFinderRoutes);
 app.use('/api/price-prediction', pricePredictionRoutes);
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected successfully'))
+  .then(() => {
+    console.log('MongoDB connected successfully');
+    startDailySnapshots();
+  })
   .catch((err) => console.error('MongoDB connection error:', err));
 
 // Routes

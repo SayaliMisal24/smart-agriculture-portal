@@ -5,6 +5,7 @@ const fertilizerRecommendationSchema = new mongoose.Schema(
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     farm: { type: mongoose.Schema.Types.ObjectId, ref: 'Farm', required: true },
     cropName: { type: String, required: true },
+    areaAcres: Number,
     ureaKg: Number,
     dapKg: Number,
     mopKg: Number,
@@ -19,5 +20,7 @@ const fertilizerRecommendationSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 fertilizerRecommendationSchema.index({ farm: 1 });
+
 module.exports = mongoose.model('FertilizerRecommendation', fertilizerRecommendationSchema);

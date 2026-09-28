@@ -1,49 +1,90 @@
 const MarketFinder = require('../models/MarketFinder');
 const Farm = require('../models/Farm');
-const axios = require('axios');
+const { geocode } = require('../utils/geo');
+const { fetchMarketRecords, groupByMarket, summarize, attachDistances, sortNearestFirst } = require('../utils/marketData');
+const { recordSnapshot } = require('../utils/priceHistory');
 const { canAccessStep, completeStep } = require('../utils/stepProgress');
 
 const MARKET_FINDER_STEP = 9;
 
+const mapsUrl = (m) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${m.name}, ${m.district}, Maharashtra`)}`;
+
 const submitMarketFinder = async (req, res) => {
   try {
-    const { farmId, cropName: requestedCrop } = req.body;
-    if (!farmId) return res.status(400).json({ message: 'farmId is required' });
+    const { farmId, cropName, lat, lon } = req.body;
+    if (!farmId || !cropName) return res.status(400).json({ message: 'farmId and cropName are required' });
 
     const farm = await Farm.findOne({ _id: farmId, user: req.user.id });
     if (!farm) return res.status(404).json({ message: 'Farm not found' });
-    if (!farm.selectedCrops || farm.selectedCrops.length === 0) {
-      return res.status(400).json({ message: 'Please confirm a crop in Crop Recommendation first.' });
+    if (!farm.selectedCrops || !farm.selectedCrops.includes(cropName)) {
+      return res.status(400).json({ message: 'This crop is not confirmed for this farm.' });
     }
 
-    const cropName = requestedCrop && farm.selectedCrops.includes(requestedCrop) ? requestedCrop : farm.selectedCrops[0];
+    const existingForCrop = await MarketFinder.findOne({ farm: farmId, cropName });
+    if (existingForCrop) return res.status(403).json({ message: 'Markets were already found for this crop.' });
 
-    const access = canAccessStep(farm, MARKET_FINDER_STEP);
-    if (!access.allowed) return res.status(403).json({ message: 'Please complete the previous steps first.' });
-    if (access.locked) return res.status(403).json({ message: 'Market Finder has already been completed for this farm.' });
-
-    const apiKey = process.env.DATA_GOV_API_KEY?.trim();
-    const resourceId = '9ef84268-d588-465a-a308-a864a43d0070';
-    const url = `https://api.data.gov.in/resource/${resourceId}?api-key=${apiKey}&format=json&limit=8&filters[commodity]=${encodeURIComponent(cropName)}&filters[state]=Maharashtra`;
-
-    let markets = [];
-    try {
-      const response = await axios.get(url, { timeout: 8000 });
-      markets = (response.data.records || []).map((r, i) => ({
-        name: r.market,
-        distance: `${(i + 1) * 12} km`,
-        price: Number(r.modal_price) || 0,
-      }));
-    } catch (err) {
-      console.error('Market Finder price lookup failed', err.message);
+    const anyExisting = await MarketFinder.findOne({ farm: farmId });
+    if (!anyExisting) {
+      const access = canAccessStep(farm, MARKET_FINDER_STEP);
+      if (!access.allowed) return res.status(403).json({ message: 'Please complete the previous steps first.' });
     }
 
-    markets.sort((a, b) => b.price - a.price);
+    // Distance origin: the farmer's live GPS if provided, otherwise the farm's location
+    let origin = null;
+    let originSource = 'farm';
+    if (typeof lat === 'number' && typeof lon === 'number') {
+      origin = { lat, lon };
+      originSource = 'gps';
+    } else {
+      origin = await geocode(farm.location);
+    }
 
-    const record = new MarketFinder({ user: req.user.id, farm: farmId, cropName, markets });
+    const markets = groupByMarket(await fetchMarketRecords(cropName));
+    const summary = summarize(markets);
+
+    let record;
+    if (!summary) {
+      record = new MarketFinder({ user: req.user.id, farm: farmId, cropName, noLiveData: true, originSource, farmLocation: farm.location, markets: [] });
+    } else {
+      recordSnapshot(cropName, summary);
+      const withDistance = await attachDistances(markets, origin);
+      const nearest = sortNearestFirst(withDistance).slice(0, 8);
+      const highestFull = withDistance.find((m) => m.name === summary.highest.name && m.district === summary.highest.district);
+
+      record = new MarketFinder({
+        user: req.user.id,
+        farm: farmId,
+        cropName,
+        originSource,
+        farmLocation: farm.location,
+        priceDate: summary.latestDate,
+        statePrice: summary.median,
+        marketCount: summary.count,
+        highest: {
+          name: summary.highest.name,
+          district: summary.highest.district,
+          price: summary.highest.price,
+          distanceKm: highestFull ? highestFull.distanceKm : null,
+        },
+        markets: nearest.map((m) => ({
+          name: m.name,
+          district: m.district,
+          distanceKm: m.distanceKm,
+          price: m.price,
+          minPrice: m.minPrice,
+          maxPrice: m.maxPrice,
+          date: m.date,
+          mapsUrl: mapsUrl(m),
+        })),
+      });
+    }
+
     await record.save();
 
-    const updatedFarm = await completeStep(farmId, MARKET_FINDER_STEP);
+    let updatedFarm = null;
+    if (!anyExisting) updatedFarm = await completeStep(farmId, MARKET_FINDER_STEP);
+
     res.status(201).json({ message: 'Market finder generated', record, farm: updatedFarm });
   } catch (error) {
     console.error(error);
@@ -54,11 +95,11 @@ const submitMarketFinder = async (req, res) => {
 const getMyMarketFinder = async (req, res) => {
   try {
     const { farmId } = req.query;
-    const record = await MarketFinder.findOne({ user: req.user.id, farm: farmId });
-    res.status(200).json({ record });
+    const records = await MarketFinder.find({ user: req.user.id, farm: farmId }).sort({ createdAt: 1 });
+    res.status(200).json({ records });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error fetching market finder' });
+    res.status(500).json({ message: 'Server error fetching market finder records' });
   }
 };
 
