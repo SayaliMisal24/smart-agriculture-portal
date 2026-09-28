@@ -19,9 +19,10 @@ const fertilizerRoutes = require('./routes/fertilizerRoutes');
 const yieldRoutes = require('./routes/yieldRoutes');
 const marketFinderRoutes = require('./routes/marketFinderRoutes');
 const pricePredictionRoutes = require('./routes/pricePredictionRoutes');
+const compression = require('compression');
 // Create the Express app
 const app = express();
-
+app.use(compression());
 // Middleware
 app.use(cors());
 app.use(express.json());

@@ -38,6 +38,7 @@ const submitPricePrediction = async (req, res) => {
     res.status(500).json({ message: 'Server error generating price prediction' });
   }
 };
+
 const getMyPricePrediction = async (req, res) => {
   try {
     const { farmId } = req.query;

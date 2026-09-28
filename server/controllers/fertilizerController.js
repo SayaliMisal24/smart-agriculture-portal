@@ -25,7 +25,7 @@ const submitFertilizerCheck = async (req, res) => {
     if (access.locked) return res.status(403).json({ message: 'Fertilizer Recommendation has already been completed for this farm.' });
 
     const latestSoil = await SoilReport.findOne({ user: req.user.id, farm: farmId }).sort({ createdAt: -1 });
-    const diseaseRecord = await DiseaseDetection.findOne({ user: req.user.id, farm: farmId });
+    const diseaseRecord = await DiseaseDetection.findOne({ user: req.user.id, farm: farmId, diseaseKey: { $ne: null } });
 
     const result = analyzeFertilizer({
       cropName,

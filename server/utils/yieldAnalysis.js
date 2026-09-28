@@ -1,7 +1,5 @@
-const { cropDatabase } = require('./cropAnalysis');
+const { cropDatabase, getCropCategory } = require('./cropAnalysis');
 
-// Illustrative market price per quintal for common crops (rough averages) -
-// used only to demonstrate income estimation, not live pricing
 const illustrativePricePerQuintal = {
   cereal: 2200, pulse: 6500, oilseed: 4800, vegetable: 1800, spice: 9000, fruit: 3500,
 };
@@ -14,7 +12,6 @@ function analyzeYield({ cropName, farmSizeAcres, soilHealthScore }) {
   const cropInfo = cropDatabase.find((c) => c.name === cropName);
   const size = farmSizeAcres && farmSizeAcres > 0 ? farmSizeAcres : 1;
 
-  // Parse the crop's stored yield range (e.g. "25-30 quintal/acre")
   let low = 10, high = 15, unit = 'quintal/acre';
   if (cropInfo && cropInfo.yield) {
     const match = cropInfo.yield.match(/(\d+)-(\d+)\s*(.+)/);
@@ -25,17 +22,12 @@ function analyzeYield({ cropName, farmSizeAcres, soilHealthScore }) {
     }
   }
 
-  // Adjust based on soil health score - better soil, better yield
-  const healthMultiplier = soilHealthScore
-    ? 0.7 + (soilHealthScore / 100) * 0.5 // ranges roughly 0.7x to 1.2x
-    : 1;
+  const healthMultiplier = soilHealthScore ? 0.7 + (soilHealthScore / 100) * 0.5 : 1;
 
   const totalLow = Math.round(low * size * healthMultiplier);
   const totalHigh = Math.round(high * size * healthMultiplier);
 
-   const { getCropCategory } = require('./cropAnalysis');
   const category = getCropCategory(cropName);
-
   const pricePerUnit = illustrativePricePerQuintal[category] || 3000;
   const expensePercent = expensePercentByCategory[category] || 0.35;
 

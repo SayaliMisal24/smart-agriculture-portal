@@ -28,7 +28,7 @@ const submitMarketFinder = async (req, res) => {
 
     let markets = [];
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url, { timeout: 8000 });
       markets = (response.data.records || []).map((r, i) => ({
         name: r.market,
         distance: `${(i + 1) * 12} km`,
