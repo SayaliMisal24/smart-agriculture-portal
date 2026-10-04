@@ -29,14 +29,15 @@ const submitPricePrediction = async (req, res) => {
       if (!access.allowed) return res.status(403).json({ message: 'Please complete the previous steps first.' });
     }
 
-    const markets = groupByMarket(await fetchMarketRecords(cropName));
+    const { records: rawRecords, isFallback } = await fetchMarketRecords(cropName);
+    const markets = groupByMarket(rawRecords);
     const summary = summarize(markets);
 
     let record;
     if (!summary) {
       record = new MarketPricePrediction({ user: req.user.id, farm: farmId, cropName, noLiveData: true, historyDays: 0, projectedPrices: [] });
     } else {
-      await recordSnapshot(cropName, summary);
+      if (!isFallback) await recordSnapshot(cropName, summary);
 
       const origin = await geocode(farm.location);
       const nearestList = sortNearestFirst(await attachDistances(markets, origin));
@@ -47,7 +48,7 @@ const submitPricePrediction = async (req, res) => {
       const below = prices.filter((p) => p < nearest.price).length;
       const pricePercentile = prices.length > 1 ? Math.round((below / (prices.length - 1)) * 100) / 100 : 0.5;
 
-      const forecast = await buildForecast(cropName, summary.median);
+          const forecast = isFallback ? { historyDays: 0, trend: null, weeklyChangePercent: null, projectedPrices: [] } : await buildForecast(cropName, summary.median);
 
       let adviceKey;
       if (forecast.trend === 'up') adviceKey = 'adviceWait';
@@ -61,6 +62,7 @@ const submitPricePrediction = async (req, res) => {
         user: req.user.id,
         farm: farmId,
         cropName,
+        isFallback,
         priceDate: summary.latestDate,
         statePrice: summary.median,
         marketCount: summary.count,

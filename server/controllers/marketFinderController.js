@@ -40,14 +40,15 @@ const submitMarketFinder = async (req, res) => {
       origin = await geocode(farm.location);
     }
 
-    const markets = groupByMarket(await fetchMarketRecords(cropName));
+    const { records: rawRecords, isFallback } = await fetchMarketRecords(cropName);
+    const markets = groupByMarket(rawRecords);
     const summary = summarize(markets);
 
     let record;
     if (!summary) {
       record = new MarketFinder({ user: req.user.id, farm: farmId, cropName, noLiveData: true, originSource, farmLocation: farm.location, markets: [] });
     } else {
-      recordSnapshot(cropName, summary);
+      if (!isFallback) recordSnapshot(cropName, summary);
       const withDistance = await attachDistances(markets, origin);
       const nearest = sortNearestFirst(withDistance).slice(0, 8);
       const highestFull = withDistance.find((m) => m.name === summary.highest.name && m.district === summary.highest.district);
@@ -56,6 +57,7 @@ const submitMarketFinder = async (req, res) => {
         user: req.user.id,
         farm: farmId,
         cropName,
+        isFallback,
         originSource,
         farmLocation: farm.location,
         priceDate: summary.latestDate,

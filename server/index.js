@@ -36,13 +36,19 @@ app.use('/api/yield', yieldRoutes);
 app.use('/api/market-finder', marketFinderRoutes);
 app.use('/api/price-prediction', pricePredictionRoutes);
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, {
+  serverSelectionTimeoutMS: 10000,
+  socketTimeoutMS: 45000,
+})
   .then(() => {
     console.log('MongoDB connected successfully');
     startDailySnapshots();
   })
   .catch((err) => console.error('MongoDB connection error:', err));
 
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error (will retry automatically):', err.message);
+});
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/farms', farmRoutes);

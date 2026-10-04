@@ -61,11 +61,21 @@ async function snapshotAllConfirmedCrops() {
   try {
     const farms = await Farm.find({ selectedCrops: { $exists: true, $ne: [] } }).select('selectedCrops').lean();
     const crops = [...new Set(farms.flatMap((f) => f.selectedCrops))];
+    let successCount = 0;
     for (const crop of crops) {
-      const summary = summarize(groupByMarket(await fetchMarketRecords(crop)));
-      await recordSnapshot(crop, summary);
+      try {
+        const { records, isFallback } = await fetchMarketRecords(cropName);
+const summary = summarize(groupByMarket(records));
+        if (summary) {
+          await recordSnapshot(crop, summary);
+          successCount++;
+        }
+      } catch (err) {
+        console.error('Snapshot skipped for', crop, err.message);
+      }
+      await new Promise((r) => setTimeout(r, 2000));
     }
-    console.log(`Price snapshots recorded for ${crops.length} crops`);
+    console.log(`Price snapshots recorded for ${successCount} of ${crops.length} crops`);
   } catch (err) {
     console.error('Daily snapshot job failed', err.message);
   }

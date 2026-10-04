@@ -1,11 +1,10 @@
 const axios = require('axios');
 const { geocode, haversineKm } = require('./geo');
-
+const { getFallbackMarkets } = require('./fallbackPrices');
 const RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070';
 const cache = new Map();
-const CACHE_MS = 30 * 60 * 1000;
+const CACHE_MS = 6 * 60 * 60 * 1000; // 6 hours - government prices don't change more often than that
 
-// Agmarknet commodity spellings, written from memory - adjust any that return no data
 const commodityNames = {
   'Rice (Paddy)': ['Paddy(Dhan)(Common)', 'Rice'],
   'Wheat': ['Wheat'],
@@ -64,11 +63,23 @@ function candidatesFor(cropName) {
   return commodityNames[cropName] || [cropName.split('(')[0].trim()];
 }
 
-async function fetchOne(commodity) {
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function fetchOne(commodity, attempt = 1) {
   const apiKey = process.env.DATA_GOV_API_KEY?.trim();
   const url = `https://api.data.gov.in/resource/${RESOURCE_ID}?api-key=${apiKey}&format=json&limit=100&filters[commodity]=${encodeURIComponent(commodity)}&filters[state]=Maharashtra`;
-  const res = await axios.get(url, { timeout: 10000 });
-  return res.data.records || [];
+  try {
+    const res = await axios.get(url, { timeout: 15000 });
+    return res.data.records || [];
+  } catch (err) {
+    const status = err.response?.status;
+    // data.gov.in briefly returns 502/503 under load - retry twice with a short pause
+    if ((status === 502 || status === 503 || err.code === 'ECONNABORTED') && attempt < 3) {
+      await sleep(attempt * 1500);
+      return fetchOne(commodity, attempt + 1);
+    }
+    throw err;
+  }
 }
 
 const normalize = (r) => ({
@@ -81,28 +92,30 @@ const normalize = (r) => ({
   date: r.arrival_date,
 });
 
-// Real, live Maharashtra mandi records for a crop (prices are Rs per quintal)
 async function fetchMarketRecords(cropName) {
   const cached = cache.get(cropName);
-  if (cached && Date.now() - cached.time < CACHE_MS) return cached.records;
+  if (cached && Date.now() - cached.time < CACHE_MS) return { records: cached.records, isFallback: false };
 
   for (const name of candidatesFor(cropName)) {
     try {
-      const records = (await fetchOne(name)).map(normalize).filter((r) => r.modal > 0);
+      const records = (await fetchWithRetry(name)).filter((r) => r.modal > 0);
       if (records.length > 0) {
         cache.set(cropName, { time: Date.now(), records });
-        return records;
+        return { records, isFallback: false };
       }
     } catch (err) {
       console.error('Market data fetch failed for', name, err.message);
     }
   }
-  return [];
+
+  if (cached) return { records: cached.records, isFallback: false };
+
+  const fallback = getFallbackMarkets(cropName);
+  return { records: fallback.map((m) => ({ market: m.name, district: m.district, min: m.minPrice, max: m.maxPrice, modal: m.price, date: m.date })), isFallback: fallback.length > 0 };
 }
 
 const avg = (list) => list.reduce((s, v) => s + v, 0) / list.length;
 
-// One entry per market (a market may report several varieties)
 function groupByMarket(records) {
   const groups = new Map();
   for (const r of records) {
@@ -134,7 +147,6 @@ function summarize(markets) {
   };
 }
 
-// Adds an approximate straight-line distance (km) from origin to each market's district
 async function attachDistances(markets, origin) {
   if (!origin) return markets.map((m) => ({ ...m, distanceKm: null }));
 

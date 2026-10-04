@@ -6,6 +6,7 @@ const marketFinderSchema = new mongoose.Schema(
     farm: { type: mongoose.Schema.Types.ObjectId, ref: 'Farm', required: true },
     cropName: { type: String, required: true },
     noLiveData: { type: Boolean, default: false },
+    isFallback: { type: Boolean, default: false },
     originSource: String,
     farmLocation: String,
     priceDate: String,

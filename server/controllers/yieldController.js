@@ -44,8 +44,9 @@ const submitYieldPrediction = async (req, res) => {
     const latestSoil = await SoilReport.findOne({ user: req.user.id, farm: farmId }).sort({ createdAt: -1 });
 
     // Real Maharashtra mandi price for income
-    const summary = summarize(groupByMarket(await fetchMarketRecords(cropName)));
-    if (summary) recordSnapshot(cropName, summary);
+    const { records, isFallback } = await fetchMarketRecords(cropName);
+    const summary = summarize(groupByMarket(records));
+    if (summary && !isFallback) recordSnapshot(cropName, summary);
 
     const result = analyzeYield({
       cropName,
@@ -55,7 +56,7 @@ const submitYieldPrediction = async (req, res) => {
       liveMarketCount: summary ? summary.count : 0,
     });
 
-    const record = new YieldPrediction({ user: req.user.id, farm: farmId, cropName, ...result });
+    const record = new YieldPrediction({ user: req.user.id, farm: farmId, cropName, isFallback, ...result });
     await record.save();
 
     let updatedFarm = null;
