@@ -13,6 +13,7 @@ function MarketTrendsDetail() {
   const [selectedCommodity, setSelectedCommodity] = useState('Wheat');
   const [searchInput, setSearchInput] = useState('');
   const [prices, setPrices] = useState([]);
+    const [isFallback, setIsFallback] = useState(false);
   const [usedFallback, setUsedFallback] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -26,7 +27,6 @@ function MarketTrendsDetail() {
     setError('');
     try {
       const res = await api.get(`/market/prices?commodity=${commodity}`);
-      const [isFallback, setIsFallback] = useState(false);
       setPrices(res.data.prices);
       setIsFallback(res.data.isFallback);
       setUsedFallback(res.data.usedFallback);
@@ -98,11 +98,11 @@ function MarketTrendsDetail() {
           </p>
         )}
 
-        {!loading && !error && usedFallback && prices.length > 0 && (
-          <p className="text-sm text-amber-600 bg-amber-50 rounded-lg px-3 py-2 mb-3">
-            {t('marketDetail.fallbackNotice')}
-          </p>
-        )}
+        {isFallback && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4 text-xs text-amber-700">
+              {t('marketFinder.fallbackBadge')}
+            </div>
+          )}
 
                 {!loading && !error && contractNote && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-gray-700">
