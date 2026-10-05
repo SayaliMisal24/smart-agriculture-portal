@@ -31,13 +31,17 @@ const submitMarketFinder = async (req, res) => {
     }
 
     // Distance origin: the farmer's live GPS if provided, otherwise the farm's location
-    let origin = null;
+        let origin = null;
     let originSource = 'farm';
     if (typeof lat === 'number' && typeof lon === 'number') {
       origin = { lat, lon };
       originSource = 'gps';
     } else {
       origin = await geocode(farm.location);
+      if (!origin) {
+        origin = await geocode('Kolhapur');
+        originSource = 'default';
+      }
     }
 
     const { records: rawRecords, isFallback } = await fetchMarketRecords(cropName);

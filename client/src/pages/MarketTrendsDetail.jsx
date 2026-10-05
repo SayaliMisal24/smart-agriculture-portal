@@ -26,7 +26,9 @@ function MarketTrendsDetail() {
     setError('');
     try {
       const res = await api.get(`/market/prices?commodity=${commodity}`);
+      const [isFallback, setIsFallback] = useState(false);
       setPrices(res.data.prices);
+      setIsFallback(res.data.isFallback);
       setUsedFallback(res.data.usedFallback);
       setContractNote(res.data.contractNote);
     } catch (err) {

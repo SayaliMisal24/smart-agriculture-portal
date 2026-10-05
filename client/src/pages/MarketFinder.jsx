@@ -49,6 +49,8 @@ const renderRecord = (record, t) => {
           <p className="text-xs text-gray-500 mb-4">
             {record.originSource === 'gps'
               ? t('marketFinder.originGps')
+              : record.originSource === 'default'
+              ? t('marketFinder.originDefault')
               : t('marketFinder.originFarm', { place: record.farmLocation })}
             {record.priceDate ? ` • ${t('marketFinder.priceDate', { date: record.priceDate })}` : ''}
           </p>

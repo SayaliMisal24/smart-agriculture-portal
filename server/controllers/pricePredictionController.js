@@ -39,7 +39,8 @@ const submitPricePrediction = async (req, res) => {
     } else {
       if (!isFallback) await recordSnapshot(cropName, summary);
 
-      const origin = await geocode(farm.location);
+      let origin = await geocode(farm.location);
+      if (!origin) origin = await geocode('Kolhapur');
       const nearestList = sortNearestFirst(await attachDistances(markets, origin));
       const nearest = nearestList[0];
 
