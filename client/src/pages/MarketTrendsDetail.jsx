@@ -98,12 +98,6 @@ function MarketTrendsDetail() {
           </p>
         )}
 
-        {isFallback && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4 text-xs text-amber-700">
-              {t('marketFinder.fallbackBadge')}
-            </div>
-          )}
-
                 {!loading && !error && contractNote && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-gray-700">
             {contractNote}
