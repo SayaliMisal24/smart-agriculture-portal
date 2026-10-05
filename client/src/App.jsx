@@ -24,7 +24,7 @@ const FertilizerRecommendation = lazy(() => import('./pages/FertilizerRecommenda
 const YieldPrediction = lazy(() => import('./pages/YieldPrediction'));
 const MarketFinder = lazy(() => import('./pages/MarketFinder'));
 const MarketPricePrediction = lazy(() => import('./pages/MarketPricePrediction'));
-const WeatherDetail = lazy(() => import('./pages/WeatherDetail'));
+const WeatherDetail = lazy(() => import('./pages/weatherDetail'));
 const TipDetail = lazy(() => import('./pages/TipDetail'));
 const MarketTrendsDetail = lazy(() => import('./pages/MarketTrendsDetail'));
 const SuccessStoryDetail = lazy(() => import('./pages/SuccessStoryDetail'));
