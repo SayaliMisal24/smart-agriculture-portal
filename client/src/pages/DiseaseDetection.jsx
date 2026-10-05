@@ -131,7 +131,7 @@ function DiseaseDetection() {
 
       {record.photoPath && (
         <img
-          src={`http://localhost:5000${record.photoPath}`}
+          src={`https://smart-agriculture-portal-api.onrender.com${record.photoPath}`}
           alt="Crop"
           className="w-full max-h-64 object-cover rounded-xl mb-4"
         />

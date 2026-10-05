@@ -59,7 +59,7 @@ function Navbar() {
                   <button onClick={() => setProfileMenuOpen(!profileMenuOpen)} className="flex items-center">
                     {user?.profilePhoto ? (
                       <img
-                        src={`http://localhost:5000${user.profilePhoto}`}
+                        src={`https://smart-agriculture-portal-api.onrender.com${user.profilePhoto}`}
                         alt="Profile"
                         className="w-9 h-9 rounded-full object-cover border-2 border-green-200"
                       />

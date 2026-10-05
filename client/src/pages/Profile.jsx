@@ -112,7 +112,7 @@ function Profile() {
             <div className="relative">
               {photoPreview || user?.profilePhoto ? (
                 <img
-                  src={photoPreview || `http://localhost:5000${user.profilePhoto}`}
+                  src={photoPreview || `https://smart-agriculture-portal-api.onrender.com${user.profilePhoto}`}
                   alt="Profile"
                   className="w-28 h-28 rounded-full object-cover border-4 border-green-100"
                 />
