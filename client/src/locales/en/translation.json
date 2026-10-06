@@ -896,6 +896,7 @@
     "goToIrrigation": "Go to Smart Irrigation",
     "searchPlaceholder": "Enter village or place name",
     "checkWeather": "Check Weather",
+    "notFoundHint": "Couldn't load live weather right now. Please allow location access in your browser, or try again shortly.",
     "conditions": {
       "Clear": "Clear",
       "Clouds": "Cloudy",
@@ -906,6 +907,20 @@
       "Mist": "Mist",
       "Haze": "Haze"
     }
+  },
+  "about": {
+    "title": "About Smart Agriculture Portal",
+    "intro": "Smart Agriculture Portal is a bilingual (English and Marathi) platform built to bring data-driven farming guidance to every farmer in Maharashtra, from soil health to market prices, in one connected place.",
+    "feature1Title": "Guided Farm Wizard",
+    "feature1Desc": "A step-by-step journey from soil health to market price prediction, tailored to each individual farm.",
+    "feature2Title": "Real Weather & Irrigation",
+    "feature2Desc": "Live weather data drives irrigation recommendations, so watering decisions are based on real conditions, not guesswork.",
+    "feature3Title": "Real Market Data",
+    "feature3Desc": "Crop prices sourced from government mandi data, helping farmers find the best place and time to sell.",
+    "feature4Title": "Built for Maharashtra, in Marathi",
+    "feature4Desc": "Every feature, from crop names to treatment advice, is fully available in Marathi alongside English.",
+    "missionTitle": "Our Mission",
+    "missionText": "We built this portal to make the kind of agricultural expertise usually locked behind consultants or scattered across different apps available to every farmer, in their own language, for free."
   },
   "yieldPred": {
     "title": "Yield Prediction",

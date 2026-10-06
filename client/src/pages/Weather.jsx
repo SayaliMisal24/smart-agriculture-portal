@@ -22,23 +22,45 @@ function Weather() {
   useEffect(() => {
     loadFarmAndWeather();
   }, [farmId]);
-
-  const loadFarmAndWeather = async () => {
+  const fetchWeather = async () => {
     setLoading(true);
     setError('');
     try {
-      const farmRes = await api.get(`/farms/${farmId}`, {
+      if (!navigator.geolocation) {
+        await fetchWithoutGps();
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          try {
+            const res = await api.get(`/weather?farmId=${farmId}&lat=${latitude}&lon=${longitude}`, {
+              headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            });
+            setWeather(res.data.weather);
+            setLoading(false);
+          } catch (err) {
+            setError(t('weather.notFoundHint'));
+            setLoading(false);
+          }
+        },
+        async () => {
+          // User denied GPS permission - fall back to the farm's saved location
+          await fetchWithoutGps();
+        }
+      );
+    } catch (err) {
+      setError(t('weather.notFoundHint'));
+      setLoading(false);
+    }
+  };
+
+  const fetchWithoutGps = async () => {
+    try {
+      const res = await api.get(`/weather?farmId=${farmId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
-      const farmData = farmRes.data.farm;
-      setFarm(farmData);
-      setAlreadyViewed(farmData.completedSteps.includes(3));
-
-      const weatherRes = await api.get(
-        `/weather?city=${encodeURIComponent(farmData.location)}&farmId=${farmId}`,
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
-      );
-      setWeather(weatherRes.data.weather);
+      setWeather(res.data.weather);
     } catch (err) {
       setError(t('weather.notFoundHint'));
     } finally {
@@ -102,7 +124,8 @@ function Weather() {
                   <p className="text-white/80 text-sm mb-1">{t('weather.title')}</p>
                   <h1 className="text-2xl font-bold mb-2">{weather.city}</h1>
                   <p className="text-6xl font-bold">{weather.temperature}°C</p>
-                  <p className="capitalize text-white/90 mt-2">{weather.description}</p>
+                  
+                  
                 </div>
                 {getIcon(weather.condition)}
               </div>
