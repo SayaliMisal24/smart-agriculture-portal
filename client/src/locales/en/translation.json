@@ -834,6 +834,24 @@
     "diseaseNoteWilt": "Since a wilt-related issue was detected, avoid heavy fresh manure application near root zones for now, and focus fertilizer application away from the base of affected plants to reduce further root stress.",
     "diseaseNoteNutrientStress": "Since your disease check pointed toward nutrient stress rather than active disease, this fertilizer plan is especially important right now - follow the full recommended quantities to help the crop recover."
   },
+    "storyDetail": {
+    "title": "Farmer Success Stories",
+    "ctaText": "Join thousands of farmers already using Smart Agriculture Portal to grow smarter.",
+    "stories": {
+      "story1": {
+        "quote": "Before using this portal, I was guessing when to water my cotton field. Now the Smart Irrigation feature tells me exactly when and how much, based on real weather data. My water usage has gone down and my yield actually improved this season.",
+        "author": "Ramesh Patil, Cotton Farmer, Jalgaon"
+      },
+      "story2": {
+        "quote": "The Soil Health Analyzer helped me understand that my field had poor drainage, something I never checked before. Switching to raised beds for my onions made a real difference. The Marathi translation made it easy for my father to use it too.",
+        "author": "Sunita Deshmukh, Onion Farmer, Nashik"
+      },
+      "story3": {
+        "quote": "I used the Crop Disease Detection when my tomato leaves started yellowing. It pointed me toward early blight and gave clear treatment steps. I treated it the same week instead of losing the whole crop like last year.",
+        "author": "Vijay Shinde, Vegetable Farmer, Pune"
+      }
+    }
+  },
   "farms": {
     "title": "My Farms",
     "subtitle": "Manage each of your farms separately.",

@@ -1,5 +1,6 @@
 // Load environment variables from .env file
 require('dotenv').config();
+const fs = require('fs');
 const path = require('path');
 const userRoutes = require('./routes/userRoutes');
 const express = require('express');
@@ -23,6 +24,10 @@ const { startDailySnapshots } = require('./utils/priceHistory');
 const compression = require('compression');
 // Create the Express app
 const app = express();
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 app.use(compression());
 // Middleware
 app.use(cors());
