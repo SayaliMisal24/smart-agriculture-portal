@@ -22,7 +22,7 @@ function Weather() {
   useEffect(() => {
     loadFarmAndWeather();
   }, [farmId]);
-  const fetchWeather = async () => {
+  const loadFarmAndWeather = async () => {
     setLoading(true);
     setError('');
     try {
