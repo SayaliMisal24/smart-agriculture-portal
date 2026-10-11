@@ -1,9 +1,32 @@
 const axios = require('axios');
 const { geocode, haversineKm } = require('./geo');
 const { getFallbackMarkets } = require('./fallbackPrices');
-const RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070';
+const StoredMarketPrices = require('../models/StoredMarketPrices');
+
 const cache = new Map();
-const CACHE_MS = 6 * 60 * 60 * 1000; // 6 hours - government prices don't change more often than that
+const CACHE_MS = 6 * 60 * 60 * 1000;
+
+// When the server is refused outright, skip live attempts for a while so pages stay fast
+let liveBlockedUntil = 0;
+
+// ===== PROVIDER-SPECIFIC CODE =====
+const RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070';
+
+async function fetchFromProvider(commodityName) {
+  const apiKey = process.env.DATA_GOV_API_KEY?.trim();
+  const url = `https://api.data.gov.in/resource/${RESOURCE_ID}?api-key=${apiKey}&format=json&limit=100&filters[commodity]=${encodeURIComponent(commodityName)}&filters[state]=Maharashtra`;
+  const res = await axios.get(url, { timeout: 15000 });
+  return (res.data.records || []).map((r) => ({
+    market: r.market,
+    district: r.district,
+    variety: r.variety,
+    min: Number(r.min_price) || 0,
+    max: Number(r.max_price) || 0,
+    modal: Number(r.modal_price) || 0,
+    date: r.arrival_date,
+  }));
+}
+// ===== END PROVIDER-SPECIFIC CODE =====
 
 const commodityNames = {
   'Rice (Paddy)': ['Paddy(Dhan)(Common)', 'Rice'],
@@ -59,59 +82,75 @@ const commodityNames = {
   'Chikoo (Sapota)': ['Chikoos(Sapota)'],
 };
 
+const allCropNames = () => Object.keys(commodityNames);
+
 function candidatesFor(cropName) {
   return commodityNames[cropName] || [cropName.split('(')[0].trim()];
 }
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function fetchOne(commodity, attempt = 1) {
-  const apiKey = process.env.DATA_GOV_API_KEY?.trim();
-  const url = `https://api.data.gov.in/resource/${RESOURCE_ID}?api-key=${apiKey}&format=json&limit=100&filters[commodity]=${encodeURIComponent(commodity)}&filters[state]=Maharashtra`;
+async function fetchWithRetry(name, attempt = 1) {
   try {
-    const res = await axios.get(url, { timeout: 15000 });
-    return res.data.records || [];
+    return await fetchFromProvider(name);
   } catch (err) {
+    if (err.code === 'ECONNREFUSED') {
+      liveBlockedUntil = Date.now() + 10 * 60 * 1000;
+      throw err;
+    }
     const status = err.response?.status;
-    // data.gov.in briefly returns 502/503 under load - retry twice with a short pause
-    if ((status === 502 || status === 503 || err.code === 'ECONNABORTED') && attempt < 3) {
+    const retryable = status === 502 || status === 503 || status === 504 || err.code === 'ECONNABORTED';
+    if (retryable && attempt < 3) {
       await sleep(attempt * 1500);
-      return fetchOne(commodity, attempt + 1);
+      return fetchWithRetry(name, attempt + 1);
     }
     throw err;
   }
 }
 
-const normalize = (r) => ({
-  market: r.market,
-  district: r.district,
-  variety: r.variety,
-  min: Number(r.min_price) || 0,
-  max: Number(r.max_price) || 0,
-  modal: Number(r.modal_price) || 0,
-  date: r.arrival_date,
-});
-
-async function fetchMarketRecords(cropName) {
-  const cached = cache.get(cropName);
-  if (cached && Date.now() - cached.time < CACHE_MS) return { records: cached.records, isFallback: false };
+// Live data only - no fallback. Also used by the price sync script.
+async function fetchLiveRecords(cropName) {
+  if (Date.now() < liveBlockedUntil) return [];
 
   for (const name of candidatesFor(cropName)) {
     try {
       const records = (await fetchWithRetry(name)).filter((r) => r.modal > 0);
-      if (records.length > 0) {
-        cache.set(cropName, { time: Date.now(), records });
-        return { records, isFallback: false };
-      }
+      if (records.length > 0) return records;
     } catch (err) {
       console.error('Market data fetch failed for', name, err.message);
+      if (err.code === 'ECONNREFUSED') return [];
     }
+  }
+  return [];
+}
+
+// Order: live data -> real prices stored in MongoDB -> estimated dummy prices
+async function fetchMarketRecords(cropName) {
+  const cached = cache.get(cropName);
+  if (cached && Date.now() - cached.time < CACHE_MS) return { records: cached.records, isFallback: false };
+
+  const live = await fetchLiveRecords(cropName);
+  if (live.length > 0) {
+    cache.set(cropName, { time: Date.now(), records: live });
+    return { records: live, isFallback: false };
+  }
+
+  try {
+    const stored = await StoredMarketPrices.findOne({ cropName }).lean();
+    if (stored && stored.records && stored.records.length > 0) {
+      return { records: stored.records, isFallback: false };
+    }
+  } catch (err) {
+    console.error('Stored price lookup failed', err.message);
   }
 
   if (cached) return { records: cached.records, isFallback: false };
 
   const fallback = getFallbackMarkets(cropName);
-  return { records: fallback.map((m) => ({ market: m.name, district: m.district, min: m.minPrice, max: m.maxPrice, modal: m.price, date: m.date })), isFallback: fallback.length > 0 };
+  return {
+    records: fallback.map((m) => ({ market: m.name, district: m.district, min: m.minPrice, max: m.maxPrice, modal: m.price, date: m.date })),
+    isFallback: fallback.length > 0,
+  };
 }
 
 const avg = (list) => list.reduce((s, v) => s + v, 0) / list.length;
@@ -138,18 +177,11 @@ function summarize(markets) {
   const sorted = [...markets].sort((a, b) => a.price - b.price);
   const mid = Math.floor(sorted.length / 2);
   const median = sorted.length % 2 ? sorted[mid].price : Math.round((sorted[mid - 1].price + sorted[mid].price) / 2);
-  return {
-    median,
-    lowest: sorted[0],
-    highest: sorted[sorted.length - 1],
-    count: sorted.length,
-    latestDate: markets[0].date,
-  };
+  return { median, lowest: sorted[0], highest: sorted[sorted.length - 1], count: sorted.length, latestDate: markets[0].date };
 }
 
 async function attachDistances(markets, origin) {
   if (!origin) return markets.map((m) => ({ ...m, distanceKm: null }));
-
   const districts = [...new Set(markets.map((m) => m.district).filter(Boolean))];
   const coords = {};
   for (let i = 0; i < districts.length; i += 8) {
@@ -157,7 +189,6 @@ async function attachDistances(markets, origin) {
     const found = await Promise.all(chunk.map((d) => geocode(d)));
     chunk.forEach((d, idx) => { coords[d] = found[idx]; });
   }
-
   return markets.map((m) => {
     const c = coords[m.district];
     return { ...m, distanceKm: c ? Math.round(haversineKm(origin, c)) : null };
@@ -172,4 +203,12 @@ const sortNearestFirst = (markets) =>
     return a.distanceKm - b.distanceKm;
   });
 
-module.exports = { fetchMarketRecords, groupByMarket, summarize, attachDistances, sortNearestFirst };
+module.exports = {
+  fetchMarketRecords,
+  fetchLiveRecords,
+  allCropNames,
+  groupByMarket,
+  summarize,
+  attachDistances,
+  sortNearestFirst,
+};
