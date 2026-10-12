@@ -65,16 +65,49 @@ const commodityNames = {
   'Grapes': ['Grapes'],
   'Pomegranate': ['Pomegranate'],
   'Chikoo (Sapota)': ['Chikoos(Sapota)'],
+  'Sugarcane': ['Sugarcane'],
 };
 
 const allCropNames = () => Object.keys(commodityNames);
 
-function candidatesFor(cropName) {
-  return commodityNames[cropName] || [cropName.split('(')[0].trim()];
-}
-
 const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// ===== Name handling: lets "ginger", "GINGER", "rice" or "tur" find the right crop =====
+const GENERIC_WORDS = ['seed', 'green', 'black', 'field', 'pearl', 'finger', 'bean', 'common'];
+
+const aliasIndex = (() => {
+  const owners = new Map();
+  const add = (alias, crop) => {
+    const n = norm(alias);
+    if (n.length < 3 || GENERIC_WORDS.includes(n)) return;
+    if (!owners.has(n)) owners.set(n, new Set());
+    owners.get(n).add(crop);
+  };
+  for (const crop of Object.keys(commodityNames)) {
+    add(crop, crop);
+    add(crop.split('(')[0], crop);
+    (crop.match(/[A-Za-z]+/g) || []).forEach((word) => add(word, crop));
+  }
+  const index = new Map();
+  for (const [alias, crops] of owners) {
+    if (crops.size === 1) index.set(alias, [...crops][0]); // skip names shared by several crops
+  }
+  return index;
+})();
+
+function canonicalCrop(input) {
+  if (commodityNames[input]) return input;
+  return aliasIndex.get(norm(input)) || String(input).trim();
+}
+
+function candidatesFor(input) {
+  const crop = canonicalCrop(input);
+  if (commodityNames[crop]) return commodityNames[crop];
+  const clean = String(input).split('(')[0].trim();
+  const title = clean.toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase());
+  return [...new Set([clean, title])];
+}
 
 // ===== Provider 1: Mandi Price API (keyless, synced daily from data.gov.in) =====
 async function mandiGet(path, params, attempt = 1) {
@@ -109,32 +142,36 @@ async function getMandiCommodities() {
   return list;
 }
 
-function matchMandiName(cropName, available) {
-  const wanted = candidatesFor(cropName).map(norm);
+// Returns every API crop name that matches, best matches first
+function matchMandiNames(wantedNames, available) {
+  const wanted = wantedNames.map(norm);
+  const found = [];
   for (const w of wanted) {
-    const hit = available.find((a) => norm(a) === w);
-    if (hit) return hit;
+    available.forEach((a) => {
+      if (norm(a) === w && !found.includes(a)) found.push(a);
+    });
   }
   for (const w of wanted) {
     if (w.length < 5) continue;
-    const hit = available.find((a) => {
+    available.forEach((a) => {
       const n = norm(a);
-      return n.includes(w) || (w.includes(n) && n.length >= 5);
+      if ((n.includes(w) || (w.includes(n) && n.length >= 5)) && !found.includes(a)) found.push(a);
     });
-    if (hit) return hit;
   }
-  return null;
+  return found;
 }
 
 async function fetchFromMandiApi(cropName) {
-  let names = candidatesFor(cropName);
+  const wantedNames = candidatesFor(cropName);
+  let names = [];
   try {
     const available = await getMandiCommodities();
-    const matched = available.length > 0 ? matchMandiName(cropName, available) : null;
-    if (matched) names = [matched];
+    names = matchMandiNames(wantedNames, available);
   } catch (err) {
     console.error('Mandi API commodity list failed, trying direct names:', err.message);
   }
+  if (names.length === 0) names = wantedNames;
+  names = [...new Set(names)].slice(0, 3);
 
   for (const name of names) {
     const body = await mandiGet('/prices', { state: 'Maharashtra', commodity: name });
@@ -199,18 +236,20 @@ async function fetchLiveRecords(cropName) {
 }
 
 // Order: live data -> real prices stored in MongoDB -> estimated dummy prices
-async function fetchMarketRecords(cropName) {
-  const cached = cache.get(cropName);
+async function fetchMarketRecords(input) {
+  const crop = canonicalCrop(input);
+
+  const cached = cache.get(crop);
   if (cached && Date.now() - cached.time < CACHE_MS) return { records: cached.records, isFallback: false };
 
-  const live = await fetchLiveRecords(cropName);
+  const live = await fetchLiveRecords(crop);
   if (live.length > 0) {
-    cache.set(cropName, { time: Date.now(), records: live });
+    cache.set(crop, { time: Date.now(), records: live });
     return { records: live, isFallback: false };
   }
 
   try {
-    const stored = await StoredMarketPrices.findOne({ cropName }).lean();
+    const stored = await StoredMarketPrices.findOne({ cropName: crop }).lean();
     if (stored && stored.records && stored.records.length > 0) {
       return { records: stored.records, isFallback: false };
     }
@@ -220,16 +259,16 @@ async function fetchMarketRecords(cropName) {
 
   if (cached) return { records: cached.records, isFallback: false };
 
-  const fallback = getFallbackMarkets(cropName);
+  const fallback = getFallbackMarkets(crop);
   return {
     records: fallback.map((m) => ({ market: m.name, district: m.district, min: m.minPrice, max: m.maxPrice, modal: m.price, date: m.date })),
     isFallback: fallback.length > 0,
   };
 }
 
-// Used by the temporary debug route to show which provider works
+// ===== Diagnostics (used by the temporary debug routes) =====
 async function testProviders(cropName) {
-  const out = {};
+  const out = { resolvedCrop: canonicalCrop(cropName), triedNames: candidatesFor(cropName) };
   try {
     const records = await fetchFromMandiApi(cropName);
     out.mandiApi = { ok: records.length > 0, count: records.length, sample: records[0] || null };
@@ -243,6 +282,21 @@ async function testProviders(cropName) {
     out.dataGov = { ok: false, code: err.code || null, message: err.message };
   }
   return out;
+}
+
+// Shows which of our crops match a crop name the price API knows (one API call)
+async function coverageReport() {
+  const available = await getMandiCommodities();
+  const rows = Object.keys(commodityNames).map((crop) => ({
+    crop,
+    matchedNames: matchMandiNames(commodityNames[crop], available),
+  }));
+  return {
+    apiCropCount: available.length,
+    unmatchedCrops: rows.filter((r) => r.matchedNames.length === 0).map((r) => r.crop),
+    matchedCrops: rows.filter((r) => r.matchedNames.length > 0),
+    apiCropNames: available,
+  };
 }
 
 const avg = (list) => list.reduce((s, v) => s + v, 0) / list.length;
@@ -299,6 +353,7 @@ module.exports = {
   fetchMarketRecords,
   fetchLiveRecords,
   testProviders,
+  coverageReport,
   allCropNames,
   groupByMarket,
   summarize,

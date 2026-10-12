@@ -1,4 +1,4 @@
-const { fetchMarketRecords, groupByMarket, testProviders } = require('../utils/marketData');
+const { fetchMarketRecords, groupByMarket, testProviders, coverageReport } = require('../utils/marketData');
 
 const getMarketPrices = async (req, res) => {
   try {
@@ -24,10 +24,19 @@ const getMarketPrices = async (req, res) => {
   }
 };
 
-// TEMPORARY: shows which price provider works (remove after testing)
+// TEMPORARY: shows which price provider works for one crop (remove after testing)
 const debugMarketFetch = async (req, res) => {
   const commodity = req.query.commodity || 'Onion';
   res.json(await testProviders(commodity));
 };
 
-module.exports = { getMarketPrices, debugMarketFetch };
+// TEMPORARY: shows which of our crops match the price API's crop names (remove after testing)
+const marketCoverage = async (req, res) => {
+  try {
+    res.json(await coverageReport());
+  } catch (err) {
+    res.json({ failed: true, message: err.message });
+  }
+};
+
+module.exports = { getMarketPrices, debugMarketFetch, marketCoverage };
