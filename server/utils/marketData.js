@@ -6,27 +6,12 @@ const StoredMarketPrices = require('../models/StoredMarketPrices');
 const cache = new Map();
 const CACHE_MS = 6 * 60 * 60 * 1000;
 
-// When the server is refused outright, skip live attempts for a while so pages stay fast
-let liveBlockedUntil = 0;
+const MANDI_API_URL = (process.env.MANDI_API_URL || 'https://mandi-api.onrender.com/v1').replace(/\/$/, '');
+const DATA_GOV_RESOURCE = '9ef84268-d588-465a-a308-a864a43d0070';
 
-// ===== PROVIDER-SPECIFIC CODE =====
-const RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070';
-
-async function fetchFromProvider(commodityName) {
-  const apiKey = process.env.DATA_GOV_API_KEY?.trim();
-  const url = `https://api.data.gov.in/resource/${RESOURCE_ID}?api-key=${apiKey}&format=json&limit=100&filters[commodity]=${encodeURIComponent(commodityName)}&filters[state]=Maharashtra`;
-  const res = await axios.get(url, { timeout: 15000 });
-  return (res.data.records || []).map((r) => ({
-    market: r.market,
-    district: r.district,
-    variety: r.variety,
-    min: Number(r.min_price) || 0,
-    max: Number(r.max_price) || 0,
-    modal: Number(r.modal_price) || 0,
-    date: r.arrival_date,
-  }));
-}
-// ===== END PROVIDER-SPECIFIC CODE =====
+let dataGovBlockedUntil = 0;
+let mandiCommodities = null;
+let mandiCommoditiesAt = 0;
 
 const commodityNames = {
   'Rice (Paddy)': ['Paddy(Dhan)(Common)', 'Rice'],
@@ -35,7 +20,7 @@ const commodityNames = {
   'Jowar (Sorghum)': ['Jowar(Sorghum)'],
   'Maize': ['Maize'],
   'Ragi (Finger Millet)': ['Ragi (Finger Millet)'],
-  'Tur / Arhar (Pigeon Pea)': ['Arhar (Tur/Red Gram)(Whole)', 'Arhar Dal(Tur Dal)'],
+  'Tur / Arhar (Pigeon Pea)': ['Red gram/Arhar/Tur(whole)', 'Arhar (Tur/Red Gram)(Whole)', 'Arhar Dal(Tur Dal)'],
   'Gram / Chana (Chickpea)': ['Bengal Gram(Gram)(Whole)', 'Gram Raw(Chholia)'],
   'Bengal Gram (Kabuli Chana)': ['Kabuli Chana(Chickpeas-White)', 'Bengal Gram(Gram)(Whole)'],
   'Moong (Green Gram)': ['Green Gram (Moong)(Whole)'],
@@ -88,40 +73,129 @@ function candidatesFor(cropName) {
   return commodityNames[cropName] || [cropName.split('(')[0].trim()];
 }
 
+const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function fetchWithRetry(name, attempt = 1) {
+// ===== Provider 1: Mandi Price API (keyless, synced daily from data.gov.in) =====
+async function mandiGet(path, params, attempt = 1) {
   try {
-    return await fetchFromProvider(name);
+    const res = await axios.get(`${MANDI_API_URL}${path}`, {
+      params,
+      timeout: 45000,
+      headers: { Accept: 'application/json' },
+    });
+    return res.data;
   } catch (err) {
-    if (err.code === 'ECONNREFUSED') {
-      liveBlockedUntil = Date.now() + 10 * 60 * 1000;
-      throw err;
-    }
     const status = err.response?.status;
     const retryable = status === 502 || status === 503 || status === 504 || err.code === 'ECONNABORTED';
-    if (retryable && attempt < 3) {
-      await sleep(attempt * 1500);
-      return fetchWithRetry(name, attempt + 1);
+    if (retryable && attempt < 2) {
+      await sleep(3000);
+      return mandiGet(path, params, attempt + 1);
     }
     throw err;
   }
 }
 
-// Live data only - no fallback. Also used by the price sync script.
-async function fetchLiveRecords(cropName) {
-  if (Date.now() < liveBlockedUntil) return [];
+async function getMandiCommodities() {
+  if (mandiCommodities && Date.now() - mandiCommoditiesAt < 24 * 60 * 60 * 1000) return mandiCommodities;
+  const body = await mandiGet('/commodities', { state: 'Maharashtra' });
+  const list = (body.data || [])
+    .map((c) => (typeof c === 'string' ? c : c.commodity || c.name))
+    .filter(Boolean);
+  if (list.length > 0) {
+    mandiCommodities = list;
+    mandiCommoditiesAt = Date.now();
+  }
+  return list;
+}
 
+function matchMandiName(cropName, available) {
+  const wanted = candidatesFor(cropName).map(norm);
+  for (const w of wanted) {
+    const hit = available.find((a) => norm(a) === w);
+    if (hit) return hit;
+  }
+  for (const w of wanted) {
+    if (w.length < 5) continue;
+    const hit = available.find((a) => {
+      const n = norm(a);
+      return n.includes(w) || (w.includes(n) && n.length >= 5);
+    });
+    if (hit) return hit;
+  }
+  return null;
+}
+
+async function fetchFromMandiApi(cropName) {
+  let names = candidatesFor(cropName);
+  try {
+    const available = await getMandiCommodities();
+    const matched = available.length > 0 ? matchMandiName(cropName, available) : null;
+    if (matched) names = [matched];
+  } catch (err) {
+    console.error('Mandi API commodity list failed, trying direct names:', err.message);
+  }
+
+  for (const name of names) {
+    const body = await mandiGet('/prices', { state: 'Maharashtra', commodity: name });
+    const records = (body.data || [])
+      .map((r) => ({
+        market: r.market,
+        district: r.district,
+        variety: r.variety,
+        min: Number(r.min_price) || 0,
+        max: Number(r.max_price) || 0,
+        modal: Number(r.modal_price) || 0,
+        date: r.arrival_date,
+      }))
+      .filter((r) => r.modal > 0);
+    if (records.length > 0) return records;
+  }
+  return [];
+}
+
+// ===== Provider 2: data.gov.in directly =====
+async function fetchFromDataGov(commodityName) {
+  const apiKey = process.env.DATA_GOV_API_KEY?.trim();
+  const url = `https://api.data.gov.in/resource/${DATA_GOV_RESOURCE}?api-key=${apiKey}&format=json&limit=100&filters[commodity]=${encodeURIComponent(commodityName)}&filters[state]=Maharashtra`;
+  const res = await axios.get(url, { timeout: 15000 });
+  return (res.data.records || []).map((r) => ({
+    market: r.market,
+    district: r.district,
+    variety: r.variety,
+    min: Number(r.min_price) || 0,
+    max: Number(r.max_price) || 0,
+    modal: Number(r.modal_price) || 0,
+    date: r.arrival_date,
+  }));
+}
+
+async function fetchFromDataGovForCrop(cropName) {
+  if (Date.now() < dataGovBlockedUntil) return [];
   for (const name of candidatesFor(cropName)) {
     try {
-      const records = (await fetchWithRetry(name)).filter((r) => r.modal > 0);
+      const records = (await fetchFromDataGov(name)).filter((r) => r.modal > 0);
       if (records.length > 0) return records;
     } catch (err) {
-      console.error('Market data fetch failed for', name, err.message);
-      if (err.code === 'ECONNREFUSED') return [];
+      console.error('data.gov.in fetch failed for', name, err.message);
+      if (err.code === 'ECONNREFUSED') {
+        dataGovBlockedUntil = Date.now() + 10 * 60 * 1000;
+        return [];
+      }
     }
   }
   return [];
+}
+
+// Live data only, no fallback. Also used by scripts/syncPrices.js
+async function fetchLiveRecords(cropName) {
+  try {
+    const records = await fetchFromMandiApi(cropName);
+    if (records.length > 0) return records;
+  } catch (err) {
+    console.error('Mandi API failed for', cropName, err.message);
+  }
+  return fetchFromDataGovForCrop(cropName);
 }
 
 // Order: live data -> real prices stored in MongoDB -> estimated dummy prices
@@ -151,6 +225,24 @@ async function fetchMarketRecords(cropName) {
     records: fallback.map((m) => ({ market: m.name, district: m.district, min: m.minPrice, max: m.maxPrice, modal: m.price, date: m.date })),
     isFallback: fallback.length > 0,
   };
+}
+
+// Used by the temporary debug route to show which provider works
+async function testProviders(cropName) {
+  const out = {};
+  try {
+    const records = await fetchFromMandiApi(cropName);
+    out.mandiApi = { ok: records.length > 0, count: records.length, sample: records[0] || null };
+  } catch (err) {
+    out.mandiApi = { ok: false, status: err.response?.status || null, code: err.code || null, message: err.message };
+  }
+  try {
+    const records = (await fetchFromDataGov(candidatesFor(cropName)[0])).filter((r) => r.modal > 0);
+    out.dataGov = { ok: records.length > 0, count: records.length };
+  } catch (err) {
+    out.dataGov = { ok: false, code: err.code || null, message: err.message };
+  }
+  return out;
 }
 
 const avg = (list) => list.reduce((s, v) => s + v, 0) / list.length;
@@ -206,6 +298,7 @@ const sortNearestFirst = (markets) =>
 module.exports = {
   fetchMarketRecords,
   fetchLiveRecords,
+  testProviders,
   allCropNames,
   groupByMarket,
   summarize,
