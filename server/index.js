@@ -28,6 +28,25 @@ const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
+const StoredFile = require('./models/StoredFile');
+
+app.get('/uploads/:name', async (req, res, next) => {
+  try {
+    const name = path.basename(req.params.name);
+    const diskPath = path.join(uploadsDir, name);
+    if (fs.existsSync(diskPath)) return res.sendFile(diskPath);
+    const stored = await StoredFile.findOne({ filename: name });
+    if (!stored) return next();
+    res.set('Content-Type', stored.contentType || 'image/jpeg');
+    res.set('Cache-Control', 'public, max-age=86400');
+    return res.send(stored.data);
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+
 app.use(compression());
 // Middleware
 app.use(cors());

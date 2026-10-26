@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import Navbar from '../components/Navbar';
 import { FaLeaf, FaCloudSun, FaChartLine, FaGlobe } from 'react-icons/fa';
 
 function About() {
@@ -7,7 +6,6 @@ function About() {
 
   return (
     <div>
-      <Navbar />
       <div className="max-w-4xl mx-auto px-6 py-10">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">{t('about.title')}</h1>
         <p className="text-gray-600 leading-relaxed mb-8">{t('about.intro')}</p>
