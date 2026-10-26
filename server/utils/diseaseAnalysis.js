@@ -46,7 +46,7 @@ const diseaseDatabase = [
   { key: 'vegAphid', crops: ['Cabbage', 'Cauliflower', 'Radish', 'Carrot', 'Beetroot', 'Spinach (Palak)'], symptoms: ['curledLeaves', 'stickyResidue'], severity: 'medium' },
   { key: 'vegLeafMiner', crops: ['Spinach (Palak)', 'Fenugreek (Methi)', 'Coriander (Dhania)', 'Radish', 'Beetroot'], symptoms: ['holes', 'yellowing'], severity: 'medium' },
 
-  // SPICES - Ginger/Turmeric now have broad coverage
+  // SPICES
   { key: 'rhizomeRot', crops: ['Ginger', 'Turmeric (Halad)'], symptoms: ['wilting', 'yellowing', 'stuntedGrowth'], severity: 'high', soilRiskFactor: 'waterlogged' },
   { key: 'gingerLeafSpot', crops: ['Ginger', 'Turmeric (Halad)'], symptoms: ['spots', 'yellowing'], severity: 'medium' },
   { key: 'shootBorerGinger', crops: ['Ginger', 'Turmeric (Halad)'], symptoms: ['holes', 'stuntedGrowth', 'wilting'], severity: 'medium' },
@@ -58,7 +58,7 @@ const diseaseDatabase = [
   { key: 'fruitFly', crops: ['Banana', 'Grapes', 'Pomegranate', 'Chikoo (Sapota)', 'Watermelon', 'Muskmelon', 'Cucumber'], symptoms: ['holes', 'wilting'], severity: 'high' },
   { key: 'grapesPowderyMildew', crops: ['Grapes'], symptoms: ['whiteCoating', 'stuntedGrowth'], severity: 'medium' },
 
-  // UNIVERSAL - genuinely broad, apply to any crop as a realistic fallback
+  // UNIVERSAL - fallback for any crop
   { key: 'rootRot', crops: [], symptoms: ['wilting', 'yellowing', 'stuntedGrowth'], severity: 'high', soilRiskFactor: 'waterlogged', universal: true },
   { key: 'aphidGeneral', crops: [], symptoms: ['curledLeaves', 'stickyResidue', 'holes'], severity: 'low', universal: true },
   { key: 'generalLeafSpot', crops: [], symptoms: ['spots', 'holes', 'yellowing'], severity: 'medium', universal: true },
@@ -66,13 +66,87 @@ const diseaseDatabase = [
   { key: 'generalNutrientStress', crops: [], symptoms: ['yellowing', 'stuntedGrowth'], severity: 'low', universal: true },
 ];
 
+// Each new symptom also counts as these basic symptoms, so every disease above still matches
+const symptomExpansion = {
+  leafDrop: ['wilting', 'yellowing'],
+  brownEdges: ['spots', 'yellowing'],
+  mosaicPattern: ['curledLeaves', 'yellowing', 'stuntedGrowth'],
+  orangePustules: ['spots', 'yellowing'],
+  tunnelsInLeaves: ['holes', 'yellowing'],
+  tinyInsects: ['stickyResidue', 'curledLeaves'],
+  rottingStem: ['wilting', 'stuntedGrowth'],
+  rootRotSigns: ['wilting', 'yellowing', 'stuntedGrowth'],
+  fruitDamage: ['holes', 'stuntedGrowth'],
+  fruitSpots: ['spots'],
+  purpleLeaves: ['yellowing', 'stuntedGrowth'],
+  poorFlowering: ['stuntedGrowth'],
+  deadShoots: ['holes', 'stuntedGrowth'],
+  greyMould: ['whiteCoating', 'spots'],
+};
+
+// Extra points for the diseases that a new symptom points to most strongly
+const diseaseBoost = {
+  wheatRust: ['orangePustules'],
+  rustOilseed: ['orangePustules'],
+  leafCurlVirus: ['mosaicPattern'],
+  vegLeafMiner: ['tunnelsInLeaves'],
+  aphidInfestation: ['tinyInsects'],
+  aphidGeneral: ['tinyInsects'],
+  vegAphid: ['tinyInsects'],
+  wheatAphid: ['tinyInsects'],
+  spiceAphid: ['tinyInsects'],
+  oilseedWhitefly: ['tinyInsects'],
+  collarRot: ['rottingStem', 'rootRotSigns'],
+  rootRot: ['rottingStem', 'rootRotSigns'],
+  rhizomeRot: ['rottingStem', 'rootRotSigns'],
+  sugarcaneRedRot: ['rottingStem'],
+  fruitBorer: ['fruitDamage'],
+  podBorer: ['fruitDamage'],
+  cottonBollworm: ['fruitDamage'],
+  fruitFly: ['fruitDamage'],
+  anthracnoseFruit: ['fruitSpots'],
+  generalNutrientStress: ['purpleLeaves', 'poorFlowering'],
+  stemBorer: ['deadShoots'],
+  sugarcaneBorer: ['deadShoots'],
+  shootBorerGinger: ['deadShoots'],
+  downyMildewMillet: ['greyMould'],
+  lateBlightPotato: ['greyMould'],
+  wheatPowderyMildew: ['greyMould'],
+  powderyMildewPulse: ['greyMould'],
+  powderyMildewVeg: ['greyMould'],
+  grapesPowderyMildew: ['greyMould'],
+  earlyBlight: ['brownEdges'],
+  purpleBlotch: ['brownEdges'],
+  riceBlast: ['brownEdges'],
+  maizeLeafBlight: ['brownEdges'],
+  gingerLeafSpot: ['brownEdges'],
+  cottonLeafSpot: ['brownEdges'],
+  pulseLeafSpot: ['brownEdges'],
+  oilseedLeafSpot: ['brownEdges'],
+  generalLeafSpot: ['brownEdges'],
+  pulseWilt: ['leafDrop'],
+  bacterialWiltVeg: ['leafDrop'],
+  gingerBacterialWilt: ['leafDrop'],
+  bacterialLeafBlight: ['leafDrop'],
+};
+
+function expandSymptoms(symptoms) {
+  const all = new Set(symptoms);
+  symptoms.forEach((s) => (symptomExpansion[s] || []).forEach((x) => all.add(x)));
+  return all;
+}
+
 function analyzeDisease({ symptoms, soilMoisture, soilDrainage, cropName }) {
   const relevantDiseases = diseaseDatabase.filter(
     (d) => d.universal || d.crops.includes(cropName)
   );
 
+  const selected = expandSymptoms(symptoms);
+
   const scored = relevantDiseases.map((d) => {
-    let matchCount = d.symptoms.filter((s) => symptoms.includes(s)).length;
+    let matchCount = d.symptoms.filter((s) => selected.has(s)).length;
+
+    matchCount += (diseaseBoost[d.key] || []).filter((s) => symptoms.includes(s)).length;
 
     if (d.soilRiskFactor === 'waterlogged' && (soilMoisture === 'waterlogged' || soilDrainage === 'slow')) {
       matchCount += 1.5;
@@ -83,15 +157,11 @@ function analyzeDisease({ symptoms, soilMoisture, soilDrainage, cropName }) {
 
   scored.sort((a, b) => b.matchCount - a.matchCount);
 
-  // Since the farmer already confirmed they have SOME visible issue (they
-  // didn't click "No Visible Issue"), always surface the closest matching
-  // disease rather than returning nothing - even a partial symptom overlap
-  // is a realistic starting point for a preliminary screening tool
+  // The farmer reported a visible problem, so always show the closest match
   const topMatch = scored.find((d) => d.matchCount > 0) || scored[0];
 
   const maxPossible = topMatch.symptoms.length + (topMatch.soilRiskFactor ? 1.5 : 0);
   const rawPercent = Math.round((Math.max(topMatch.matchCount, 1) / maxPossible) * 100);
-
   const confidencePercent = Math.min(98, Math.max(90, rawPercent));
 
   return { diseaseKey: topMatch.key, confidencePercent, severity: topMatch.severity };

@@ -8,6 +8,10 @@ import { FaBug, FaCheckCircle, FaCamera, FaImage, FaExclamationTriangle, FaLeaf,
 const symptomOptions = [
   'yellowing', 'spots', 'wilting', 'whiteCoating',
   'holes', 'stickyResidue', 'curledLeaves', 'stuntedGrowth',
+  'leafDrop', 'brownEdges', 'mosaicPattern', 'orangePustules',
+  'tunnelsInLeaves', 'tinyInsects', 'rottingStem', 'rootRotSigns',
+  'fruitDamage', 'fruitSpots', 'purpleLeaves', 'poorFlowering',
+  'deadShoots', 'greyMould',
 ];
 
 const severityColors = {
